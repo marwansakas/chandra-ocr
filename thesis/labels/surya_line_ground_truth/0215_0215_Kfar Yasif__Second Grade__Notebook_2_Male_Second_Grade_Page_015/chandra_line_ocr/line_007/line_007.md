@@ -1,0 +1,1 @@
+Handwritten text, partially visible, including the word "field" and other illegible characters.

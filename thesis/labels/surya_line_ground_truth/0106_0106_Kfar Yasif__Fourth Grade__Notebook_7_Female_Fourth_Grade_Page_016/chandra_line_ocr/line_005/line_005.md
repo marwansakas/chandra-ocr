@@ -1,0 +1,1 @@
+Handwritten signature, possibly reading "C. M. ...".

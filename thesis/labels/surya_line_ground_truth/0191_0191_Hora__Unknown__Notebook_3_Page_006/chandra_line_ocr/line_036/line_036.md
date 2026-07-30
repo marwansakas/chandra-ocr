@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a stylized name, written in black ink on lined paper. The text is difficult to decipher due to the cursive style and blurriness.

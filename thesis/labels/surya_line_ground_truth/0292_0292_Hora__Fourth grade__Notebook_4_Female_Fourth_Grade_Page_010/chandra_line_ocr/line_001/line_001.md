@@ -1,0 +1,1 @@
+Handwritten cursive text, possibly reading "My dear", written in black ink on lined paper.

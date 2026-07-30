@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a name, written in dark ink on a lined page. The text is partially obscured by a blue horizontal line.

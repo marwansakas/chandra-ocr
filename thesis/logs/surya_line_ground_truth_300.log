@@ -1,0 +1,419 @@
+Selected ranked pages: 300
+
+[1/300] rank=0001 /home/sakas/chandra-ocr/ranked_pdfs/0001_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_030.pdf
+Skipped existing page output.
+
+[2/300] rank=0002 /home/sakas/chandra-ocr/ranked_pdfs/0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:01<00:00,  1.46s/it]Detecting bboxes: 100%|██████████| 1/1 [00:01<00:00,  1.46s/it]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|▏         | 10/724 [00:00<00:07, 99.44it/s]Loading weights:   7%|▋         | 51/724 [00:00<00:02, 281.17it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 365.74it/s]Loading weights:  20%|██        | 148/724 [00:00<00:01, 406.64it/s]Loading weights:  27%|██▋       | 197/724 [00:00<00:01, 433.52it/s]Loading weights:  33%|███▎      | 241/724 [00:00<00:01, 424.37it/s]Loading weights:  40%|████      | 292/724 [00:00<00:00, 444.90it/s]Loading weights:  47%|████▋     | 337/724 [00:00<00:00, 446.23it/s]Loading weights:  53%|█████▎    | 384/724 [00:00<00:00, 446.24it/s]Loading weights:  59%|█████▉    | 429/724 [00:01<00:00, 446.83it/s]Loading weights:  97%|█████████▋| 703/724 [00:01<00:00, 1134.87it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 633.33it/s] 
+Model loaded successfully.
+
+Found 11 file(s) to process.
+
+[1/11] Processing: line_001.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_001/line_001.md (1 page(s))
+  Completed: line_001.png
+
+[2/11] Processing: line_002.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_002/line_002.md (1 page(s))
+  Completed: line_002.png
+
+[3/11] Processing: line_003.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_003/line_003.md (1 page(s))
+  Completed: line_003.png
+
+[4/11] Processing: line_004.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_004/line_004.md (1 page(s))
+  Completed: line_004.png
+
+[5/11] Processing: line_005.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_005/line_005.md (1 page(s))
+  Completed: line_005.png
+
+[6/11] Processing: line_006.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_006/line_006.md (1 page(s))
+  Completed: line_006.png
+
+[7/11] Processing: line_007.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_007/line_007.md (1 page(s))
+  Completed: line_007.png
+
+[8/11] Processing: line_008.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_008/line_008.md (1 page(s))
+  Completed: line_008.png
+
+[9/11] Processing: line_009.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_009/line_009.md (1 page(s))
+  Completed: line_009.png
+
+[10/11] Processing: line_010.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_010/line_010.md (1 page(s))
+  Completed: line_010.png
+
+[11/11] Processing: line_011.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr/line_011/line_011.md (1 page(s))
+  Completed: line_011.png
+
+Processing complete. Results saved to: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0002_0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060/chandra_line_ocr
+Completed page output.
+
+[3/300] rank=0003 /home/sakas/chandra-ocr/ranked_pdfs/0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  5.29it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  5.29it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 12/724 [00:00<00:06, 117.86it/s]Loading weights:   7%|▋         | 52/724 [00:00<00:02, 279.53it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 356.98it/s]Loading weights:  20%|██        | 147/724 [00:00<00:01, 403.64it/s]Loading weights:  26%|██▌       | 188/724 [00:00<00:01, 405.88it/s]Loading weights:  33%|███▎      | 239/724 [00:00<00:01, 433.24it/s]Loading weights:  39%|███▉      | 284/724 [00:00<00:01, 438.53it/s]Loading weights:  46%|████▌     | 331/724 [00:00<00:00, 433.97it/s]Loading weights:  52%|█████▏    | 380/724 [00:00<00:00, 448.36it/s]Loading weights:  59%|█████▊    | 425/724 [00:01<00:00, 439.30it/s]Loading weights:  98%|█████████▊| 711/724 [00:01<00:00, 1153.00it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 632.21it/s] 
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Model loaded successfully.
+
+Found 43 file(s) to process.
+
+[1/43] Processing: line_001.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_001/line_001.md (1 page(s))
+  Completed: line_001.png
+
+[2/43] Processing: line_002.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_002/line_002.md (1 page(s))
+  Completed: line_002.png
+
+[3/43] Processing: line_003.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_003/line_003.md (1 page(s))
+  Completed: line_003.png
+
+[4/43] Processing: line_004.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_004/line_004.md (1 page(s))
+  Completed: line_004.png
+
+[5/43] Processing: line_005.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_005/line_005.md (1 page(s))
+  Completed: line_005.png
+
+[6/43] Processing: line_006.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_006/line_006.md (1 page(s))
+  Completed: line_006.png
+
+[7/43] Processing: line_007.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_007/line_007.md (1 page(s))
+  Completed: line_007.png
+
+[8/43] Processing: line_008.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_008/line_008.md (1 page(s))
+  Completed: line_008.png
+
+[9/43] Processing: line_009.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_009/line_009.md (1 page(s))
+  Completed: line_009.png
+
+[10/43] Processing: line_010.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+Traceback (most recent call last):
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 405, in <module>
+    main()
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 376, in main
+    status = process_page(record, predictor, args, chandra, env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 306, in process_page
+    run_chandra_folder(
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 219, in run_chandra_folder
+    return_code = run_streaming(command, env, timeout, heartbeat_seconds)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 179, in run_streaming
+    time.sleep(2)
+KeyboardInterrupt
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_010/line_010.md (1 page(s))
+  Completed: line_010.png
+
+[11/43] Processing: line_011.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_011/line_011.md (1 page(s))
+  Completed: line_011.png
+
+[12/43] Processing: line_012.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_012/line_012.md (1 page(s))
+  Completed: line_012.png
+
+[13/43] Processing: line_013.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_013/line_013.md (1 page(s))
+  Completed: line_013.png
+
+[14/43] Processing: line_014.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_014/line_014.md (1 page(s))
+  Completed: line_014.png
+
+[15/43] Processing: line_015.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_015/line_015.md (1 page(s))
+  Completed: line_015.png
+
+[16/43] Processing: line_016.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_016/line_016.md (1 page(s))
+  Completed: line_016.png
+
+[17/43] Processing: line_017.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_017/line_017.md (1 page(s))
+  Completed: line_017.png
+
+[18/43] Processing: line_018.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_018/line_018.md (1 page(s))
+  Completed: line_018.png
+
+[19/43] Processing: line_019.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_019/line_019.md (1 page(s))
+  Completed: line_019.png
+
+[20/43] Processing: line_020.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_020/line_020.md (1 page(s))
+  Completed: line_020.png
+
+[21/43] Processing: line_021.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_021/line_021.md (1 page(s))
+  Completed: line_021.png
+
+[22/43] Processing: line_022.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_022/line_022.md (1 page(s))
+  Completed: line_022.png
+
+[23/43] Processing: line_023.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_023/line_023.md (1 page(s))
+  Completed: line_023.png
+
+[24/43] Processing: line_024.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_024/line_024.md (1 page(s))
+  Completed: line_024.png
+
+[25/43] Processing: line_025.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_025/line_025.md (1 page(s))
+  Completed: line_025.png
+
+[26/43] Processing: line_026.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_026/line_026.md (1 page(s))
+  Completed: line_026.png
+
+[27/43] Processing: line_027.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_027/line_027.md (1 page(s))
+  Completed: line_027.png
+
+[28/43] Processing: line_028.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_028/line_028.md (1 page(s))
+  Completed: line_028.png
+
+[29/43] Processing: line_029.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_029/line_029.md (1 page(s))
+  Completed: line_029.png
+
+[30/43] Processing: line_030.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_030/line_030.md (1 page(s))
+  Completed: line_030.png
+
+[31/43] Processing: line_031.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_031/line_031.md (1 page(s))
+  Completed: line_031.png
+
+[32/43] Processing: line_032.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_032/line_032.md (1 page(s))
+  Completed: line_032.png
+
+[33/43] Processing: line_033.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_033/line_033.md (1 page(s))
+  Completed: line_033.png
+
+[34/43] Processing: line_034.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+  Saved: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr/line_034/line_034.md (1 page(s))
+  Completed: line_034.png
+
+[35/43] Processing: line_035.png
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.

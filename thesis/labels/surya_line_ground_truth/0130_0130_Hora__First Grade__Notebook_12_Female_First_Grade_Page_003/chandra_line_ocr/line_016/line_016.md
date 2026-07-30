@@ -1,0 +1,1 @@
+Handwritten Chinese character '日' (rì) in black ink.

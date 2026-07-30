@@ -1,0 +1,1 @@
+Handwritten signature in blue ink on lined paper.

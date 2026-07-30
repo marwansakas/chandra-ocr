@@ -1,0 +1,1 @@
+Handwriting practice on lined paper. The word "hand" is written in cursive, with the first letter "h" starting from the baseline and the last letter "d" ending above it. The word "hand" is written twice, with the second one slightly offset to the right.

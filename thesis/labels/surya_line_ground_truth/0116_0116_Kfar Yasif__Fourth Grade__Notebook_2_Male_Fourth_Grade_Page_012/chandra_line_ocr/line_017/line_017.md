@@ -1,0 +1,1 @@
+Handwritten text, possibly "Dajid" or similar, written in dark ink on lined paper.

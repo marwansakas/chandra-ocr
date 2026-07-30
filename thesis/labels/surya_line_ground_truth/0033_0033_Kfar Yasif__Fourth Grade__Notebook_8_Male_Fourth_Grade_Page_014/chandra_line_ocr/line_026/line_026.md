@@ -1,0 +1,1 @@
+Handwritten signature or initials, possibly reading "C. D. [unclear]" or similar, written in dark ink on lined paper.

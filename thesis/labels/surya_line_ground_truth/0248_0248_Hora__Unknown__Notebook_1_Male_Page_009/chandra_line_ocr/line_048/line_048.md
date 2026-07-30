@@ -1,0 +1,1 @@
+Handwritten signature in dark ink, possibly reading "M. S. ..."

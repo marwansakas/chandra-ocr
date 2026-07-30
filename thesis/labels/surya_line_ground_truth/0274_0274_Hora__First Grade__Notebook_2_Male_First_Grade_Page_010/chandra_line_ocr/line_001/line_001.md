@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a stylized name, appearing to read "J. W. [unclear]".

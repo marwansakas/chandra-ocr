@@ -1,0 +1,1 @@
+Handwritten Arabic script on lined paper. The text is written in black ink and appears to be a single line of text, possibly a name or a short phrase. The script is cursive and somewhat stylized. The lines of the text are not clearly legible due to the blurriness of the image.

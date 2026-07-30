@@ -1,0 +1,20 @@
+{
+  "rank": 279,
+  "ranked_name": "0279_Hora__First Grade__Notebook_12_Female_First_Grade_Page_023.pdf",
+  "original_name": "Notebook_12_Female_First_Grade_Page_023.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Hora/First Grade/Notebook_12_Female_First_Grade_Page_023.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0279_Hora__First Grade__Notebook_12_Female_First_Grade_Page_023.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0279_0279_Hora__First Grade__Notebook_12_Female_First_Grade_Page_023/page.png",
+  "image_width": 1190,
+  "image_height": 1684,
+  "line_count": 22,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1190.0,
+    1684.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

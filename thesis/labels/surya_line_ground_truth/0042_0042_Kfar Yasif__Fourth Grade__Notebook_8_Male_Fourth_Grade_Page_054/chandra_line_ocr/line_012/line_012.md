@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a list or notes. The handwriting is cursive and somewhat blurry. The text is oriented horizontally on the page.

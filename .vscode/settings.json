@@ -1,0 +1,31 @@
+{
+    "files.watcherExclude": {
+        "**/.venv/**": true,
+        "**/.venv-surya/**": true,
+        "**/ranked_images/**": true,
+        "**/ranked_pdfs/**": true,
+        "**/split_papers/**": true,
+        "**/output/**": true,
+        "**/thesis/labels/**": true,
+        "**/__pycache__/**": true
+    },
+    "search.exclude": {
+        "**/.venv/**": true,
+        "**/.venv-surya/**": true,
+        "**/ranked_images/**": true,
+        "**/ranked_pdfs/**": true,
+        "**/split_papers/**": true,
+        "**/output/**": true,
+        "**/__pycache__/**": true
+    },
+    "python.analysis.exclude": [
+        "**/.venv/**",
+        "**/.venv-surya/**",
+        "**/ranked_images/**",
+        "**/ranked_pdfs/**",
+        "**/split_papers/**",
+        "**/output/**",
+        "**/__pycache__/**"
+    ],
+    "git.untrackedChanges": "hidden"
+}

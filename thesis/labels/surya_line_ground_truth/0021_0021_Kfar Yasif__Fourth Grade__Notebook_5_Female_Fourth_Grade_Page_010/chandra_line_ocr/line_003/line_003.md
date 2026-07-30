@@ -1,0 +1,1 @@
+Handwritten text in cursive script, appearing to be a signature or a name, possibly "Jagat Singh" or similar, written on lined paper.

@@ -1,0 +1,1 @@
+Handwritten Arabic script on lined paper. The text is written in black ink and appears to be a single line of writing. The script is cursive and somewhat stylized. The handwriting is written on a page with blue horizontal lines and a vertical margin line. A red line is drawn across the top of the page, intersecting the vertical margin line.

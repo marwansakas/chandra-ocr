@@ -1,0 +1,1 @@
+Handwritten text in black ink, possibly a signature or a stylized word, with a pink highlight underneath.

@@ -1,0 +1,1 @@
+Handwritten Arabic calligraphy, likely a religious or scholarly text, written in dark ink on a light-colored surface. The script is fluid and expressive, characteristic of traditional Arabic handwriting.

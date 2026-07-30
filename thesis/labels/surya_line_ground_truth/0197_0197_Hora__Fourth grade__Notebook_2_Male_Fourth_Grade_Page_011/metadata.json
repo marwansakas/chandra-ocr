@@ -1,0 +1,20 @@
+{
+  "rank": 197,
+  "ranked_name": "0197_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_011.pdf",
+  "original_name": "Notebook_2_Male_Fourth_Grade_Page_011.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Hora/Fourth grade/Notebook_2_Male_Fourth_Grade_Page_011.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0197_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_011.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0197_0197_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_011/page.png",
+  "image_width": 1190,
+  "image_height": 1684,
+  "line_count": 14,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1190.0,
+    1684.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

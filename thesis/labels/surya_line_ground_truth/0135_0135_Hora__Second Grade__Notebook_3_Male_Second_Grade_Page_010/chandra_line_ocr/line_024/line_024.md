@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a stylized word, appearing as a dark, wavy line across the page.

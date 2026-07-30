@@ -1,0 +1,1 @@
+Handwritten text, likely a signature or a name, written in dark ink on aged paper. The text is very faint and difficult to decipher, appearing to be a single line of cursive script.

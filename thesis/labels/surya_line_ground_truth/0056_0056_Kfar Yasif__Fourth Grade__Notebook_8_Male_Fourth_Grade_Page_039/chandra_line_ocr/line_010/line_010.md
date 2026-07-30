@@ -1,0 +1,1 @@
+Handwritten text on lined paper, including the word "Jou" and other illegible characters.

@@ -1,0 +1,21 @@
+{
+  "file_name": "line_014.png",
+  "num_pages": 1,
+  "total_token_count": 126,
+  "total_chunks": 1,
+  "total_images": 1,
+  "pages": [
+    {
+      "page_num": 0,
+      "page_box": [
+        0,
+        0,
+        1536,
+        1626
+      ],
+      "token_count": 126,
+      "num_chunks": 1,
+      "num_images": 1
+    }
+  ]
+}

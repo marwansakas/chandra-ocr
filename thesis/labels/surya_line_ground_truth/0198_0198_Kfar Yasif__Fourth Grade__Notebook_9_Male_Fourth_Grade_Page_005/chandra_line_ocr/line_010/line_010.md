@@ -1,0 +1,1 @@
+Handwritten text in a cursive script, possibly Chinese or Japanese, appearing as a single line of characters. The characters are dark and slightly blurred, suggesting a scan of a document. The text is oriented horizontally across the page.

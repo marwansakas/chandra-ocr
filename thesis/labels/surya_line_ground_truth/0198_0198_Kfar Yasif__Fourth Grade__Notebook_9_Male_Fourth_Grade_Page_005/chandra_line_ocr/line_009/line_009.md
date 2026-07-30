@@ -1,0 +1,1 @@
+Handwritten Arabic text, possibly a signature or name, written in black ink on lined paper.

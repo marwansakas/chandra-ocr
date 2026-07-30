@@ -1,0 +1,1 @@
+Handwritten signature in cursive script, possibly reading "Handwritten signature".

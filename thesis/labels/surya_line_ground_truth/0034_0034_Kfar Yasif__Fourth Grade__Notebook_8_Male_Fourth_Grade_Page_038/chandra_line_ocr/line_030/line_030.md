@@ -1,0 +1,1 @@
+Handwritten text in Devanagari script, appearing to be the word "क्या" (Kya) or "क्याही" (Kyaahi).

@@ -1,0 +1,1 @@
+Handwritten cursive text, possibly reading "July 19..."

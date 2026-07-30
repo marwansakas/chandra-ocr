@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a name, written in dark ink on lined paper. The text is very blurry and difficult to decipher, but it appears to be a single line of writing.

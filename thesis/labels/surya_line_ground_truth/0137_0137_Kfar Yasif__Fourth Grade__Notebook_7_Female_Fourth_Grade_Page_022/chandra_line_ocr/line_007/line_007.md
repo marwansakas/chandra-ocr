@@ -1,0 +1,1 @@
+Handwritten cursive text, possibly reading "Handwritten" or similar, written in black ink on lined paper.

@@ -1,0 +1,1 @@
+Handwritten text in a cursive script, possibly a signature or a name, written on lined paper.

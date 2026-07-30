@@ -1,0 +1,20 @@
+{
+  "rank": 196,
+  "ranked_name": "0196_Hora__Unknown__Notebook_2_Page_003.pdf",
+  "original_name": "Notebook_2_Page_003.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Hora/Unknown/Notebook_2_Page_003.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0196_Hora__Unknown__Notebook_2_Page_003.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0196_0196_Hora__Unknown__Notebook_2_Page_003/page.png",
+  "image_width": 1190,
+  "image_height": 1684,
+  "line_count": 27,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1190.0,
+    1684.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

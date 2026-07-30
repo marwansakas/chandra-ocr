@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a stylized character, written in dark ink on a light background.

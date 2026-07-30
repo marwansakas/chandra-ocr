@@ -1,0 +1,20 @@
+{
+  "rank": 123,
+  "ranked_name": "0123_Hora__Second Grade__Notebook_3_Male_Second_Grade_Page_003.pdf",
+  "original_name": "Notebook_3_Male_Second_Grade_Page_003.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Hora/Second Grade/Notebook_3_Male_Second_Grade_Page_003.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0123_Hora__Second Grade__Notebook_3_Male_Second_Grade_Page_003.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0123_0123_Hora__Second Grade__Notebook_3_Male_Second_Grade_Page_003/page.png",
+  "image_width": 1190,
+  "image_height": 1684,
+  "line_count": 30,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1190.0,
+    1684.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

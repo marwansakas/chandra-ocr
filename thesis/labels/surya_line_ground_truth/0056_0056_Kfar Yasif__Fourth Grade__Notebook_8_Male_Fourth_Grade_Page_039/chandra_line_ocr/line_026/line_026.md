@@ -1,0 +1,1 @@
+Handwritten cursive text on lined paper, appearing to read "Page 2" or similar.

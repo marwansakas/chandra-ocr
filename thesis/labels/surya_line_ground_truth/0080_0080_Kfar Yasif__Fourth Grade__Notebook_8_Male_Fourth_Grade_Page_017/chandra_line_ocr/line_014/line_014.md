@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a signature or a name, possibly "M. J. ...".

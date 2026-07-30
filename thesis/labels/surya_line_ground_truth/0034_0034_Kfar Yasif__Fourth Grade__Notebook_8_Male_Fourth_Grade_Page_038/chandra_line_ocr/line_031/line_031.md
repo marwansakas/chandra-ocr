@@ -1,0 +1,1 @@
+Handwritten text, possibly a signature or a stylized word, appearing as a series of loops and curves on a light background.

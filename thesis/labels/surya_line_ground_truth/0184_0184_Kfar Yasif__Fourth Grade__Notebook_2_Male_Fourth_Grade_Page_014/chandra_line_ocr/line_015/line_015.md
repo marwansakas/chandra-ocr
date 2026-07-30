@@ -1,0 +1,1 @@
+~~Handwritten signature or name, possibly "K. J. ..."~~

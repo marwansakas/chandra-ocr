@@ -1,0 +1,1 @@
+Handwritten text on lined paper, oriented vertically. The text is written in black ink and appears to be in a cursive script. The lines are horizontal and evenly spaced. The handwriting is somewhat blurry and difficult to decipher, but it seems to consist of several lines of text.

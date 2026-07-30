@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a signature or a name, possibly "Khalid" or similar, written in dark ink.

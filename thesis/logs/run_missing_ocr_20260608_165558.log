@@ -1,0 +1,36 @@
+nohup: ignoring input
+srun: GPU Parameter Set ! Using GPU Partition.
+srun:  
+------------------------------------
+Mon 08 Jun 2026 16:55:59 IDT
+SLURM_JOBID:		18039223
+SLURM_JOB_NODELIST:	cs-4090-10
+SLURM_SCRATCH_DIR:	/scratch/sakas/18039223
+Allocated Resouces:	cpu - 6 / mem - 32768 MB / gpu - 1
+SLURM_GPU_INDEX:	1
+Running as sakas from jelsana account with normal QOS
+------------------------------------
+[2026-06-08T16:56:00] Missing OCR pages selected: 869
+Notification email skipped: mail/mailx was not found on this node.
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/split_papers/Hora/First Grade/Notebook_10_Male_First_Grade_Page_017.pdf
+Output: /home/sakas/chandra-ocr/output/Hora/First Grade/Notebook_10_Male_First_Grade_Page_017
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   0%|          | 1/724 [00:00<02:53,  4.16it/s]Loading weights:   6%|▋         | 47/724 [00:00<00:03, 171.02it/s]Loading weights:  14%|█▍        | 100/724 [00:00<00:02, 288.90it/s]Loading weights:  21%|██        | 149/724 [00:00<00:01, 353.25it/s]Loading weights:  28%|██▊       | 200/724 [00:00<00:01, 401.88it/s]Loading weights:  34%|███▍      | 249/724 [00:00<00:01, 426.90it/s]Loading weights:  41%|████      | 295/724 [00:00<00:01, 428.46it/s]Loading weights:  48%|████▊     | 345/724 [00:00<00:00, 444.01it/s]Loading weights:  54%|█████▍    | 394/724 [00:01<00:00, 452.02it/s]Loading weights:  67%|██████▋   | 488/724 [00:01<00:00, 595.79it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 577.01it/s]
+Model loaded successfully.
+
+Found 1 file(s) to process.
+
+[1/1] Processing: Notebook_10_Male_First_Grade_Page_017.pdf
+  Loaded 1 page(s)
+  Processing pages 1-1...
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[transformers] Setting `pad_token_id` to `eos_token_id`:248044 for open-end generation.
+srun: Job step aborted: Waiting up to 302 seconds for job step to finish.
+[2026-06-08T16:57:44.837] error: *** STEP 18039223.0 ON cs-4090-10 CANCELLED AT 2026-06-08T16:57:44 DUE to SIGNAL Terminated ***
+srun: error: cs-4090-10: task 0: Terminated

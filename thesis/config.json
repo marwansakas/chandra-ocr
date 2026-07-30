@@ -1,0 +1,23 @@
+{
+  "_comment": "Central config for the thesis pipeline. Paths are relative to the project root (the parent of the thesis/ folder). Stdlib-only JSON so it loads anywhere.",
+  "project_root": "..",
+  "raw_data_dir": "split_papers",
+  "existing_ocr_dir": "output",
+  "ocr_clean_dir": "thesis/ocr_clean",
+  "metadata_dir": "thesis/metadata",
+  "labels_dir": "thesis/labels",
+  "ground_truth_dir": "thesis/labels/ground_truth",
+  "reports_dir": "thesis/reports",
+  "logs_dir": "thesis/logs",
+  "conda_env_chandra": "/home/sakas/.conda/envs/chandra",
+  "chandra_method": "hf",
+  "sample_size": 30,
+  "labeling_batch_size": 120,
+  "random_seed": 42,
+  "grade_word_to_int": {
+    "First": 1,
+    "Second": 2,
+    "Third": 3,
+    "Fourth": 4
+  }
+}

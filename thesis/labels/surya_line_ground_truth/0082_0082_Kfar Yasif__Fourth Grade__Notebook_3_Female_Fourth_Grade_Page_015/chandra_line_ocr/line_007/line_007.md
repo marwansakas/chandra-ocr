@@ -1,0 +1,1 @@
+Handwritten text, possibly "y2220", written in black ink on lined paper.

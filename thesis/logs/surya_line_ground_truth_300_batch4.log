@@ -1,0 +1,1370 @@
+Selected ranked pages: 300
+
+[1/300] rank=0001 /home/sakas/chandra-ocr/ranked_pdfs/0001_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_030.pdf
+Skipped existing page output.
+
+[2/300] rank=0002 /home/sakas/chandra-ocr/ranked_pdfs/0002_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_060.pdf
+Skipped existing page output.
+
+[3/300] rank=0003 /home/sakas/chandra-ocr/ranked_pdfs/0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:01<00:00,  1.39s/it]Detecting bboxes: 100%|██████████| 1/1 [00:01<00:00,  1.39s/it]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|          | 8/724 [00:00<00:09, 77.19it/s]Loading weights:   7%|▋         | 48/724 [00:00<00:02, 252.09it/s]Loading weights:  13%|█▎        | 96/724 [00:00<00:01, 343.94it/s]Loading weights:  20%|█▉        | 142/724 [00:00<00:01, 384.94it/s]Loading weights:  26%|██▌       | 186/724 [00:00<00:01, 403.86it/s]Loading weights:  31%|███▏      | 227/724 [00:00<00:01, 400.10it/s]Loading weights:  38%|███▊      | 274/724 [00:00<00:01, 420.96it/s]Loading weights:  44%|████▍     | 317/724 [00:00<00:00, 410.05it/s]Loading weights:  50%|████▉     | 361/724 [00:00<00:00, 417.60it/s]Loading weights:  56%|█████▋    | 408/724 [00:01<00:00, 431.92it/s]Loading weights:  74%|███████▍  | 539/724 [00:01<00:00, 693.87it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 594.67it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0003_0003_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_001/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[4/300] rank=0004 /home/sakas/chandra-ocr/ranked_pdfs/0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.41it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.41it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0004_0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0004_0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|▏         | 10/724 [00:00<00:07, 97.96it/s]Loading weights:   6%|▋         | 47/724 [00:00<00:02, 254.19it/s]Loading weights:  13%|█▎        | 93/724 [00:00<00:01, 346.33it/s]Loading weights:  18%|█▊        | 133/724 [00:00<00:01, 359.54it/s]Loading weights:  24%|██▍       | 173/724 [00:00<00:01, 368.02it/s]Loading weights:  29%|██▉       | 213/724 [00:00<00:01, 372.97it/s]Loading weights:  36%|███▌      | 258/724 [00:00<00:01, 390.59it/s]Loading weights:  42%|████▏     | 303/724 [00:00<00:01, 406.40it/s]Loading weights:  48%|████▊     | 345/724 [00:00<00:00, 407.74it/s]Loading weights:  53%|█████▎    | 386/724 [00:01<00:00, 402.05it/s]Loading weights:  63%|██████▎   | 454/724 [00:01<00:00, 484.49it/s]Loading weights:  98%|█████████▊| 708/724 [00:01<00:00, 1097.57it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 580.93it/s] 
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0004_0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0004_0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0004_0004_Kfar Yasif__Third Grade__Notebook_4_Male_Third_Grade_Page_009/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[5/300] rank=0005 /home/sakas/chandra-ocr/ranked_pdfs/0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.50it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.50it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0005_0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0005_0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|          | 9/724 [00:00<00:08, 88.82it/s]Loading weights:   6%|▋         | 47/724 [00:00<00:02, 258.58it/s]Loading weights:  13%|█▎        | 94/724 [00:00<00:01, 353.01it/s]Loading weights:  20%|█▉        | 143/724 [00:00<00:01, 398.25it/s]Loading weights:  26%|██▌       | 186/724 [00:00<00:01, 408.72it/s]Loading weights:  31%|███▏      | 227/724 [00:00<00:01, 403.05it/s]Loading weights:  38%|███▊      | 274/724 [00:00<00:01, 422.82it/s]Loading weights:  44%|████▍     | 317/724 [00:00<00:00, 411.07it/s]Loading weights:  50%|████▉     | 361/724 [00:00<00:00, 417.91it/s]Loading weights:  57%|█████▋    | 410/724 [00:01<00:00, 438.14it/s]Loading weights:  78%|███████▊  | 567/724 [00:01<00:00, 776.32it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 607.09it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0005_0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0005_0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0005_0005_Kfar Yasif__Fourth Grade__Notebook_5_Female_Fourth_Grade_Page_034/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[6/300] rank=0006 /home/sakas/chandra-ocr/ranked_pdfs/0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.21it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.21it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0006_0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0006_0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 11/724 [00:00<00:06, 104.57it/s]Loading weights:   7%|▋         | 54/724 [00:00<00:02, 287.03it/s]Loading weights:  14%|█▍        | 100/724 [00:00<00:01, 356.45it/s]Loading weights:  20%|██        | 148/724 [00:00<00:01, 402.93it/s]Loading weights:  26%|██▌       | 189/724 [00:00<00:01, 404.87it/s]Loading weights:  32%|███▏      | 235/724 [00:00<00:01, 420.61it/s]Loading weights:  38%|███▊      | 278/724 [00:00<00:01, 421.69it/s]Loading weights:  44%|████▍     | 321/724 [00:00<00:00, 420.29it/s]Loading weights:  50%|█████     | 364/724 [00:00<00:00, 420.85it/s]Loading weights:  57%|█████▋    | 411/724 [00:01<00:00, 427.20it/s]Loading weights:  82%|████████▏ | 593/724 [00:01<00:00, 842.76it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 611.92it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0006_0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0006_0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0006_0006_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_056/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[7/300] rank=0007 /home/sakas/chandra-ocr/ranked_pdfs/0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  3.97it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  3.96it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0007_0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0007_0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 13/724 [00:00<00:05, 127.18it/s]Loading weights:   7%|▋         | 54/724 [00:00<00:02, 286.04it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 349.89it/s]Loading weights:  20%|██        | 147/724 [00:00<00:01, 394.49it/s]Loading weights:  26%|██▌       | 188/724 [00:00<00:01, 399.24it/s]Loading weights:  33%|███▎      | 239/724 [00:00<00:01, 427.73it/s]Loading weights:  39%|███▉      | 282/724 [00:00<00:01, 424.53it/s]Loading weights:  45%|████▌     | 329/724 [00:00<00:00, 438.55it/s]Loading weights:  52%|█████▏    | 373/724 [00:00<00:00, 423.59it/s]Loading weights:  58%|█████▊    | 418/724 [00:01<00:00, 426.86it/s]Loading weights:  90%|████████▉ | 649/724 [00:01<00:00, 983.87it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 615.07it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0007_0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0007_0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0007_0007_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_067/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[8/300] rank=0008 /home/sakas/chandra-ocr/ranked_pdfs/0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.91it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.91it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0008_0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0008_0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 13/724 [00:00<00:05, 124.90it/s]Loading weights:   7%|▋         | 54/724 [00:00<00:02, 281.80it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 356.33it/s]Loading weights:  20%|██        | 147/724 [00:00<00:01, 400.97it/s]Loading weights:  26%|██▌       | 188/724 [00:00<00:01, 396.46it/s]Loading weights:  33%|███▎      | 236/724 [00:00<00:01, 422.32it/s]Loading weights:  39%|███▊      | 279/724 [00:00<00:01, 414.83it/s]Loading weights:  45%|████▌     | 326/724 [00:00<00:00, 428.47it/s]Loading weights:  51%|█████     | 369/724 [00:00<00:00, 420.13it/s]Loading weights:  57%|█████▋    | 414/724 [00:01<00:00, 424.46it/s]Loading weights:  85%|████████▍ | 615/724 [00:01<00:00, 894.55it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 610.68it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0008_0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0008_0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0008_0008_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_057/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[9/300] rank=0009 /home/sakas/chandra-ocr/ranked_pdfs/0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.74it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.74it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0009_0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0009_0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 13/724 [00:00<00:06, 115.98it/s]Loading weights:   8%|▊         | 59/724 [00:00<00:02, 304.35it/s]Loading weights:  14%|█▍        | 100/724 [00:00<00:01, 335.95it/s]Loading weights:  21%|██        | 149/724 [00:00<00:01, 389.30it/s]Loading weights:  27%|██▋       | 197/724 [00:00<00:01, 420.40it/s]Loading weights:  33%|███▎      | 240/724 [00:00<00:01, 415.38it/s]Loading weights:  39%|███▉      | 282/724 [00:00<00:01, 414.45it/s]Loading weights:  46%|████▌     | 330/724 [00:00<00:00, 432.86it/s]Loading weights:  52%|█████▏    | 374/724 [00:00<00:00, 425.33it/s]Loading weights:  58%|█████▊    | 418/724 [00:01<00:00, 415.93it/s]Loading weights:  92%|█████████▏| 663/724 [00:01<00:00, 1011.37it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 611.27it/s] 
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0009_0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0009_0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0009_0009_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_074/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[10/300] rank=0010 /home/sakas/chandra-ocr/ranked_pdfs/0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  3.89it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  3.89it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0010_0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0010_0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 13/724 [00:00<00:05, 123.60it/s]Loading weights:   8%|▊         | 55/724 [00:00<00:02, 293.57it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 358.07it/s]Loading weights:  20%|██        | 147/724 [00:00<00:01, 401.78it/s]Loading weights:  26%|██▌       | 188/724 [00:00<00:01, 401.92it/s]Loading weights:  33%|███▎      | 236/724 [00:00<00:01, 425.58it/s]Loading weights:  39%|███▊      | 279/724 [00:00<00:01, 412.48it/s]Loading weights:  45%|████▌     | 327/724 [00:00<00:00, 431.76it/s]Loading weights:  51%|█████     | 371/724 [00:00<00:00, 417.67it/s]Loading weights:  58%|█████▊    | 417/724 [00:01<00:00, 429.30it/s]Loading weights:  87%|████████▋ | 628/724 [00:01<00:00, 926.82it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 613.59it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0010_0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0010_0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0010_0010_Kfar Yasif__Third Grade__Notebook_3_Female_Third_Grade_Page_008/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[11/300] rank=0011 /home/sakas/chandra-ocr/ranked_pdfs/0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.60it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.59it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0011_0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0011_0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 13/724 [00:00<00:05, 122.95it/s]Loading weights:   7%|▋         | 53/724 [00:00<00:02, 276.95it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 352.67it/s]Loading weights:  20%|██        | 146/724 [00:00<00:01, 394.27it/s]Loading weights:  26%|██▌       | 187/724 [00:00<00:01, 393.44it/s]Loading weights:  32%|███▏      | 235/724 [00:00<00:01, 420.38it/s]Loading weights:  38%|███▊      | 278/724 [00:00<00:01, 415.45it/s]Loading weights:  44%|████▍     | 320/724 [00:00<00:00, 415.40it/s]Loading weights:  50%|█████     | 365/724 [00:00<00:00, 414.49it/s]Loading weights:  57%|█████▋    | 414/724 [00:01<00:00, 426.88it/s]Loading weights:  86%|████████▌ | 622/724 [00:01<00:00, 911.90it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 607.81it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0011_0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0011_0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0011_0011_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_063/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[12/300] rank=0012 /home/sakas/chandra-ocr/ranked_pdfs/0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.62it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.62it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0012_0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0012_0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|▏         | 10/724 [00:00<00:07, 99.26it/s]Loading weights:   6%|▋         | 47/724 [00:00<00:02, 256.87it/s]Loading weights:  13%|█▎        | 95/724 [00:00<00:01, 355.49it/s]Loading weights:  19%|█▉        | 139/724 [00:00<00:01, 388.51it/s]Loading weights:  25%|██▌       | 184/724 [00:00<00:01, 406.29it/s]Loading weights:  31%|███       | 226/724 [00:00<00:01, 400.45it/s]Loading weights:  38%|███▊      | 274/724 [00:00<00:01, 420.37it/s]Loading weights:  44%|████▍     | 317/724 [00:00<00:00, 412.19it/s]Loading weights:  50%|████▉     | 361/724 [00:00<00:00, 417.83it/s]Loading weights:  56%|█████▋    | 409/724 [00:01<00:00, 432.64it/s]Loading weights:  78%|███████▊  | 567/724 [00:01<00:00, 773.31it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 605.80it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0012_0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0012_0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0012_0012_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_048/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[13/300] rank=0013 /home/sakas/chandra-ocr/ranked_pdfs/0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.60it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.60it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0013_0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0013_0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 14/724 [00:00<00:05, 133.47it/s]Loading weights:   8%|▊         | 60/724 [00:00<00:02, 311.62it/s]Loading weights:  14%|█▍        | 100/724 [00:00<00:01, 345.87it/s]Loading weights:  21%|██        | 149/724 [00:00<00:01, 398.83it/s]Loading weights:  27%|██▋       | 199/724 [00:00<00:01, 430.77it/s]Loading weights:  34%|███▎      | 243/724 [00:00<00:01, 412.53it/s]Loading weights:  40%|███▉      | 288/724 [00:00<00:01, 423.91it/s]Loading weights:  46%|████▌     | 332/724 [00:00<00:00, 422.55it/s]Loading weights:  52%|█████▏    | 380/724 [00:00<00:00, 434.22it/s]Loading weights:  59%|█████▊    | 424/724 [00:01<00:00, 419.64it/s]Loading weights:  93%|█████████▎| 673/724 [00:01<00:00, 1019.96it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 612.90it/s] 
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0013_0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0013_0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0013_0013_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_006/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[14/300] rank=0014 /home/sakas/chandra-ocr/ranked_pdfs/0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0014_0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0014_0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   1%|          | 9/724 [00:00<00:08, 85.96it/s]Loading weights:   6%|▋         | 47/724 [00:00<00:02, 243.77it/s]Loading weights:  13%|█▎        | 95/724 [00:00<00:01, 347.27it/s]Loading weights:  20%|█▉        | 143/724 [00:00<00:01, 382.60it/s]Loading weights:  26%|██▌       | 187/724 [00:00<00:01, 395.98it/s]Loading weights:  32%|███▏      | 235/724 [00:00<00:01, 412.55it/s]Loading weights:  38%|███▊      | 278/724 [00:00<00:01, 405.27it/s]Loading weights:  45%|████▌     | 327/724 [00:00<00:00, 421.66it/s]Loading weights:  51%|█████     | 370/724 [00:00<00:00, 409.84it/s]Loading weights:  57%|█████▋    | 413/724 [00:01<00:00, 414.75it/s]Loading weights:  82%|████████▏ | 593/724 [00:01<00:00, 820.44it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 592.89it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0014_0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0014_0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0014_0014_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_003/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[15/300] rank=0015 /home/sakas/chandra-ocr/ranked_pdfs/0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.28it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.28it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0015_0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0015_0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 14/724 [00:00<00:05, 132.68it/s]Loading weights:   9%|▊         | 62/724 [00:00<00:02, 330.02it/s]Loading weights:  14%|█▍        | 101/724 [00:00<00:01, 347.88it/s]Loading weights:  20%|█▉        | 143/724 [00:00<00:01, 372.70it/s]Loading weights:  26%|██▌       | 186/724 [00:00<00:01, 386.05it/s]Loading weights:  31%|███       | 226/724 [00:00<00:01, 386.85it/s]Loading weights:  37%|███▋      | 266/724 [00:00<00:01, 385.09it/s]Loading weights:  43%|████▎     | 310/724 [00:00<00:01, 401.89it/s]Loading weights:  49%|████▉     | 355/724 [00:00<00:00, 414.13it/s]Loading weights:  55%|█████▍    | 397/724 [00:01<00:00, 405.02it/s]Loading weights:  63%|██████▎   | 457/724 [00:01<00:00, 461.69it/s]Loading weights:  82%|████████▏ | 596/724 [00:01<00:00, 736.91it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 540.58it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 716.38 MiB is free. Process 1386859 has 12.37 GiB memory in use. Process 1388458 has 530.00 MiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Page OCR failed for /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0015_0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070/line_images: Command '['/home/sakas/.conda/envs/chandra/bin/chandra', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0015_0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070/line_images', '/home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0015_0015_Kfar Yasif__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_070/chandra_line_ocr', '--method', 'hf', '--no-images', '--max-output-tokens', '128', '--batch-size', '4']' returned non-zero exit status 1.
+Completed page output.
+
+[16/300] rank=0016 /home/sakas/chandra-ocr/ranked_pdfs/0016_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_010.pdf
+Detecting bboxes:   0%|          | 0/1 [00:00<?, ?it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.74it/s]Detecting bboxes: 100%|██████████| 1/1 [00:00<00:00,  4.74it/s]
+When using '--method hf', ensure that the batch size is set correctly.  We will default to batch size of 1.
+Chandra CLI - Starting OCR processing
+Input: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0016_0016_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_010/line_images
+Output: /home/sakas/chandra-ocr/thesis/labels/surya_line_ground_truth/0016_0016_Hora__Fourth grade__Notebook_2_Male_Fourth_Grade_Page_010/chandra_line_ocr
+Method: hf
+
+Loading model with method 'hf'...
+Traceback (most recent call last):
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 405, in <module>
+    main()
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 376, in main
+    status = process_page(record, predictor, args, chandra, env)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 306, in process_page
+    run_chandra_folder(
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 219, in run_chandra_folder
+    return_code = run_streaming(command, env, timeout, heartbeat_seconds)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/chandra-ocr/build_surya_line_ground_truth.py", line 179, in run_streaming
+    time.sleep(2)
+KeyboardInterrupt
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/724 [00:00<?, ?it/s]Loading weights:   2%|▏         | 12/724 [00:00<00:05, 119.27it/s]Loading weights:   7%|▋         | 52/724 [00:00<00:02, 280.94it/s]Loading weights:  14%|█▎        | 99/724 [00:00<00:01, 361.68it/s]Loading weights:  20%|██        | 147/724 [00:00<00:01, 405.42it/s]Loading weights:  26%|██▌       | 188/724 [00:00<00:01, 404.31it/s]Loading weights:  32%|███▏      | 234/724 [00:00<00:01, 421.09it/s]Loading weights:  38%|███▊      | 278/724 [00:00<00:01, 425.77it/s]Loading weights:  44%|████▍     | 321/724 [00:00<00:00, 426.77it/s]Loading weights:  50%|█████     | 364/724 [00:00<00:00, 427.11it/s]Loading weights:  57%|█████▋    | 412/724 [00:01<00:00, 436.42it/s]Loading weights:  81%|████████  | 584/724 [00:01<00:00, 822.20it/s]Loading weights: 100%|██████████| 724/724 [00:01<00:00, 615.00it/s]
+[transformers] [1mQwen3_5ForConditionalGeneration LOAD REPORT[0m from: datalab-to/chandra-ocr-2
+Key                                          | Status     |  | 
+---------------------------------------------+------------+--+-
+mtp.layers.0.self_attn.v_proj.weight         | UNEXPECTED |  | 
+mtp.fc.weight                                | UNEXPECTED |  | 
+mtp.layers.0.self_attn.o_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_hidden.weight                | UNEXPECTED |  | 
+mtp.layers.0.post_attention_layernorm.weight | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_norm.weight         | UNEXPECTED |  | 
+mtp.pre_fc_norm_embedding.weight             | UNEXPECTED |  | 
+mtp.norm.weight                              | UNEXPECTED |  | 
+mtp.layers.0.mlp.down_proj.weight            | UNEXPECTED |  | 
+mtp.layers.0.mlp.up_proj.weight              | UNEXPECTED |  | 
+mtp.layers.0.input_layernorm.weight          | UNEXPECTED |  | 
+mtp.layers.0.self_attn.q_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.self_attn.k_proj.weight         | UNEXPECTED |  | 
+mtp.layers.0.mlp.gate_proj.weight            | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Traceback (most recent call last):
+  File "/home/sakas/.conda/envs/chandra/bin/chandra", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1514, in __call__
+    return self.main(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1435, in main
+    rv = self.invoke(ctx)
+         ^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 1298, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/click/core.py", line 853, in invoke
+    return callback(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/scripts/cli.py", line 222, in main
+    model = InferenceManager(method=method)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/__init__.py", line 16, in __init__
+    self.model = load_model()
+                 ^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/chandra/model/hf.py", line 94, in load_model
+    model = AutoModelForImageTextToText.from_pretrained(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py", line 405, in from_pretrained
+    return model_class.from_pretrained(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4246, in from_pretrained
+    loading_info = cls._finalize_model_loading(model, load_config, loading_info)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4410, in _finalize_model_loading
+    model._initialize_missing_keys(load_config.is_quantized)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 4717, in _initialize_missing_keys
+    self.initialize_weights()
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/contextlib.py", line 81, in inner
+    return func(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2466, in initialize_weights
+    smart_apply_fn(self._initialize_weights, self.is_remote_code())
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2457, in smart_apply
+    smart_apply(child, fn, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2458, in smart_apply
+    fn(module, is_remote_code)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2435, in _initialize_weights
+    self._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/models/qwen3_5/modeling_qwen3_5.py", line 814, in _init_weights
+    super()._init_weights(module)
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakas/.conda/envs/chandra/lib/python3.11/site-packages/transformers/modeling_utils.py", line 2374, in _init_weights
+    init.normal_(module.weight.float(), mean=0.0, std=std)
+                 ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.37 GiB. GPU 0 has a total capacity of 23.56 GiB of which 1.22 GiB is free. Process 1386859 has 12.37 GiB memory in use. Including non-PyTorch memory, this process has 9.95 GiB memory in use. Of the allocated memory 9.64 GiB is allocated by PyTorch, and 19.51 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

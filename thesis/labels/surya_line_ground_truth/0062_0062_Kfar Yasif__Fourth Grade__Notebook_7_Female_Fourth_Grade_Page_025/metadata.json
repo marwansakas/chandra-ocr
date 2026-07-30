@@ -1,0 +1,20 @@
+{
+  "rank": 62,
+  "ranked_name": "0062_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_025.pdf",
+  "original_name": "Notebook_7_Female_Fourth_Grade_Page_025.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Kfar Yasif/Fourth Grade/Notebook_7_Female_Fourth_Grade_Page_025.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0062_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_025.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0062_0062_Kfar Yasif__Fourth Grade__Notebook_7_Female_Fourth_Grade_Page_025/page.png",
+  "image_width": 1189,
+  "image_height": 1682,
+  "line_count": 36,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1189.0,
+    1682.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

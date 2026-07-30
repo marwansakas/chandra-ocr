@@ -1,0 +1,16 @@
+/ranked_images/
+/ranked_pdfs/
+/split_papers/
+/output/
+/.agents/
+/.codex/
+/.venv/
+/.venv_surya/
+/.venv-surya/
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Locally trained model weights exceed Git hosting size limits.
+*.safetensors

@@ -1,0 +1,1 @@
+Handwritten cursive text, possibly a signature or a stylized word, written in dark ink on lined paper.

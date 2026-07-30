@@ -1,0 +1,1 @@
+Handwritten signature in dark ink on lined paper.

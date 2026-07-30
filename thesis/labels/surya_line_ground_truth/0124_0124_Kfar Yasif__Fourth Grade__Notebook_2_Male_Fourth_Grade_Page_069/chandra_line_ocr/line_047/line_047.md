@@ -1,0 +1,1 @@
+Handwritten Japanese character 'キ' (ki) followed by a period '.'.

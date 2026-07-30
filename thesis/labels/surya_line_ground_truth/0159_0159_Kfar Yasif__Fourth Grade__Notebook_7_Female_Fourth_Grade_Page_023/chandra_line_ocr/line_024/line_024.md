@@ -1,0 +1,1 @@
+Handwritten Arabic text in pink and black ink, appearing to be a signature or a name.

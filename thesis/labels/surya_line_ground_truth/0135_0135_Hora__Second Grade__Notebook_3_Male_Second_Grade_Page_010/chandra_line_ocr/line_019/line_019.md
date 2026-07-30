@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a list of items or a short note. The writing is in dark ink and is somewhat blurry. The first line of text is partially visible on the left, and the second line contains several words, including what appears to be "to" and "the".

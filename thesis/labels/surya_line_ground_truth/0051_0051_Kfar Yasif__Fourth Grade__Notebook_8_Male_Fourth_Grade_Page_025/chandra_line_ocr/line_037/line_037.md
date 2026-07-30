@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a signature or a set of initials. The writing is dark and somewhat cursive, but the specific characters are difficult to discern due to the blurriness of the image. The text is written above a horizontal line.

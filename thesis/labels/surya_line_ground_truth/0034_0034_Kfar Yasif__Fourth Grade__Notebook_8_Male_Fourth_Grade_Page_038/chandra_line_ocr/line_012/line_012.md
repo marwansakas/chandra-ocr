@@ -1,0 +1,1 @@
+Handwritten Arabic script on lined paper. The text is written in black ink and appears to be a single line of calligraphy. The script is somewhat blurry, but the characters are clearly visible. The lines of the paper are visible as horizontal blue lines.

@@ -1,0 +1,1 @@
+Handwritten Arabic script on lined paper. The text is written in black ink and appears to be a single line of writing. The script is cursive and somewhat stylized. The lines of the paper are visible, and there is a red mark at the top left corner.

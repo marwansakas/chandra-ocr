@@ -1,0 +1,1 @@
+Handwritten text on lined paper, possibly reading "B. 12" or similar.

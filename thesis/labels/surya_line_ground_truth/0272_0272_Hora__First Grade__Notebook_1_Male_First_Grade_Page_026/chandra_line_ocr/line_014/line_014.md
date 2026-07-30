@@ -1,0 +1,1 @@
+Handwritten Arabic text, likely "أحمد" (Ahmad), written in black ink on lined paper.

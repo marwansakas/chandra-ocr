@@ -1,0 +1,1 @@
+Handwritten text in Arabic script, appearing to read "Handwritten text" (تصريح بخط اليد).

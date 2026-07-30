@@ -1,0 +1,1 @@
+Handwritten text in Arabic script, appearing to read "فهد بن أحمد" (Fahd bin Ahmad).

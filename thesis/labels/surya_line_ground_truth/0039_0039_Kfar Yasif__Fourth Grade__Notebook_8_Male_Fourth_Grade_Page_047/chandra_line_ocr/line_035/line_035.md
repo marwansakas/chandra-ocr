@@ -1,0 +1,1 @@
+Handwritten text on lined paper, appearing to be a name or title, possibly "Yob" or "Yob's".

@@ -1,0 +1,1 @@
+Handwritten Chinese characters, possibly "好" (hǎo) and "好" (hǎo), written in black ink on a light background.

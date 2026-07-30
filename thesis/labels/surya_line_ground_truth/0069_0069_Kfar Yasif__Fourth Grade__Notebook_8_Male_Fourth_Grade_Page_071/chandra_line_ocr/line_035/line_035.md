@@ -1,0 +1,1 @@
+Handwritten signature or stylized text.

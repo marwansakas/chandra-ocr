@@ -1,0 +1,1 @@
+Handwritten text on lined paper, showing the word "good" and a signature.

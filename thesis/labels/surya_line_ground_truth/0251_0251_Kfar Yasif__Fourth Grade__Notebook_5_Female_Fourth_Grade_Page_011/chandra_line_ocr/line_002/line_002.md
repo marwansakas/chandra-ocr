@@ -1,0 +1,1 @@
+Handwritten Arabic calligraphy, likely the name "Abdullah" (أبدوللّٰه), written in a fluid, cursive style.

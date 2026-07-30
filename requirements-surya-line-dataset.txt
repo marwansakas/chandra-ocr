@@ -1,0 +1,9 @@
+# Extra dependency for Surya-based line detection.
+#
+# Install into the OCR environment used by this project:
+#   /home/sakas/.conda/envs/chandra/bin/python -m pip install -r requirements-surya-line-dataset.txt
+#
+# Note: surya-ocr 0.20.0 currently pins openai<2 while chandra-ocr 0.2.0
+# declares openai>=2.2.0. The line-dataset pipeline uses Chandra's local
+# `hf` path and Surya's detector, neither of which should need OpenAI calls.
+surya-ocr==0.20.0

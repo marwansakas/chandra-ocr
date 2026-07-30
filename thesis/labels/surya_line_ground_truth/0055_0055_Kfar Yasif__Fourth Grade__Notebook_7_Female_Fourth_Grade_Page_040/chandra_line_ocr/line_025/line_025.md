@@ -1,0 +1,1 @@
+Handwritten Chinese characters, possibly "手" (hand) and "山" (mountain), written in black ink on a lined notebook page.

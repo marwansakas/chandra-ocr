@@ -1,0 +1,20 @@
+{
+  "rank": 273,
+  "ranked_name": "0273_Hora__Third Grade__Notebook_1_Female_Third_Grade_Page_012.pdf",
+  "original_name": "Notebook_1_Female_Third_Grade_Page_012.pdf",
+  "original_path": "/home/sakas/chandra-ocr/split_papers/Hora/Third Grade/Notebook_1_Female_Third_Grade_Page_012.pdf",
+  "source_path": "/home/sakas/chandra-ocr/ranked_pdfs/0273_Hora__Third Grade__Notebook_1_Female_Third_Grade_Page_012.pdf",
+  "page_image": "thesis/labels/surya_line_ground_truth/0273_0273_Hora__Third Grade__Notebook_1_Female_Third_Grade_Page_012/page.png",
+  "image_width": 1190,
+  "image_height": 1684,
+  "line_count": 17,
+  "surya_image_bbox": [
+    0.0,
+    0.0,
+    1190.0,
+    1684.0
+  ],
+  "ocr_engine": "chandra",
+  "line_detector": "surya-ocr",
+  "line_order": "top-to-bottom, then left-to-right for ties"
+}

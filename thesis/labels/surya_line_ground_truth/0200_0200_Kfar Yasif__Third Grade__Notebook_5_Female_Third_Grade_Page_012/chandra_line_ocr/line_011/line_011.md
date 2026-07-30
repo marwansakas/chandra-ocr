@@ -1,0 +1,1 @@
+Handwritten text, possibly "Lag" or "Lag", written in dark ink on a light background.

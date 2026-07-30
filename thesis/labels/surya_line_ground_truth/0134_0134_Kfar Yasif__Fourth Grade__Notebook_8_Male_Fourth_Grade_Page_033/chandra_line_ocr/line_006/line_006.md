@@ -1,0 +1,1 @@
+Handwritten Arabic script, possibly reading "بسم الله الرحمن الرحيم" (In the name of God, the Most Gracious, the Most Merciful).

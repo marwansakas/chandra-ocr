@@ -1,0 +1,1 @@
+Handwritten text in Arabic script, possibly a signature or name.
