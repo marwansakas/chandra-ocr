@@ -2,6 +2,7 @@
 /ranked_pdfs/
 /split_papers/
 /output/
+/external/
 /.agents/
 /.codex/
 /.venv/
@@ -25,3 +26,5 @@ __pycache__/
 !/thesis/invizo/debug/.gitkeep
 /thesis/invizo/reports/*
 !/thesis/invizo/reports/.gitkeep
+/thesis/predictions/
+/thesis/labels/surya_line_ground_truth_ml/

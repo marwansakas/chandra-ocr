@@ -30,6 +30,7 @@ import csv
 import json
 import math
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -93,6 +94,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--max-label-length", type=int, default=128)
     parser.add_argument("--num-workers", type=int, default=2)
+    parser.add_argument(
+        "--views-per-line",
+        type=int,
+        default=1,
+        help="Full-line training views per record. Extra views use label-preserving augmentation.",
+    )
     parser.add_argument("--no-cuda", action="store_true")
     parser.add_argument("--eval-limit", type=int, default=None)
     return parser.parse_args()
@@ -250,16 +257,26 @@ def keep_for_training(record: LineRecord, include_empty_labels: bool) -> bool:
     return bool((record.text or "").strip())
 
 
+def student_group(page_id: str) -> str:
+    """Group every page from the same notebook/student to prevent leakage."""
+    without_rank = re.sub(r"^\d{4}_\d{4}_", "", page_id)
+    return re.sub(r"_Page_\d+$", "", without_rank, flags=re.IGNORECASE)
+
+
 def split_records(records: list[LineRecord], train_ratio: float, seed: int) -> tuple[list[LineRecord], list[LineRecord]]:
-    by_page: dict[str, list[LineRecord]] = {}
+    by_student: dict[str, list[LineRecord]] = {}
     for record in records:
-        by_page.setdefault(record.page_id, []).append(record)
-    pages = sorted(by_page)
-    random.Random(seed).shuffle(pages)
-    train_page_count = max(1, min(len(pages) - 1, round(len(pages) * train_ratio))) if len(pages) > 1 else len(pages)
-    train_pages = set(pages[:train_page_count])
-    train = [r for r in records if r.page_id in train_pages]
-    test = [r for r in records if r.page_id not in train_pages]
+        by_student.setdefault(student_group(record.page_id), []).append(record)
+    students = sorted(by_student)
+    random.Random(seed).shuffle(students)
+    train_count = (
+        max(1, min(len(students) - 1, round(len(students) * train_ratio)))
+        if len(students) > 1
+        else len(students)
+    )
+    train_students = set(students[:train_count])
+    train = [r for r in records if student_group(r.page_id) in train_students]
+    test = [r for r in records if student_group(r.page_id) not in train_students]
     return train, test
 
 
@@ -336,25 +353,42 @@ def write_summary(path: Path, all_records: list[LineRecord], usable: list[LineRe
         f"- Train lines: {len(train)} ({train_pages} pages)",
         f"- Test lines: {len(test)} ({test_pages} pages)",
         "",
-        "The split is page-level, so lines from the same original page do not appear in both train and test.",
+        "The split is notebook/student-level, so pages from the same child do not appear in both train and test.",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 class LineOCRDataset:
-    def __init__(self, records: list[LineRecord], processor, max_label_length: int):
+    def __init__(
+        self,
+        records: list[LineRecord],
+        processor,
+        max_label_length: int,
+        views_per_line: int = 1,
+        augment: bool = False,
+    ):
         self.records = records
         self.processor = processor
         self.max_label_length = max_label_length
+        self.views_per_line = max(1, views_per_line)
+        self.augment = augment
 
     def __len__(self) -> int:
-        return len(self.records)
+        return len(self.records) * self.views_per_line
 
     def __getitem__(self, idx: int):
-        from PIL import Image
+        from PIL import Image, ImageEnhance, ImageOps
 
-        record = self.records[idx]
+        record = self.records[idx // self.views_per_line]
+        view = idx % self.views_per_line
         image = Image.open(record.image_path).convert("RGB")
+        if self.augment and view:
+            # Preserve the complete line. A fragment cannot be paired with the
+            # full transcription without introducing a false training label.
+            rng = random.Random(f"{record.sample_id}:{view}")
+            image = ImageEnhance.Contrast(image).enhance(rng.uniform(0.85, 1.15))
+            image = ImageEnhance.Brightness(image).enhance(rng.uniform(0.9, 1.1))
+            image = ImageOps.expand(image, border=rng.randint(1, 5), fill="white")
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze(0)
         labels = self.processor.tokenizer(
             record.text,
@@ -417,7 +451,13 @@ def train_model(train: list[LineRecord], test: list[LineRecord], args: argparse.
     model.generation_config.eos_token_id = processor.tokenizer.sep_token_id
     model.generation_config.max_length = args.max_label_length
 
-    train_ds = LineOCRDataset(train, processor, args.max_label_length)
+    train_ds = LineOCRDataset(
+        train,
+        processor,
+        args.max_label_length,
+        views_per_line=args.views_per_line,
+        augment=args.views_per_line > 1,
+    )
     test_ds = LineOCRDataset(test, processor, args.max_label_length)
     train_loader = DataLoader(
         train_ds,
@@ -507,6 +547,10 @@ def main() -> None:
     split_root = project_path(args.split_root)
     output_dir = project_path(args.output_dir)
     args.output_dir = output_dir
+    if not 0 < args.train_ratio < 1:
+        raise SystemExit("--train-ratio must be between 0 and 1")
+    if args.views_per_line < 1:
+        raise SystemExit("--views-per-line must be at least 1")
 
     records = read_line_records(dataset_root)
     if not records:

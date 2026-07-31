@@ -11,6 +11,9 @@ OUTPUT_FOLDER = "ranked_pdfs"
 CSV_FILE = "pdf_quality_scores.csv"
 
 PDF_EXTENSIONS = (".pdf",)
+# The downstream Surya dataset renders only page zero, so ranking must score
+# that same page rather than averaging unrelated later pages.
+PAGES_TO_SCORE = 1
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
@@ -82,7 +85,7 @@ def score_pdf(pdf_path):
     page_results = []
 
     try:
-        for page_num in range(len(doc)):
+        for page_num in range(min(len(doc), PAGES_TO_SCORE)):
             page = doc[page_num]
 
             pix = page.get_pixmap(

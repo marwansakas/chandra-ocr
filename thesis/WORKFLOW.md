@@ -3,6 +3,19 @@
 This folder turns the Chandra OCR output into reports you can use for comparing
 children by page, student/notebook, grade, gender, and school/place.
 
+The four systems have separate entry points:
+
+```bash
+python pipelines/surya.py --limit 300
+python pipelines/chandra.py --continue-on-error
+python pipelines/invizo.py --command "YOUR INVIZO COMMAND {input} {output}"
+python pipelines/thesis.py
+```
+
+Surya creates line crops and geometry. Chandra recognizes those line crops.
+Invizo produces independent paragraph predictions. The thesis model is a TrOCR
+vision-encoder/text-decoder recognizer trained on verified line pairs.
+
 ## 1. Build and Link Metadata
 
 ```bash
@@ -59,7 +72,31 @@ python thesis/scripts/evaluate_ocr.py
 Use the OCR error results before judging spelling. A high WER/CER page should
 be corrected manually before it is used for student spelling conclusions.
 
-## 5. Score Text and Handwriting
+Chandra-generated labels are pseudo-labels until a person verifies them. Do not
+report evaluation against unverified Chandra output as human ground truth.
+
+## 5. Train and Run the Thesis Line Model
+
+Create train/test manifests grouped by notebook/student:
+
+```bash
+python thesis/scripts/train_line_ocr_model.py --prepare-only
+```
+
+Train with multiple label-preserving full-line views:
+
+```bash
+python thesis/scripts/train_line_ocr_model.py \
+  --epochs 5 --batch-size 4 --views-per-line 3
+```
+
+Generate current thesis-model predictions:
+
+```bash
+python pipelines/thesis.py
+```
+
+## 6. Score Text and Handwriting
 
 ```bash
 python thesis/scripts/score_text.py
@@ -84,7 +121,7 @@ For handwriting features on PDFs, install PyMuPDF if it is not available:
 pip install pymupdf
 ```
 
-## 6. Refresh Everything Non-Destructive
+## 7. Refresh Everything Non-Destructive
 
 ```bash
 python thesis/scripts/run_pipeline.py

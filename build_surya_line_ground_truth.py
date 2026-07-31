@@ -11,10 +11,6 @@ import time
 from pathlib import Path
 from typing import Any
 
-from PIL import Image
-import pypdfium2 as pdfium
-
-
 PROJECT_ROOT = Path(__file__).resolve().parent
 RANKED_CSV = PROJECT_ROOT / "pdf_quality_scores.csv"
 RANKED_DIR = PROJECT_ROOT / "ranked_pdfs"
@@ -97,9 +93,13 @@ def safe_stem(path: Path) -> str:
     return path.stem.replace("/", "__").replace("\\", "__")
 
 
-def render_first_page(input_path: Path, scale: float) -> Image.Image:
+def render_first_page(input_path: Path, scale: float) -> Any:
+    from PIL import Image
+
     suffix = input_path.suffix.lower()
     if suffix == ".pdf":
+        import pypdfium2 as pdfium
+
         doc = pdfium.PdfDocument(str(input_path))
         if len(doc) == 0:
             raise ValueError(f"PDF has no pages: {input_path}")
@@ -188,8 +188,14 @@ def find_chandra_markdown(output_dir: Path, input_file: Path) -> Path | None:
     if expected_flat.exists():
         return expected_flat
 
-    matches = sorted(output_dir.rglob("*.md"))
-    return matches[0] if matches else None
+    # Never fall back to an unrelated Markdown file. Doing so silently assigns
+    # another line's transcription to this image and corrupts the dataset.
+    matches = [
+        path
+        for path in output_dir.rglob("*.md")
+        if path.stem == input_file.stem
+    ]
+    return matches[0] if len(matches) == 1 else None
 
 
 def run_chandra_folder(
@@ -355,10 +361,12 @@ def main() -> None:
             print(f"... {len(records) - 20} more")
         return
 
-    chandra = find_chandra(args.chandra)
     env = os.environ.copy()
-    env.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
-    env["PATH"] = str(chandra.parent) + os.pathsep + env.get("PATH", "")
+    chandra = Path()
+    if not args.detect_only:
+        chandra = find_chandra(args.chandra)
+        env.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+        env["PATH"] = str(chandra.parent) + os.pathsep + env.get("PATH", "")
 
     args.output_root.mkdir(parents=True, exist_ok=True)
     from surya.detection import DetectionPredictor

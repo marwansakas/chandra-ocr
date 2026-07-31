@@ -1,0 +1,20 @@
+# Dataset preparation
+numpy>=1.26
+opencv-python>=4.9
+Pillow>=10
+PyMuPDF>=1.24
+pypdfium2>=4.30
+surya-ocr==0.20.0
+
+# Thesis TrOCR training and inference
+torch>=2.2
+transformers>=4.45
+sentencepiece>=0.2
+
+# Tests
+pytest>=8
+
+# Chandra and Invizo are external checkouts/runtimes. Install them according
+# to their upstream repositories; their large model files are intentionally
+# not vendored here.
+

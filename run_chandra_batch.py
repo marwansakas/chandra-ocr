@@ -108,23 +108,14 @@ def output_already_exists(output_dir: Path, input_file: Path) -> bool:
     if not output_dir.exists():
         return False
 
-    expected_outputs = [
-        output_dir / f"{input_file.stem}.md",
-        output_dir / f"{input_file.stem}.html",
-        output_dir / f"{input_file.stem}_metadata.json",
-    ]
-
-    for output_file in expected_outputs:
-        if output_file.exists():
+    stem = input_file.stem
+    candidate_dirs = (output_dir, output_dir / stem)
+    for candidate_dir in candidate_dirs:
+        markdown = candidate_dir / f"{stem}.md"
+        metadata = candidate_dir / f"{stem}_metadata.json"
+        if markdown.is_file() and metadata.is_file():
             return True
-
-    existing_result_files = (
-        list(output_dir.glob("*.md"))
-        + list(output_dir.glob("*.html"))
-        + list(output_dir.glob("*.json"))
-    )
-
-    return len(existing_result_files) > 0
+    return False
 
 
 def run_chandra_ocr(input_file: Path, output_dir: Path, env: dict) -> bool:
