@@ -6,7 +6,7 @@ PyMuPDF>=1.24
 pypdfium2>=4.30
 surya-ocr==0.20.0
 
-# Thesis TrOCR training and inference
+# Thesis CTC training/inference and legacy TrOCR training/inference
 torch>=2.2
 transformers>=4.45
 sentencepiece>=0.2

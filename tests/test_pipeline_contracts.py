@@ -25,6 +25,7 @@ def load(name: str, path: Path):
 builder = load("builder", ROOT / "build_surya_line_ground_truth.py")
 batch = load("batch", ROOT / "run_chandra_batch.py")
 trainer = load("trainer", ROOT / "thesis" / "scripts" / "train_line_ocr_model.py")
+ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_ocr_model.py")
 
 
 def test_markdown_lookup_never_uses_another_line(tmp_path: Path):
@@ -61,3 +62,22 @@ def test_student_group_removes_rank_and_page_but_keeps_notebook():
     other = "0045_0045_Kfar__Fourth Grade__Notebook_8_Male_Fourth_Grade_Page_072"
     assert trainer.student_group(first) == trainer.student_group(second)
     assert trainer.student_group(first) != trainer.student_group(other)
+
+
+def test_ctc_vocab_reserves_blank_at_zero():
+    records = [
+        ctc_trainer.LineRecord("a", "0001_0001_School__Notebook_1_Page_001", 1, 1, "x.png", "ba", "ocr_complete"),
+        ctc_trainer.LineRecord("b", "0002_0002_School__Notebook_1_Page_002", 2, 1, "y.png", "ab", "ocr_complete"),
+    ]
+    vocab = ctc_trainer.build_vocab(records)
+    assert vocab[0] == ctc_trainer.BLANK_TOKEN
+    assert set(vocab[1:]) == {"a", "b"}
+
+
+def test_ctc_greedy_decode_collapses_repeats_and_blanks():
+    idx_to_char = {0: "<blank>", 1: "a", 2: "b"}
+    assert ctc_trainer.ctc_greedy_decode([0, 1, 1, 0, 2, 2, 0, 1], idx_to_char) == "aba"
+
+
+def test_ctc_min_time_steps_accounts_for_repeated_labels():
+    assert ctc_trainer.ctc_min_time_steps([1, 2, 2, 1]) == 5

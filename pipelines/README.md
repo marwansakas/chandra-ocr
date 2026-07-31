@@ -8,7 +8,8 @@ can be run without changing the output of another engine.
 | Surya line detection | `python pipelines/surya.py` | `thesis/labels/surya_line_ground_truth` |
 | Chandra line OCR | `python pipelines/chandra.py` | updates each page's `lines.jsonl` and `chandra_line_ocr/` |
 | Invizo paragraph OCR | `python pipelines/invizo.py` | `thesis/invizo/outputs` |
-| Thesis model inference | `python pipelines/thesis.py` | `thesis/predictions` |
+| Custom CTC line OCR inference | `python pipelines/ctc.py` | `thesis/predictions_ctc` |
+| Legacy TrOCR inference | `python pipelines/thesis.py` | `thesis/predictions` |
 
 All paths may be overridden on the command line. Large source files, downloaded
 repositories, model weights, and generated outputs stay outside Git.
