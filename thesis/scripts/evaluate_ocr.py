@@ -10,10 +10,15 @@ Writes:
 
 Run:
   python thesis/scripts/evaluate_ocr.py
+
+Evaluate a compatible baseline without relinking metadata:
+    python thesis/scripts/evaluate_ocr.py --ocr-root thesis/invizo/outputs \
+            --reports-dir thesis/invizo/reports
 """
 
 from __future__ import annotations
 
+import argparse
 from collections import defaultdict
 
 import common
@@ -27,25 +32,58 @@ def mean(values):
     return sum(values) / len(values) if values else 0.0
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--ocr-root",
+        default=None,
+        help=(
+            "Alternative OCR root with the standard "
+            "<place>/<grade>/<stem>/<stem>/<stem>.md layout."
+        ),
+    )
+    parser.add_argument(
+        "--reports-dir",
+        default=None,
+        help="Directory for the CSV and Markdown reports (defaults to config.json).",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    args = parse_args()
     cfg = common.load_config()
     metadata_dir = common.resolve(cfg["metadata_dir"])
     gt_root = common.resolve(cfg["ground_truth_dir"])
-    reports_dir = common.resolve(cfg["reports_dir"])
+    reports_dir = (
+        common.resolve(args.reports_dir)
+        if args.reports_dir is not None
+        else common.resolve(cfg["reports_dir"])
+    )
+    ocr_root = common.resolve(args.ocr_root) if args.ocr_root is not None else None
 
     records = list(common.read_jsonl(metadata_dir / "pages.jsonl"))
     rows = []
 
     for record in records:
-        if not record.get("ocr_output_path"):
-            continue
         gt_path = common.ground_truth_path(gt_root, record)
         if not gt_path.exists():
             continue
         gt_text = common.normalize_text(common.read_text(gt_path))
         if not gt_text:
             continue
-        ocr_path = common.resolve(record["ocr_output_path"])
+
+        if ocr_root is None:
+            if not record.get("ocr_output_path"):
+                continue
+            ocr_path = common.resolve(record["ocr_output_path"])
+            ocr_output_path = record["ocr_output_path"]
+        else:
+            ocr_path = common.ocr_markdown_path(ocr_root, record)
+            if ocr_path is None:
+                continue
+            ocr_output_path = str(ocr_path.relative_to(common.PROJECT_ROOT))
+
         ocr_text = common.normalize_text(common.read_text(ocr_path))
 
         gt_words = common.tokenize_words(gt_text)
@@ -67,7 +105,7 @@ def main() -> None:
                 "wer": f"{wer:.4f}",
                 "ocr_reliability_score": f"{max(0.0, 1.0 - wer):.4f}",
                 "ground_truth_path": str(gt_path.relative_to(common.PROJECT_ROOT)),
-                "ocr_output_path": record["ocr_output_path"],
+                "ocr_output_path": ocr_output_path,
             }
         )
 

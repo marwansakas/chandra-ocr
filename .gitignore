@@ -14,3 +14,14 @@ __pycache__/
 
 # Locally trained model weights exceed Git hosting size limits.
 *.safetensors
+
+# Official Invizo release models and run artifacts are local baseline data.
+/thesis/invizo/models/*.onnx
+/thesis/invizo/outputs/*
+!/thesis/invizo/outputs/.gitkeep
+/thesis/invizo/logs/*
+!/thesis/invizo/logs/.gitkeep
+/thesis/invizo/debug/*
+!/thesis/invizo/debug/.gitkeep
+/thesis/invizo/reports/*
+!/thesis/invizo/reports/.gitkeep

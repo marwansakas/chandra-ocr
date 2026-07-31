@@ -204,6 +204,12 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def write_utf8_text(path: Path, text: str) -> None:
+    """Write a plain-text OCR prediction using the project's UTF-8 contract."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
 def normalize_text(text: str) -> str:
     """Normalize whitespace without changing letters or punctuation."""
     return re.sub(r"\s+", " ", text).strip()
@@ -236,6 +242,22 @@ def ratio_error(reference, hypothesis) -> float:
     return edit_distance(reference, hypothesis) / len(reference)
 
 
+def ocr_markdown_output_path(ocr_root: Path, source_path: Path | str) -> Optional[Path]:
+    """Build the Chandra-compatible Markdown path for a source page path.
+
+    ``source_path`` may be relative to ``split_papers`` (the usual case) or
+    include that directory as an additional leading component. Only the final
+    ``<place>/<grade_folder>/<filename>`` components participate in the OCR
+    output layout.
+    """
+    path = Path(source_path)
+    if len(path.parts) < 3:
+        return None
+    place, grade_folder, filename = path.parts[-3:]
+    stem = Path(filename).stem
+    return ocr_root / place / grade_folder / stem / stem / f"{stem}.md"
+
+
 def ocr_markdown_path(existing_ocr_root: Path, record: dict) -> Optional[Path]:
     """
     Return the expected Chandra markdown path for a page record.
@@ -246,13 +268,9 @@ def ocr_markdown_path(existing_ocr_root: Path, record: dict) -> Optional[Path]:
     The full place + grade folder + stem path is used because stems are not
     globally unique in this dataset.
     """
-    path = Path(record["image_path"])
-    parts = path.parts
-    if len(parts) < 4:
+    candidate = ocr_markdown_output_path(existing_ocr_root, record["image_path"])
+    if candidate is None:
         return None
-    _, place, grade_folder, filename = parts[-4:]
-    stem = Path(filename).stem
-    candidate = existing_ocr_root / place / grade_folder / stem / stem / f"{stem}.md"
     return candidate if candidate.exists() else None
 
 
