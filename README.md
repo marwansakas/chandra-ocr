@@ -1,87 +1,161 @@
 # Arabic children handwriting OCR
 
-This repository compares OCR workflows and trains a fourth, thesis-specific
-line recognizer for Arabic elementary-school handwriting.
+This project creates line images from elementary-school Arabic handwriting and
+runs three independent OCR systems over the same images:
 
-## Architecture
+1. Chandra
+2. Invizo
+3. The fine-tuned thesis TrOCR model
 
-```text
-split_papers/
-  |
-  +-- Surya -> line images + line geometry
-                  |
-                  +-- Chandra -> pseudo-labels for each line
-                  |
-                  +-- Invizo -> alternate line OCR baseline
-                  |
-                  +-- manually verified ground truth
-                                  |
-                                  +-- custom CTC training/inference
+Accuracy evaluation is intentionally not part of the current workflow because
+the manual ground-truth labels are not ready yet.
 
-split_papers/ -> Invizo -> paragraph predictions
-
-ground truth + engine predictions -> CER/WER comparison reports
-```
-
-Surya detects lines; it does not recognize their text. Chandra supplies initial
-pseudo-labels. Invizo provides a second OCR baseline. The thesis model is a
-custom line recognizer trained with CTC over full line images. Diffusion models
-generate images and are not suitable for decoding text.
-
-## External repositories and data
-
-Keep downloaded upstream repositories in `external/` or provide their commands
-on the CLI. The folder is ignored because those projects have their own Git
-history:
+## Project flow
 
 ```text
-external/
-  surya/
-  chandra/
-  invizo/
+split_papers/**/*.pdf
+        |
+        v
+Surya line detection
+        |
+        v
+thesis/datasets/surya_lines/<pdf>/<line>/image.png
+        |
+        +--> chandra_run.py  --> thesis/predictions/chandra/
+        +--> invizo_run.py   --> thesis/predictions/invizo/
+        +--> my_TrOCR_run.py --> thesis/predictions/my_TrOCR/
 ```
 
-The ignored `split_papers/`, model weights, and generated output directories are
-expected to exist locally.
+The OCR runners read only `image.png`. They do not read, require, modify, or
+score `ground_truth.txt`.
 
-## Run each engine
+## 1. Create Surya line images
+
+Surya recursively sorts the PDFs under `split_papers` and processes 100 PDFs by
+default. It renders the first page of each selected PDF and creates one folder
+per detected line.
+
+First batch, PDFs 1-100:
 
 ```bash
-python pipelines/surya.py --limit 300
-python pipelines/chandra.py --continue-on-error
-python pipelines/invizo.py \
-  --command "python external/invizo/infer.py --input {input} --output {output}"
-python pipelines/ctc.py
-python thesis/scripts/evaluate_ctc_predictions.py
+python pipelines/surya.py \
+  --input-root split_papers \
+  --start-pdf 1 \
+  --limit 100 \
+  --continue-on-error
 ```
 
-Invizo releases differ in how inference is launched. Its command is explicit so
-the adapter works with the downloaded release without assuming a nonexistent
-Python package. It must write one TXT/Markdown file, or a JSON file containing
-`text`, `paragraph`, `transcription`, or `prediction`.
-
-## Train the custom CTC recognizer
-
-First replace or verify Chandra pseudo-labels with human ground truth. Prepare a
-student-isolated split:
+Next batch, PDFs 101-200:
 
 ```bash
-python thesis/scripts/train_ctc_line_ocr_model.py --prepare-only
+python pipelines/surya.py \
+  --input-root split_papers \
+  --start-pdf 101 \
+  --limit 100 \
+  --continue-on-error
 ```
 
-Train on the full line crops:
+Surya output:
+
+```text
+thesis/datasets/surya_lines/
+└── 0001_pdf_name/
+    ├── metadata.json
+    ├── lines.jsonl
+    └── line_001/
+        ├── image.png
+        ├── ground_truth.txt
+        └── metadata.json
+```
+
+`ground_truth.txt` starts empty and is reserved for later manual labeling.
+
+## 2. Chandra runner
+
+Activate the environment containing Chandra, then run:
 
 ```bash
-python thesis/scripts/train_ctc_line_ocr_model.py \
-  --epochs 20 --batch-size 8 --augment
+conda activate chandra
+
+python pipelines/chandra_run.py \
+  --input-root thesis/datasets/surya_lines \
+  --output-root thesis/predictions/chandra \
+  --chandra "$(command -v chandra)" \
+  --method hf \
+  --start-line 1 \
+  --limit 100 \
+  --continue-on-error
 ```
 
-Do not split a line into fragments and attach the full transcription to every
-fragment; that gives the model false labels. The CTC model learns a
-left-to-right character sequence from each complete line image.
+Continue with line 101 using `--start-line 101`. Existing predictions are
+skipped unless `--force` is provided.
 
-The CTC pipeline writes line-level predictions to `thesis/predictions_ctc/` and
-comparison reports to `thesis/reports/ctc_line_evaluation*`.
+## 3. Invizo runner
 
-See `thesis/WORKFLOW.md` for metadata, evaluation, and reporting commands.
+Invizo releases do not expose one stable command-line interface. Supply the
+inference command from the downloaded Invizo repository. The template must
+contain `{input}` and `{output}`:
+
+```bash
+python pipelines/invizo_run.py \
+  --input-root thesis/datasets/surya_lines \
+  --output-root thesis/predictions/invizo \
+  --command "python external/invizo/infer.py --input {input} --output {output}" \
+  --start-line 1 \
+  --limit 100 \
+  --continue-on-error
+```
+
+Replace `python external/invizo/infer.py ...` with the actual launcher from the
+local Invizo checkout. Its result may be one TXT/Markdown file or a JSON file
+with a `text`, `paragraph`, `transcription`, or `prediction` field.
+
+## 4. Thesis TrOCR runner
+
+The TrOCR runner is ready, but it does not need to be run until the model and
+line dataset are ready:
+
+```bash
+python pipelines/my_TrOCR_run.py \
+  --model thesis/models/surya_chandra_line_ocr \
+  --input-root thesis/datasets/surya_lines \
+  --output-root thesis/predictions/my_TrOCR \
+  --batch-size 8 \
+  --device cuda
+```
+
+TrOCR uses a ViT image encoder and autoregressive text decoder. It processes a
+complete line image and writes predicted text. It does not require ground truth
+during inference.
+
+## Prediction output
+
+Each runner owns a separate output tree:
+
+```text
+thesis/predictions/<model>/<pdf>/<line>/
+├── prediction.txt
+├── metadata.json
+└── raw/                 # Chandra/Invizo native output, when applicable
+```
+
+Each run also creates:
+
+```text
+predictions.jsonl
+run_summary.json
+```
+
+No runner copies predictions into `ground_truth.txt`.
+
+## Resuming and previewing
+
+Use `--start-line` and `--limit` to process batches. Use `--dry-run` to preview
+selected images without loading or running a model:
+
+```bash
+python pipelines/chandra_run.py --start-line 101 --limit 100 --dry-run
+```
+
+Use `--force` only when existing predictions should be regenerated.
 

@@ -1,4 +1,4 @@
-"""Detect text lines with Surya without requiring Chandra."""
+"""Detect text lines with the standalone Surya dataset builder."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ def main() -> None:
     command = [
         sys.executable,
         str(ROOT / "build_surya_line_ground_truth.py"),
-        "--detect-only",
         *sys.argv[1:],
     ]
     raise SystemExit(subprocess.run(command).returncode)

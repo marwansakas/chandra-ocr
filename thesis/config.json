@@ -3,7 +3,7 @@
   "project_root": "..",
   "raw_data_dir": "split_papers",
   "existing_ocr_dir": "output",
-  "surya_line_dir": "thesis/labels/surya_line_ground_truth",
+  "surya_line_dir": "thesis/datasets/surya_lines",
   "invizo_output_dir": "thesis/invizo/outputs",
   "thesis_prediction_dir": "thesis/predictions",
   "ocr_clean_dir": "thesis/ocr_clean",

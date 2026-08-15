@@ -31,3 +31,5 @@ __pycache__/
 /thesis/predictions_ctc/
 /thesis/labels/surya_line_ground_truth_ml/
 /thesis/labels/surya_line_ground_truth_ctc/
+/thesis/datasets/surya_lines/
+/thesis/datasets/surya_lines_ml/

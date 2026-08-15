@@ -6,15 +6,15 @@ children by page, student/notebook, grade, gender, and school/place.
 The four systems have separate entry points:
 
 ```bash
-python pipelines/surya.py --limit 300
-python pipelines/chandra.py --continue-on-error
-python pipelines/invizo.py --command "YOUR INVIZO COMMAND {input} {output}"
-python pipelines/ctc.py
+python pipelines/surya.py --start-pdf 1 --limit 100
+python pipelines/chandra_run.py --continue-on-error
+python pipelines/invizo_run.py --command "YOUR INVIZO COMMAND {input} {output}"
+python pipelines/my_TrOCR_run.py
 ```
 
 Surya creates line crops and geometry. Chandra recognizes those line crops.
-Invizo produces independent OCR predictions. The thesis model is a custom CTC
-line recognizer trained on verified line pairs.
+Invizo produces independent paragraph predictions. The thesis model is a TrOCR
+vision-encoder/text-decoder recognizer trained on verified line pairs.
 
 ## 1. Build and Link Metadata
 
@@ -75,26 +75,25 @@ be corrected manually before it is used for student spelling conclusions.
 Chandra-generated labels are pseudo-labels until a person verifies them. Do not
 report evaluation against unverified Chandra output as human ground truth.
 
-## 5. Train and Run the Custom CTC Line Model
+## 5. Train and Run the Thesis Line Model
 
 Create train/test manifests grouped by notebook/student:
 
 ```bash
-python thesis/scripts/train_ctc_line_ocr_model.py --prepare-only
+python thesis/scripts/train_line_ocr_model.py --prepare-only
 ```
 
-Train with label-preserving full-line augmentation:
+Train with multiple label-preserving full-line views:
 
 ```bash
-python thesis/scripts/train_ctc_line_ocr_model.py \
-  --epochs 20 --batch-size 8 --augment
+python thesis/scripts/train_line_ocr_model.py \
+  --epochs 5 --batch-size 4 --views-per-line 3
 ```
 
-Generate current thesis-model predictions:
+Generate predictions from both custom models:
 
 ```bash
-python pipelines/ctc.py
-python thesis/scripts/evaluate_ctc_predictions.py
+python pipelines/my_TrOCR_run.py
 ```
 
 ## 6. Score Text and Handwriting
