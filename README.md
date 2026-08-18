@@ -31,15 +31,14 @@ score `ground_truth.txt`.
 
 ## 1. Create Surya line images
 
-Surya recursively sorts the PDFs under `split_papers` and processes 100 PDFs by
-default. It renders the first page of each selected PDF and creates one folder
-per detected line.
+Surya recursively reads the already ranked PDFs under `ranked_pdfs` and
+processes every PDF by default. It renders the first page of each selected PDF
+and creates one folder per detected line.
 
 First batch, PDFs 1-100:
 
 ```bash
 python pipelines/surya.py \
-  --input-root split_papers \
   --start-pdf 1 \
   --limit 100 \
   --continue-on-error
@@ -49,10 +48,15 @@ Next batch, PDFs 101-200:
 
 ```bash
 python pipelines/surya.py \
-  --input-root split_papers \
   --start-pdf 101 \
   --limit 100 \
   --continue-on-error
+```
+
+To split all currently ranked PDFs in one run, omit `--limit`:
+
+```bash
+python pipelines/surya.py --continue-on-error
 ```
 
 Surya output:

@@ -1,8 +1,8 @@
 """Build a manually labelable line-image dataset with Surya.
 
-The script recursively finds PDFs under ``split_papers``, selects a resumable
-batch in deterministic path order, renders the first page of each PDF, and
-uses Surya to detect text lines. It never imports or runs Chandra.
+The script recursively finds PDFs under ``ranked_pdfs``, selects a resumable
+batch in ranked order, renders the first page of each PDF, and uses Surya to
+detect text lines. It never imports or runs Chandra.
 """
 
 from __future__ import annotations
@@ -18,13 +18,14 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parent
 DEFAULT_INPUT_ROOT = PROJECT_ROOT / "split_papers"
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "surya_lines"
+DEFAULT_RANKED_INPUT_ROOT = PROJECT_ROOT / "ranked_pdfs"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Split a resumable batch of PDF pages into line images with Surya."
     )
-    parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
+    parser.add_argument("--input-root", type=Path, default=DEFAULT_RANKED_INPUT_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument(
         "--start-pdf",
@@ -32,7 +33,12 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="1-based position of the first PDF to process after deterministic sorting.",
     )
-    parser.add_argument("--limit", type=int, default=100, help="Number of PDFs to process.")
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Number of PDFs to process. Omit to process every ranked PDF from --start-pdf.",
+    )
     parser.add_argument("--render-scale", type=float, default=2.0)
     parser.add_argument("--crop-margin-px", type=int, default=8)
     parser.add_argument("--force", action="store_true")
@@ -46,18 +52,26 @@ def find_pdfs(input_root: Path) -> list[Path]:
         raise FileNotFoundError(f"Input folder does not exist: {input_root}")
     pdfs = sorted(
         (path for path in input_root.rglob("*") if path.is_file() and path.suffix.lower() == ".pdf"),
-        key=lambda path: path.relative_to(input_root).as_posix().casefold(),
+        key=lambda path: ranked_sort_key(path, input_root),
     )
     return pdfs
 
 
-def select_pdf_batch(pdfs: list[Path], start_pdf: int, limit: int) -> list[tuple[int, Path]]:
+def ranked_sort_key(path: Path, input_root: Path) -> tuple[int, int | str, str]:
+    relative = path.relative_to(input_root).as_posix()
+    match = re.match(r"^(\d+)[_-]", path.name)
+    if match:
+        return (0, int(match.group(1)), relative.casefold())
+    return (1, relative.casefold(), relative.casefold())
+
+
+def select_pdf_batch(pdfs: list[Path], start_pdf: int, limit: int | None) -> list[tuple[int, Path]]:
     if start_pdf < 1:
         raise ValueError("--start-pdf must be at least 1")
-    if limit < 1:
+    if limit is not None and limit < 1:
         raise ValueError("--limit must be at least 1")
     start_offset = start_pdf - 1
-    selected = pdfs[start_offset : start_offset + limit]
+    selected = pdfs[start_offset:] if limit is None else pdfs[start_offset : start_offset + limit]
     return list(enumerate(selected, start=start_pdf))
 
 

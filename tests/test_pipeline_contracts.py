@@ -27,14 +27,14 @@ ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_
 line_common = load("line_common", ROOT / "pipelines" / "line_runner_common.py")
 
 
-def test_find_pdfs_is_recursive_deterministic_and_limited(tmp_path: Path):
-    for relative in ("z/three.pdf", "a/two.PDF", "a/one.pdf", "ignore.txt"):
+def test_find_pdfs_uses_numeric_rank_order(tmp_path: Path):
+    for relative in ("010_ten.pdf", "002_two.PDF", "001_one.pdf", "ignore.txt"):
         path = tmp_path / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()
     found = builder.find_pdfs(tmp_path)
     selected = builder.select_pdf_batch(found, start_pdf=1, limit=2)
-    assert [path.relative_to(tmp_path).as_posix() for _, path in selected] == ["a/one.pdf", "a/two.PDF"]
+    assert [path.relative_to(tmp_path).as_posix() for _, path in selected] == ["001_one.pdf", "002_two.PDF"]
 
 
 def test_pdf_batch_preserves_original_positions():
@@ -42,6 +42,16 @@ def test_pdf_batch_preserves_original_positions():
     selected = builder.select_pdf_batch(pdfs, start_pdf=101, limit=100)
     assert selected[0] == (101, Path("page_101.pdf"))
     assert selected[-1] == (200, Path("page_200.pdf"))
+
+
+def test_pdf_batch_without_limit_processes_remaining_pdfs():
+    pdfs = [Path(f"page_{index}.pdf") for index in range(1, 6)]
+    selected = builder.select_pdf_batch(pdfs, start_pdf=3, limit=None)
+    assert selected == [
+        (3, Path("page_3.pdf")),
+        (4, Path("page_4.pdf")),
+        (5, Path("page_5.pdf")),
+    ]
 
 
 def test_model_runners_only_discover_surya_images(tmp_path: Path):
