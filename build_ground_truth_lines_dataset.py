@@ -22,10 +22,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT_ROOT)
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument(
+        "--start-folder",
+        type=int,
+        default=1,
+        help="1-based position of the first page folder to process after deterministic sorting.",
+    )
+    parser.add_argument(
         "--pages",
         type=int,
         default=None,
-        help="Number of page folders to process after deterministic sorting. Omit to process all pages.",
+        help="Number of page folders to process. Omit to process every folder from --start-folder.",
     )
     parser.add_argument(
         "--force",
@@ -47,13 +53,16 @@ def sorted_child_dirs(root: Path) -> list[Path]:
     )
 
 
-def select_pages(input_root: Path, pages: int | None) -> list[Path]:
+def select_pages(input_root: Path, pages: int | None, start_folder: int = 1) -> list[Path]:
     if not input_root.is_dir():
         raise FileNotFoundError(f"Input folder does not exist: {input_root}")
+    if start_folder < 1:
+        raise ValueError("--start-folder must be at least 1")
     if pages is not None and pages < 1:
         raise ValueError("--pages must be at least 1")
     all_pages = sorted_child_dirs(input_root)
-    return all_pages if pages is None else all_pages[:pages]
+    start_offset = start_folder - 1
+    return all_pages[start_offset:] if pages is None else all_pages[start_offset : start_offset + pages]
 
 
 def should_skip_ground_truth(ground_truth_path: Path) -> bool:
@@ -75,13 +84,20 @@ def prepare_output_root(output_root: Path, force: bool, dry_run: bool) -> None:
     output_root.mkdir(parents=True)
 
 
-def build_dataset(input_root: Path, output_root: Path, pages: int | None, force: bool, dry_run: bool) -> dict[str, int]:
+def build_dataset(
+    input_root: Path,
+    output_root: Path,
+    pages: int | None,
+    force: bool,
+    dry_run: bool,
+    start_folder: int = 1,
+) -> dict[str, int]:
     input_root = input_root.resolve()
     output_root = output_root.resolve()
     if input_root == output_root:
         raise ValueError("--input-root and --output-root must be different folders")
 
-    selected_pages = select_pages(input_root, pages)
+    selected_pages = select_pages(input_root, pages, start_folder=start_folder)
     prepare_output_root(output_root, force=force, dry_run=dry_run)
 
     copied = skipped_empty_or_ignore = skipped_missing_ground_truth = total_lines = 0
@@ -106,6 +122,7 @@ def build_dataset(input_root: Path, output_root: Path, pages: int | None, force:
             copied += 1
 
     return {
+        "start_folder": start_folder,
         "selected_pages": len(selected_pages),
         "total_line_folders": total_lines,
         "copied_lines": copied,
@@ -122,6 +139,7 @@ def main() -> None:
         pages=args.pages,
         force=args.force,
         dry_run=args.dry_run,
+        start_folder=args.start_folder,
     )
     for key, value in summary.items():
         print(f"{key}: {value}")

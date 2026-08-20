@@ -112,6 +112,30 @@ def test_ground_truth_cleaner_limits_selected_pages(tmp_path: Path):
     assert [path.name for path in sorted(output_root.iterdir())] == ["000001_page_001_line_001"]
 
 
+def test_ground_truth_cleaner_starts_from_selected_folder_position(tmp_path: Path):
+    input_root = tmp_path / "surya_lines"
+    output_root = tmp_path / "ground_truth_lines"
+    make_surya_line(input_root, "page_001", "line_001", "valid one")
+    make_surya_line(input_root, "page_002", "line_001", "valid two")
+    make_surya_line(input_root, "page_003", "line_001", "valid three")
+
+    summary = ground_truth_cleaner.build_dataset(
+        input_root,
+        output_root,
+        pages=2,
+        force=False,
+        dry_run=False,
+        start_folder=2,
+    )
+
+    assert summary["start_folder"] == 2
+    assert summary["selected_pages"] == 2
+    assert [path.name for path in sorted(output_root.iterdir())] == [
+        "000001_page_002_line_001",
+        "000002_page_003_line_001",
+    ]
+
+
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
     original_root = builder.PROJECT_ROOT
     builder.PROJECT_ROOT = tmp_path
