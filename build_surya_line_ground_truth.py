@@ -16,7 +16,7 @@ from typing import Any
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-DEFAULT_INPUT_ROOT = PROJECT_ROOT / "split_papers"
+DEFAULT_INPUT_ROOT = PROJECT_ROOT / "ranked_pdfs"
 DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "surya_lines"
 DEFAULT_RANKED_INPUT_ROOT = PROJECT_ROOT / "ranked_pdfs"
 
@@ -56,6 +56,12 @@ def find_pdfs(input_root: Path) -> list[Path]:
     )
     return pdfs
 
+def ranked_sort_key(path: Path, input_root: Path) -> tuple[int, int | str, str]:
+    relative = path.relative_to(input_root).as_posix()
+    match = re.match(r"^(\d+)[_-]", path.name)
+    if match:
+        return (0, int(match.group(1)), relative.casefold())
+    return (1, relative.casefold(), relative.casefold())
 
 def ranked_sort_key(path: Path, input_root: Path) -> tuple[int, int | str, str]:
     relative = path.relative_to(input_root).as_posix()
