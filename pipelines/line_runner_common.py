@@ -8,14 +8,18 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = ROOT / "thesis" / "datasets" / "surya_lines"
+DEFAULT_INPUT = ROOT / "thesis" / "datasets" / "ground_truth_lines"
 
 
 def find_line_images(input_root: Path) -> list[Path]:
-    return sorted(
-        (path for path in input_root.glob("*/line_*/image.png") if path.is_file()),
-        key=lambda path: path.relative_to(input_root).as_posix().casefold(),
-    )
+    candidates = [path for path in input_root.glob("*/image.png") if path.is_file()]
+    candidates.extend(path for path in input_root.glob("*/line_*/image.png") if path.is_file())
+    return sorted(candidates, key=lambda path: path.relative_to(input_root).as_posix().casefold())
+
+
+def find_manifest_images(manifest_path: Path) -> list[Path]:
+    records = [json.loads(raw) for raw in manifest_path.read_text(encoding="utf-8").splitlines() if raw.strip()]
+    return [ROOT / record["image_path"] for record in records]
 
 
 def select_batch(images: list[Path], start_line: int, limit: int | None) -> list[tuple[int, Path]]:

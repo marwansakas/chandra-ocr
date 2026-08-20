@@ -1,11 +1,10 @@
 """
 Fine-tune a line-level handwriting OCR model from Surya line crops and labels.
 
-This script consumes the dataset produced by build_surya_line_ground_truth.py:
+This script consumes the clean dataset produced by build_ground_truth_lines_dataset.py:
 
-  thesis/datasets/surya_lines/<page>/lines.jsonl
-  thesis/datasets/surya_lines/<page>/line_###/image.png
-  thesis/datasets/surya_lines/<page>/line_###/ground_truth.txt
+  thesis/datasets/ground_truth_lines/<global>_<page>_<line>/image.png
+  thesis/datasets/ground_truth_lines/<global>_<page>_<line>/ground_truth.txt
 
 It writes deterministic train/test manifests, then optionally fine-tunes a
 Transformer OCR model such as microsoft/trocr-base-handwritten.
@@ -19,9 +18,6 @@ Prepare splits only:
 
 Train on a GPU allocation:
   python thesis/scripts/train_line_ocr_model.py --epochs 5 --batch-size 4
-
-Repair missing OCR first, then prepare/train:
-  python thesis/scripts/train_line_ocr_model.py --fill-missing-ocr
 """
 
 from __future__ import annotations
@@ -44,9 +40,9 @@ import common
 
 
 PROJECT_ROOT = common.PROJECT_ROOT
-DEFAULT_DATASET_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "surya_lines"
-DEFAULT_SPLIT_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "surya_lines_ml"
-DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "thesis" / "models" / "surya_chandra_line_ocr"
+DEFAULT_DATASET_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "ground_truth_lines"
+DEFAULT_SPLIT_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "ground_truth_lines_ml"
+DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "thesis" / "models" / "ground_truth_line_trocr"
 DEFAULT_CHANDRA = Path("/home/sakas/.conda/envs/chandra/bin/chandra")
 
 
@@ -113,6 +109,13 @@ def project_path(path: str | Path) -> Path:
     return PROJECT_ROOT / path
 
 
+def portable_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def iter_page_dirs(dataset_root: Path) -> Iterable[Path]:
     return sorted(
         (p for p in dataset_root.iterdir() if p.is_dir() and p.name[:4].isdigit()),
@@ -120,7 +123,69 @@ def iter_page_dirs(dataset_root: Path) -> Iterable[Path]:
     )
 
 
+def find_line_image(line_dir: Path) -> Path | None:
+    for name in ("image.png", "image.jpg", "image.jpeg", "image.tif", "image.tiff"):
+        candidate = line_dir / name
+        if candidate.is_file():
+            return candidate
+    for pattern in ("*.png", "*.jpg", "*.jpeg", "*.tif", "*.tiff", "*.bmp", "*.webp"):
+        matches = sorted(line_dir.glob(pattern))
+        if matches:
+            return matches[0]
+    return None
+
+
+def flat_line_sort_key(line_dir: Path) -> tuple[int, str]:
+    match = re.match(r"^(\d+)_", line_dir.name)
+    return (int(match.group(1)) if match else 10**12, line_dir.name.casefold())
+
+
+def parse_flat_line_folder_name(name: str) -> tuple[str, int, int]:
+    match = re.match(r"^(?P<global>\d+)_(?P<page>.+)_(?P<line>line_(?P<line_index>\d+))$", name)
+    if not match:
+        return name, 0, 0
+    return match.group("page"), int(match.group("global")), int(match.group("line_index"))
+
+
+def read_flat_line_records(dataset_root: Path) -> list[LineRecord]:
+    records: list[LineRecord] = []
+    for line_dir in sorted((p for p in dataset_root.iterdir() if p.is_dir()), key=flat_line_sort_key):
+        label_path = line_dir / "ground_truth.txt"
+        image_path = find_line_image(line_dir)
+        if image_path is None or not label_path.is_file():
+            continue
+        text = label_path.read_text(encoding="utf-8", errors="replace").strip()
+        page_id, rank, line_index = parse_flat_line_folder_name(line_dir.name)
+        metadata_path = line_dir / "metadata.json"
+        metadata = {}
+        if metadata_path.is_file():
+            try:
+                metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                metadata = {}
+        records.append(
+            LineRecord(
+                sample_id=line_dir.name,
+                page_id=page_id,
+                page_dir=portable_path(line_dir),
+                rank=rank,
+                line_index=line_index,
+                image_path=str(image_path),
+                text=text,
+                bbox=metadata.get("bbox") or [],
+                polygon=metadata.get("polygon") or [],
+                confidence=metadata.get("confidence"),
+                status=metadata.get("status") or "ground_truth_ready",
+            )
+        )
+    return records
+
+
 def read_line_records(dataset_root: Path) -> list[LineRecord]:
+    return read_flat_line_records(dataset_root)
+
+
+def read_surya_line_records(dataset_root: Path) -> list[LineRecord]:
     records: list[LineRecord] = []
     for page_dir in iter_page_dirs(dataset_root):
         lines_path = page_dir / "lines.jsonl"
@@ -143,7 +208,7 @@ def read_line_records(dataset_root: Path) -> list[LineRecord]:
                 LineRecord(
                     sample_id=sample_id,
                     page_id=page_dir.name,
-                    page_dir=str(page_dir.relative_to(PROJECT_ROOT)),
+                    page_dir=portable_path(page_dir),
                     rank=rank,
                     line_index=line_index,
                     image_path=str(image_path),
@@ -256,6 +321,8 @@ def fill_missing_ocr(records: list[LineRecord], args: argparse.Namespace) -> int
 def keep_for_training(record: LineRecord, include_empty_labels: bool) -> bool:
     if not Path(record.image_path).exists():
         return False
+    if "ignore" in (record.text or "").casefold():
+        return False
     if include_empty_labels:
         return record.text is not None
     return bool((record.text or "").strip())
@@ -307,7 +374,7 @@ def write_manifest(path: Path, records: list[LineRecord]) -> None:
                     "page_id": record.page_id,
                     "rank": record.rank,
                     "line_index": record.line_index,
-                    "image_path": str(Path(record.image_path).relative_to(PROJECT_ROOT)),
+                    "image_path": portable_path(Path(record.image_path)),
                     "text": record.text,
                     "bbox": json.dumps(record.bbox, ensure_ascii=False),
                     "confidence": "" if record.confidence is None else record.confidence,
@@ -327,7 +394,7 @@ def write_jsonl(path: Path, records: list[LineRecord]) -> None:
                         "page_id": record.page_id,
                         "rank": record.rank,
                         "line_index": record.line_index,
-                        "image_path": str(Path(record.image_path).relative_to(PROJECT_ROOT)),
+                        "image_path": portable_path(Path(record.image_path)),
                         "text": record.text,
                         "bbox": record.bbox,
                         "polygon": record.polygon,
@@ -559,9 +626,7 @@ def main() -> None:
         raise SystemExit(f"No line records found under {dataset_root}")
 
     if args.fill_missing_ocr:
-        repaired = fill_missing_ocr(records, args)
-        print(f"Repaired OCR records: {repaired}")
-        records = read_line_records(dataset_root)
+        raise SystemExit("--fill-missing-ocr is not supported for the clean ground_truth_lines dataset")
 
     usable = [r for r in records if keep_for_training(r, args.include_empty_labels)]
     usable.sort(key=lambda r: (r.rank, r.line_index, r.sample_id))

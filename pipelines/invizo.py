@@ -11,7 +11,16 @@ import subprocess
 import time
 from pathlib import Path
 
-from line_runner_common import DEFAULT_INPUT, ROOT, find_line_images, prediction_dir, select_batch, write_prediction, write_run_files
+from line_runner_common import (
+    DEFAULT_INPUT,
+    ROOT,
+    find_line_images,
+    find_manifest_images,
+    prediction_dir,
+    select_batch,
+    write_prediction,
+    write_run_files,
+)
 
 
 def normalize_text(raw_output: Path) -> str:
@@ -31,6 +40,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run Invizo on Surya line images.")
     parser.add_argument("--input-root", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output-root", type=Path, default=ROOT / "thesis" / "predictions" / "invizo")
+    parser.add_argument(
+        "--test-manifest",
+        type=Path,
+        default=None,
+        help="Optional test.jsonl manifest. When supplied, run only those line images.",
+    )
     parser.add_argument("--command", required=True, help="Command template containing {input} and {output}.")
     parser.add_argument("--start-line", type=int, default=1)
     parser.add_argument("--limit", type=int)
@@ -41,7 +56,8 @@ def main() -> None:
     if "{input}" not in args.command or "{output}" not in args.command:
         raise SystemExit("--command must contain {input} and {output}")
 
-    selected = select_batch(find_line_images(args.input_root), args.start_line, args.limit)
+    images = find_manifest_images(args.test_manifest) if args.test_manifest else find_line_images(args.input_root)
+    selected = select_batch(images, args.start_line, args.limit)
     if args.dry_run:
         for position, image in selected:
             print(f"{position:06d}: {image.relative_to(args.input_root)}")

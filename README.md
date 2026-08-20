@@ -19,15 +19,15 @@ split_papers/**/*.pdf
 Surya line detection
         |
         v
-thesis/datasets/surya_lines/<pdf>/<line>/image.png
+thesis/datasets/ground_truth_lines/<global>_<page>_<line>/image.png
         |
         +--> chandra_run.py  --> thesis/predictions/chandra/
         +--> invizo_run.py   --> thesis/predictions/invizo/
         +--> my_TrOCR_run.py --> thesis/predictions/my_TrOCR/
 ```
 
-The OCR runners read only `image.png`. They do not read, require, modify, or
-score `ground_truth.txt`.
+The OCR runners read only `image.png`. Training and evaluation read
+`ground_truth.txt` from the clean `ground_truth_lines` dataset.
 
 ## 1. Create Surya line images
 
@@ -74,7 +74,62 @@ thesis/datasets/surya_lines/
 
 `ground_truth.txt` starts empty and is reserved for later manual labeling.
 
-## 2. Chandra runner
+## 2. Create the clean labeled line dataset
+
+After manually filling `ground_truth.txt` files, build the clean dataset:
+
+```bash
+python build_ground_truth_lines_dataset.py --pages 100 --force
+```
+
+To continue from a later sorted page folder:
+
+```bash
+python build_ground_truth_lines_dataset.py --start-folder 101 --pages 100 --force
+```
+
+The result is:
+
+```text
+thesis/datasets/ground_truth_lines/
+└── 000001_0001_pdf_name_line_001/
+    ├── image.png
+    ├── ground_truth.txt
+    └── metadata.json
+```
+
+Empty labels and labels containing `ignore` are skipped.
+
+## 3. Train the thesis TrOCR model
+
+With 1099 usable labeled lines, the default 80/20 split uses about 879 lines
+for training and 220 lines for held-out testing. First create the split:
+
+```bash
+python thesis/scripts/train_line_ocr_model.py --prepare-only
+```
+
+Then train:
+
+```bash
+python thesis/scripts/train_line_ocr_model.py \
+  --epochs 5 \
+  --batch-size 4
+```
+
+The model is saved to:
+
+```text
+thesis/models/ground_truth_line_trocr/
+```
+
+Predict only the held-out test split:
+
+```bash
+python thesis/scripts/predict_trocr_test_samples.py --device cuda
+```
+
+## 4. Chandra runner
 
 Activate the environment containing Chandra, then run:
 
@@ -82,19 +137,18 @@ Activate the environment containing Chandra, then run:
 conda activate chandra
 
 python pipelines/chandra_run.py \
-  --input-root thesis/datasets/surya_lines \
+  --input-root thesis/datasets/ground_truth_lines \
   --output-root thesis/predictions/chandra \
+  --test-manifest thesis/datasets/ground_truth_lines_ml/test.jsonl \
   --chandra "$(command -v chandra)" \
   --method hf \
-  --start-line 1 \
-  --limit 100 \
   --continue-on-error
 ```
 
 Continue with line 101 using `--start-line 101`. Existing predictions are
 skipped unless `--force` is provided.
 
-## 3. Invizo runner
+## 5. Invizo runner
 
 Invizo releases do not expose one stable command-line interface. Supply the
 inference command from the downloaded Invizo repository. The template must
@@ -102,11 +156,10 @@ contain `{input}` and `{output}`:
 
 ```bash
 python pipelines/invizo_run.py \
-  --input-root thesis/datasets/surya_lines \
+  --input-root thesis/datasets/ground_truth_lines \
   --output-root thesis/predictions/invizo \
+  --test-manifest thesis/datasets/ground_truth_lines_ml/test.jsonl \
   --command "python external/invizo/infer.py --input {input} --output {output}" \
-  --start-line 1 \
-  --limit 100 \
   --continue-on-error
 ```
 
@@ -114,23 +167,39 @@ Replace `python external/invizo/infer.py ...` with the actual launcher from the
 local Invizo checkout. Its result may be one TXT/Markdown file or a JSON file
 with a `text`, `paragraph`, `transcription`, or `prediction` field.
 
-## 4. Thesis TrOCR runner
+## 6. Thesis TrOCR runner
 
-The TrOCR runner is ready, but it does not need to be run until the model and
-line dataset are ready:
+To run the trained TrOCR model over the same clean line dataset:
 
 ```bash
 python pipelines/my_TrOCR_run.py \
-  --model thesis/models/surya_chandra_line_ocr \
-  --input-root thesis/datasets/surya_lines \
+  --model thesis/models/ground_truth_line_trocr \
+  --input-root thesis/datasets/ground_truth_lines \
   --output-root thesis/predictions/my_TrOCR \
   --batch-size 8 \
   --device cuda
 ```
 
-TrOCR uses a ViT image encoder and autoregressive text decoder. It processes a
-complete line image and writes predicted text. It does not require ground truth
-during inference.
+TrOCR uses a ViT image encoder and autoregressive text decoder.
+
+## 7. Compare all three models on the held-out test split
+
+After Chandra, Invizo, and TrOCR predictions exist, compare them against the
+same ground-truth test lines:
+
+```bash
+python thesis/scripts/compare_line_ocr_models.py
+```
+
+Outputs:
+
+```text
+thesis/reports/line_ocr_model_comparison.csv
+thesis/reports/line_ocr_model_comparison_summary.csv
+```
+
+The report includes letter accuracy, word accuracy, and exact-line accuracy
+for Chandra, Invizo, and the thesis TrOCR model.
 
 ## Prediction output
 

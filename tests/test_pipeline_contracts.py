@@ -136,6 +136,18 @@ def test_ground_truth_cleaner_starts_from_selected_folder_position(tmp_path: Pat
     ]
 
 
+def test_trocr_training_reads_flat_ground_truth_lines(tmp_path: Path):
+    make_surya_line(tmp_path, "000001_page_001_line_001", "", "valid text")
+
+    records = trainer.read_line_records(tmp_path)
+
+    assert len(records) == 1
+    assert records[0].sample_id == "000001_page_001_line_001"
+    assert records[0].page_id == "page_001"
+    assert records[0].line_index == 1
+    assert records[0].text == "valid text"
+
+
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
     original_root = builder.PROJECT_ROOT
     builder.PROJECT_ROOT = tmp_path
