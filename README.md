@@ -106,7 +106,8 @@ With 1099 usable labeled lines, the default 80/20 split uses about 879 lines
 for training and 220 lines for held-out testing. First create the split:
 
 ```bash
-python thesis/scripts/train_line_ocr_model.py --prepare-only
+rm -rf thesis/datasets/ground_truth_lines_ml
+python thesis/scripts/train_line_ocr_model.py --prepare-only --split-strategy line
 ```
 
 Then train:

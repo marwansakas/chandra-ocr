@@ -68,6 +68,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--model-name", default="microsoft/trocr-base-handwritten")
     parser.add_argument("--train-ratio", type=float, default=0.8)
+    parser.add_argument(
+        "--split-strategy",
+        choices=("student", "line"),
+        default="student",
+        help=(
+            "student keeps pages from the same notebook/student together; "
+            "line gives an even random line-level split."
+        ),
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--include-empty-labels", action="store_true")
@@ -334,7 +343,7 @@ def student_group(page_id: str) -> str:
     return re.sub(r"_Page_\d+$", "", without_rank, flags=re.IGNORECASE)
 
 
-def split_records(records: list[LineRecord], train_ratio: float, seed: int) -> tuple[list[LineRecord], list[LineRecord]]:
+def split_records_by_student(records: list[LineRecord], train_ratio: float, seed: int) -> tuple[list[LineRecord], list[LineRecord]]:
     by_student: dict[str, list[LineRecord]] = {}
     for record in records:
         by_student.setdefault(student_group(record.page_id), []).append(record)
@@ -349,6 +358,28 @@ def split_records(records: list[LineRecord], train_ratio: float, seed: int) -> t
     train = [r for r in records if student_group(r.page_id) in train_students]
     test = [r for r in records if student_group(r.page_id) not in train_students]
     return train, test
+
+
+def split_records_by_line(records: list[LineRecord], train_ratio: float, seed: int) -> tuple[list[LineRecord], list[LineRecord]]:
+    shuffled = list(records)
+    random.Random(seed).shuffle(shuffled)
+    train_count = max(1, min(len(shuffled) - 1, round(len(shuffled) * train_ratio)))
+    train = sorted(shuffled[:train_count], key=lambda r: (r.rank, r.line_index, r.sample_id))
+    test = sorted(shuffled[train_count:], key=lambda r: (r.rank, r.line_index, r.sample_id))
+    return train, test
+
+
+def split_records(
+    records: list[LineRecord],
+    train_ratio: float,
+    seed: int,
+    split_strategy: str,
+) -> tuple[list[LineRecord], list[LineRecord]]:
+    if split_strategy == "line":
+        return split_records_by_line(records, train_ratio, seed)
+    if split_strategy == "student":
+        return split_records_by_student(records, train_ratio, seed)
+    raise ValueError(f"Unknown split strategy: {split_strategy}")
 
 
 def write_manifest(path: Path, records: list[LineRecord]) -> None:
@@ -407,7 +438,14 @@ def write_jsonl(path: Path, records: list[LineRecord]) -> None:
             )
 
 
-def write_summary(path: Path, all_records: list[LineRecord], usable: list[LineRecord], train: list[LineRecord], test: list[LineRecord]) -> None:
+def write_summary(
+    path: Path,
+    all_records: list[LineRecord],
+    usable: list[LineRecord],
+    train: list[LineRecord],
+    test: list[LineRecord],
+    split_strategy: str,
+) -> None:
     blank = sum(1 for r in all_records if not (r.text or "").strip())
     pages = len({r.page_id for r in all_records})
     train_pages = len({r.page_id for r in train})
@@ -419,11 +457,15 @@ def write_summary(path: Path, all_records: list[LineRecord], usable: list[LineRe
         f"- Source lines: {len(all_records)}",
         f"- Usable labeled lines: {len(usable)}",
         f"- Empty ground-truth labels excluded by default: {blank}",
+        f"- Split strategy: {split_strategy}",
         f"- Train lines: {len(train)} ({train_pages} pages)",
         f"- Test lines: {len(test)} ({test_pages} pages)",
         "",
-        "The split is notebook/student-level, so pages from the same child do not appear in both train and test.",
     ]
+    if split_strategy == "student":
+        lines.append("The split is notebook/student-level, so pages from the same child do not appear in both train and test.")
+    else:
+        lines.append("The split is line-level, so it gives a more even line count but may place lines from the same page/student in both train and test.")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -635,18 +677,19 @@ def main() -> None:
     if len(usable) < 2:
         raise SystemExit("Not enough labeled line records to split into train/test.")
 
-    train, test = split_records(usable, args.train_ratio, args.seed)
+    train, test = split_records(usable, args.train_ratio, args.seed, args.split_strategy)
     split_root.mkdir(parents=True, exist_ok=True)
     write_manifest(split_root / "train.csv", train)
     write_manifest(split_root / "test.csv", test)
     write_jsonl(split_root / "train.jsonl", train)
     write_jsonl(split_root / "test.jsonl", test)
-    write_summary(split_root / "summary.md", records, usable, train, test)
+    write_summary(split_root / "summary.md", records, usable, train, test, args.split_strategy)
 
     print(f"Total line records: {len(records)}")
     print(f"Usable labeled line records: {len(usable)}")
     print(f"Train: {len(train)} lines")
     print(f"Test: {len(test)} lines")
+    print(f"Split strategy: {args.split_strategy}")
     print(f"Wrote split files to: {split_root}")
 
     if args.prepare_only:

@@ -148,6 +148,30 @@ def test_trocr_training_reads_flat_ground_truth_lines(tmp_path: Path):
     assert records[0].text == "valid text"
 
 
+def test_line_split_strategy_produces_even_split():
+    records = [
+        trainer.LineRecord(
+            sample_id=f"sample_{index:03d}",
+            page_id="same_student_page",
+            page_dir="page",
+            rank=index,
+            line_index=index,
+            image_path="image.png",
+            text="text",
+            bbox=[],
+            polygon=[],
+            confidence=None,
+            status="ground_truth_ready",
+        )
+        for index in range(1, 101)
+    ]
+
+    train, test = trainer.split_records(records, train_ratio=0.8, seed=42, split_strategy="line")
+
+    assert len(train) == 80
+    assert len(test) == 20
+
+
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
     original_root = builder.PROJECT_ROOT
     builder.PROJECT_ROOT = tmp_path
