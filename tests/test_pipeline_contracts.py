@@ -25,6 +25,7 @@ batch = load("batch", ROOT / "run_chandra_batch.py")
 trainer = load("trainer", ROOT / "thesis" / "scripts" / "train_line_ocr_model.py")
 ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_ocr_model.py")
 line_common = load("line_common", ROOT / "pipelines" / "line_runner_common.py")
+ground_truth_cleaner = load("ground_truth_cleaner", ROOT / "build_ground_truth_lines_dataset.py")
 
 
 def test_find_pdfs_uses_numeric_rank_order(tmp_path: Path):
@@ -66,6 +67,49 @@ def test_model_runners_only_discover_surya_images(tmp_path: Path):
         "page_a/line_001/image.png",
         "page_b/line_002/image.png",
     ]
+
+
+def make_surya_line(root: Path, page: str, line: str, ground_truth: str) -> Path:
+    folder = root / page / line
+    folder.mkdir(parents=True)
+    (folder / "ground_truth.txt").write_text(ground_truth, encoding="utf-8")
+    (folder / "image.png").write_text("image", encoding="utf-8")
+    (folder / "metadata.json").write_text(json.dumps({"line": line}), encoding="utf-8")
+    return folder
+
+
+def test_ground_truth_cleaner_skips_empty_and_ignore_without_consuming_numbers(tmp_path: Path):
+    input_root = tmp_path / "surya_lines"
+    output_root = tmp_path / "ground_truth_lines"
+    make_surya_line(input_root, "page_001", "line_001", "valid one")
+    make_surya_line(input_root, "page_001", "line_002", "")
+    make_surya_line(input_root, "page_001", "line_003", '"ignore"')
+    make_surya_line(input_root, "page_001", "line_004", "valid two")
+    make_surya_line(input_root, "page_002", "line_001", "valid three")
+
+    summary = ground_truth_cleaner.build_dataset(input_root, output_root, pages=None, force=False, dry_run=False)
+
+    assert summary["copied_lines"] == 3
+    assert summary["skipped_empty_or_ignore"] == 2
+    assert [path.name for path in sorted(output_root.iterdir())] == [
+        "000001_page_001_line_001",
+        "000002_page_001_line_004",
+        "000003_page_002_line_001",
+    ]
+    assert (output_root / "000001_page_001_line_001" / "image.png").read_text(encoding="utf-8") == "image"
+    assert (output_root / "000001_page_001_line_001" / "metadata.json").is_file()
+
+
+def test_ground_truth_cleaner_limits_selected_pages(tmp_path: Path):
+    input_root = tmp_path / "surya_lines"
+    output_root = tmp_path / "ground_truth_lines"
+    make_surya_line(input_root, "page_001", "line_001", "valid one")
+    make_surya_line(input_root, "page_002", "line_001", "valid two")
+
+    summary = ground_truth_cleaner.build_dataset(input_root, output_root, pages=1, force=False, dry_run=False)
+
+    assert summary["selected_pages"] == 1
+    assert [path.name for path in sorted(output_root.iterdir())] == ["000001_page_001_line_001"]
 
 
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
