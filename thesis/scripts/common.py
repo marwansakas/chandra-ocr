@@ -210,9 +210,33 @@ def write_utf8_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+ARABIC_DIACRITICS_RE = re.compile(
+    "[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06dc\u06df-\u06e8\u06ea-\u06ed]"
+)
+ARABIC_EVALUATION_TRANSLATION = str.maketrans(
+    {
+        "آ": "ا",
+        "أ": "ا",
+        "إ": "ا",
+        "ٱ": "ا",
+        "ٲ": "ا",
+        "ٳ": "ا",
+        "ٵ": "ا",
+        "ـ": "",
+    }
+)
+
+
 def normalize_text(text: str) -> str:
     """Normalize whitespace without changing letters or punctuation."""
     return re.sub(r"\s+", " ", text).strip()
+
+
+def normalize_text_for_evaluation(text: str) -> str:
+    """Normalize text for OCR metrics without changing distinct hamza letters."""
+    text = ARABIC_DIACRITICS_RE.sub("", text or "")
+    text = text.translate(ARABIC_EVALUATION_TRANSLATION)
+    return normalize_text(text)
 
 
 def tokenize_words(text: str):
@@ -249,8 +273,8 @@ def safe_accuracy(error_rate: float) -> float:
 
 def score_line_ocr(reference: str, prediction: str) -> dict[str, float | int]:
     """Score one OCR prediction using the project-wide line OCR metrics."""
-    reference = normalize_text(reference)
-    prediction = normalize_text(prediction)
+    reference = normalize_text_for_evaluation(reference)
+    prediction = normalize_text_for_evaluation(prediction)
     ref_words = tokenize_words(reference)
     pred_words = tokenize_words(prediction)
     char_distance = edit_distance(reference, prediction)

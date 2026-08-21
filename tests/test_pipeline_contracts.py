@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "thesis" / "scripts"))
 sys.path.insert(0, str(ROOT / "pipelines"))
 
+import common
+
 
 def load(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -170,6 +172,15 @@ def test_line_split_strategy_produces_even_split():
 
     assert len(train) == 80
     assert len(test) == 20
+
+
+def test_ocr_evaluation_normalizes_diacritics_and_alef_only():
+    assert common.normalize_text_for_evaluation("أَكَلَ") == "اكل"
+    assert common.normalize_text_for_evaluation("إلى آمال ٱدم") == "الى امال ادم"
+    assert common.normalize_text_for_evaluation("ئ") == "ئ"
+
+    assert common.score_line_ocr("اكل", "أَكَلَ")["line_accuracy"] == 1.0
+    assert common.score_line_ocr("سئل", "سال")["line_accuracy"] == 0.0
 
 
 def test_khatt_normalization_restores_rtl_logical_order():

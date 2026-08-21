@@ -77,10 +77,10 @@ def main() -> None:
     }
 
     for record in records:
-        reference = common.normalize_text(record.get("text") or "")
+        reference = common.normalize_text_for_evaluation(record.get("text") or "")
         for model, root in model_roots.items():
             pred_path = prediction_path(root, record["sample_id"])
-            prediction = common.normalize_text(read_prediction(pred_path))
+            prediction = common.normalize_text_for_evaluation(read_prediction(pred_path))
             scores = score_line(reference, prediction)
             missing = not pred_path.is_file()
             detail_rows.append(

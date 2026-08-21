@@ -67,8 +67,8 @@ def evaluate_predictions(records: list[dict], output_root: Path) -> dict:
     aggregate = common.empty_ocr_aggregate()
     for record in records:
         pred_path = prediction_dir(output_root, record["sample_id"]) / "prediction.txt"
-        prediction = common.normalize_text(read_prediction(pred_path))
-        reference = common.normalize_text(record.get("text") or "")
+        prediction = common.normalize_text_for_evaluation(read_prediction(pred_path))
+        reference = common.normalize_text_for_evaluation(record.get("text") or "")
         scores = common.score_line_ocr(reference, prediction)
         common.add_ocr_score(aggregate, scores, missing=not pred_path.is_file())
     summary = common.finalize_ocr_aggregate(aggregate)

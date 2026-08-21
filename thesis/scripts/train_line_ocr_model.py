@@ -800,7 +800,10 @@ def decode_predictions(processor, generated_ids, label_ids) -> tuple[list[str], 
 
 
 def cer(reference: str, hypothesis: str) -> float:
-    return common.ratio_error(common.normalize_text(reference), common.normalize_text(hypothesis))
+    return common.ratio_error(
+        common.normalize_text_for_evaluation(reference),
+        common.normalize_text_for_evaluation(hypothesis),
+    )
 
 
 def train_model(train: list[LineRecord], test: list[LineRecord], args: argparse.Namespace) -> None:

@@ -69,7 +69,7 @@ def main() -> None:
         gt_path = common.ground_truth_path(gt_root, record)
         if not gt_path.exists():
             continue
-        gt_text = common.normalize_text(common.read_text(gt_path))
+        gt_text = common.normalize_text_for_evaluation(common.read_text(gt_path))
         if not gt_text:
             continue
 
@@ -84,7 +84,7 @@ def main() -> None:
                 continue
             ocr_output_path = str(ocr_path.relative_to(common.PROJECT_ROOT))
 
-        ocr_text = common.normalize_text(common.read_text(ocr_path))
+        ocr_text = common.normalize_text_for_evaluation(common.read_text(ocr_path))
 
         gt_words = common.tokenize_words(gt_text)
         ocr_words = common.tokenize_words(ocr_text)
