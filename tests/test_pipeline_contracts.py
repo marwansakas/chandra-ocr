@@ -172,6 +172,28 @@ def test_line_split_strategy_produces_even_split():
     assert len(test) == 20
 
 
+def test_khatt_normalization_restores_rtl_logical_order():
+    assert trainer.normalize_khatt_text("هبحصب") == "بصحبه"
+    assert trainer.normalize_khatt_text("بهذ") == "ذهب"
+
+
+def test_khatt_records_are_added_to_training_only():
+    own_train = [
+        trainer.LineRecord("own", "own_page", "page", 1, 1, "own.png", "own text", [], [], None, "ground_truth_ready")
+    ]
+    khatt = [
+        trainer.LineRecord("khatt_000001", "khatt/train", "khatt", 1_000_001, 1, "khatt.png", "khatt text", [], [], None, "khatt_ready")
+    ]
+    test = [
+        trainer.LineRecord("test", "test_page", "page", 2, 1, "test.png", "test text", [], [], None, "ground_truth_ready")
+    ]
+
+    combined = trainer.combine_training_records(own_train, khatt, seed=42)
+
+    assert {record.sample_id for record in combined} == {"own", "khatt_000001"}
+    assert [record.sample_id for record in test] == ["test"]
+
+
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
     original_root = builder.PROJECT_ROOT
     builder.PROJECT_ROOT = tmp_path
