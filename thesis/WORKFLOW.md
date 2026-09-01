@@ -3,13 +3,15 @@
 This folder turns the Chandra OCR output into reports you can use for comparing
 children by page, student/notebook, grade, gender, and school/place.
 
-The four systems have separate entry points:
+The four OCR stages and the general-Arabic decoding variant have separate entry
+points:
 
 ```bash
 python pipelines/surya.py --start-pdf 1 --limit 100
 python pipelines/chandra_run.py --continue-on-error
 python pipelines/invizo_run.py --command "YOUR INVIZO COMMAND {input} {output}"
 python pipelines/my_TrOCR_run.py
+python pipelines/general_arabic_trocr_run.py --device cuda
 ```
 
 Surya creates line crops and geometry. Chandra recognizes those line crops.
@@ -94,6 +96,15 @@ Generate predictions from both custom models:
 
 ```bash
 python pipelines/my_TrOCR_run.py
+```
+
+Download the pinned LibreOffice Arabic dictionary once, then generate the
+dictionary-aware TrOCR predictions. This step reuses the trained TrOCR weights;
+it does not train on dictionary words or ground-truth test labels.
+
+```bash
+python thesis/scripts/download_general_arabic_dictionary.py
+python pipelines/general_arabic_trocr_run.py --device cuda
 ```
 
 ## 6. Score Text and Handwriting
