@@ -28,6 +28,12 @@ __pycache__/
 /thesis/invizo/reports/*
 !/thesis/invizo/reports/.gitkeep
 /thesis/predictions/
+/thesis/dictionaries/general_arabic/*.aff
+/thesis/dictionaries/general_arabic/*.dic
+/thesis/dictionaries/general_arabic/AUTHORS.txt
+/thesis/dictionaries/general_arabic/COPYING.txt
+/thesis/dictionaries/general_arabic/README_ar.txt
+/thesis/dictionaries/general_arabic/source.json
 /thesis/predictions_ctc/
 /thesis/labels/surya_line_ground_truth_ml/
 /thesis/labels/surya_line_ground_truth_ctc/

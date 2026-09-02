@@ -28,6 +28,19 @@ trainer = load("trainer", ROOT / "thesis" / "scripts" / "train_line_ocr_model.py
 ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_ocr_model.py")
 line_common = load("line_common", ROOT / "pipelines" / "line_runner_common.py")
 ground_truth_cleaner = load("ground_truth_cleaner", ROOT / "build_ground_truth_lines_dataset.py")
+general_decoder = load("general_decoder", ROOT / "pipelines" / "general_arabic_trocr_run.py")
+
+
+class FakeArabicLexicon:
+    def __init__(self, words: set[str], suggestions: dict[str, list[str]] | None = None):
+        self.words = words
+        self.suggestions = suggestions or {}
+
+    def lookup(self, word: str) -> bool:
+        return word in self.words
+
+    def suggest(self, word: str, limit: int):
+        return self.suggestions.get(word, [])[:limit]
 
 
 def test_find_pdfs_uses_numeric_rank_order(tmp_path: Path):
@@ -267,3 +280,61 @@ def test_ctc_greedy_decode_collapses_repeats_and_blanks():
 
 def test_ctc_min_time_steps_accounts_for_repeated_labels():
     assert ctc_trainer.ctc_min_time_steps([1, 2, 2, 1]) == 5
+
+
+def test_general_arabic_normalization_removes_marks_without_collapsing_letters():
+    assert general_decoder.normalize_lookup_word("مَـدْرَسَة") == "مدرسة"
+    assert general_decoder.normalize_lookup_word("إلى") == "إلى"
+
+
+def test_general_arabic_distance_prefers_visual_letter_confusions():
+    assert general_decoder.weighted_edit_distance("ذهپ", "ذهب") < general_decoder.weighted_edit_distance("ذهپ", "ذهم")
+
+
+def test_dictionary_decoder_corrects_close_arabic_word_and_preserves_punctuation():
+    lexicon = FakeArabicLexicon({"ذهب", "الولد"}, {"ذهپ": ["ذهب"]})
+    corrected, changes = general_decoder.correct_text(
+        "ذهپ الولد!",
+        lexicon,
+        max_edit_distance=2,
+        max_distance_ratio=0.34,
+        suggestion_limit=8,
+    )
+    assert corrected == "ذهب الولد!"
+    assert [(change.original, change.replacement) for change in changes] == [("ذهپ", "ذهب")]
+
+
+def test_dictionary_decoder_falls_back_when_improvement_is_too_small():
+    lexicon = FakeArabicLexicon({"ذهب", "الولد"}, {"ذهپ": ["ذهب"]})
+    prediction, _, _, used_dictionary, _ = general_decoder.choose_prediction(
+        ["ذهپ الولد", "ذهب الولد"],
+        [0.0, -2.0],
+        lexicon,
+        dictionary_weight=0.1,
+        edit_penalty=1.0,
+        oov_penalty=0.1,
+        min_improvement=0.2,
+        max_edit_distance=2,
+        max_distance_ratio=0.34,
+        suggestion_limit=8,
+    )
+    assert prediction == "ذهپ الولد"
+    assert not used_dictionary
+
+
+def test_dictionary_decoder_selects_clear_dictionary_improvement():
+    lexicon = FakeArabicLexicon({"ذهب", "الولد"}, {"ذهپ": ["ذهب"]})
+    prediction, _, _, used_dictionary, _ = general_decoder.choose_prediction(
+        ["ذهپ الولد"],
+        [0.0],
+        lexicon,
+        dictionary_weight=1.0,
+        edit_penalty=0.1,
+        oov_penalty=0.5,
+        min_improvement=0.1,
+        max_edit_distance=2,
+        max_distance_ratio=0.34,
+        suggestion_limit=8,
+    )
+    assert prediction == "ذهب الولد"
+    assert used_dictionary

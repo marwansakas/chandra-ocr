@@ -11,6 +11,7 @@ torch>=2.2
 transformers>=4.45
 sentencepiece>=0.2
 datasets>=2.20
+spylls==0.1.7
 
 # Tests
 pytest>=8

@@ -1,4 +1,4 @@
-"""Compare Chandra, Invizo, and thesis TrOCR predictions on the same test lines."""
+"""Compare all OCR prediction variants on the same held-out test lines."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ DEFAULT_MODELS = {
     "chandra": common.PROJECT_ROOT / "thesis" / "predictions" / "chandra",
     "invizo": common.PROJECT_ROOT / "thesis" / "predictions" / "invizo",
     "my_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "my_TrOCR",
+    "general_arabic_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "general_arabic_TrOCR",
 }
 
 
@@ -25,6 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--chandra-root", type=Path, default=DEFAULT_MODELS["chandra"])
     parser.add_argument("--invizo-root", type=Path, default=DEFAULT_MODELS["invizo"])
     parser.add_argument("--trocr-root", type=Path, default=DEFAULT_MODELS["my_TrOCR"])
+    parser.add_argument("--general-arabic-root", type=Path, default=DEFAULT_MODELS["general_arabic_TrOCR"])
     return parser.parse_args()
 
 
@@ -68,6 +70,7 @@ def main() -> None:
         "chandra": args.chandra_root,
         "invizo": args.invizo_root,
         "my_TrOCR": args.trocr_root,
+        "general_arabic_TrOCR": args.general_arabic_root,
     }
 
     detail_rows = []

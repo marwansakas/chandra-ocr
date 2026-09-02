@@ -1,14 +1,16 @@
 # Arabic children handwriting OCR
 
 This project creates line images from elementary-school Arabic handwriting and
-runs three independent OCR systems over the same images:
+runs three independent OCR systems plus one dictionary-aware TrOCR variant over
+the same images:
 
 1. Chandra
 2. Invizo
 3. The fine-tuned thesis TrOCR model
+4. General-Arabic dictionary-aware TrOCR decoding
 
-Accuracy evaluation is intentionally not part of the current workflow because
-the manual ground-truth labels are not ready yet.
+The clean labeled line dataset supports held-out evaluation. Chandra-generated
+pseudo-labels must not be treated as manual ground truth.
 
 ## Project flow
 
@@ -24,6 +26,8 @@ thesis/datasets/ground_truth_lines/<global>_<page>_<line>/image.png
         +--> chandra_run.py  --> thesis/predictions/chandra/
         +--> invizo_run.py   --> thesis/predictions/invizo/
         +--> my_TrOCR_run.py --> thesis/predictions/my_TrOCR/
+        +--> general_arabic_trocr_run.py
+                             --> thesis/predictions/general_arabic_TrOCR/
 ```
 
 The OCR runners read only `image.png`. Training and evaluation read
@@ -183,10 +187,46 @@ python pipelines/my_TrOCR_run.py \
 
 TrOCR uses a ViT image encoder and autoregressive text decoder.
 
-## 7. Compare all three models on the held-out test split
+## 7. General-Arabic dictionary-aware TrOCR
 
-After Chandra, Invizo, and TrOCR predictions exist, compare them against the
-same ground-truth test lines:
+This decoder does not retrain the image model. It generates six TrOCR beam
+candidates, checks Arabic word forms with the LibreOffice Hunspell dictionary,
+and selects a dictionary-supported candidate only when it beats the raw TrOCR
+prediction by a configurable margin. Otherwise it preserves the raw prediction.
+
+Install the decoder dependency and download the pinned dictionary:
+
+```bash
+python -m pip install -r requirements.txt
+python thesis/scripts/download_general_arabic_dictionary.py
+```
+
+Run it on the held-out test split:
+
+```bash
+python pipelines/general_arabic_trocr_run.py \
+  --model thesis/models/ground_truth_line_trocr \
+  --test-manifest thesis/datasets/ground_truth_lines_ml/test.jsonl \
+  --device cuda
+```
+
+Each line output contains:
+
+```text
+prediction.txt       # selected dictionary-aware result or raw fallback
+raw_prediction.txt   # best raw TrOCR beam
+candidates.json      # beams, scores, coverage, and proposed corrections
+metadata.json
+```
+
+The dictionary is a linguistic decoding aid, not a source of ground truth. The
+Grade 1 decoder is intentionally deferred until the correct curriculum is
+available.
+
+## 8. Compare all prediction models on the held-out test split
+
+After Chandra, Invizo, raw TrOCR, and dictionary-aware TrOCR predictions exist,
+compare them against the same ground-truth test lines:
 
 ```bash
 python thesis/scripts/compare_line_ocr_models.py
@@ -199,8 +239,8 @@ thesis/reports/line_ocr_model_comparison.csv
 thesis/reports/line_ocr_model_comparison_summary.csv
 ```
 
-The report includes letter accuracy, word accuracy, and exact-line accuracy
-for Chandra, Invizo, and the thesis TrOCR model.
+The report includes letter accuracy, word accuracy, and exact-line accuracy for
+Chandra, Invizo, raw thesis TrOCR, and general-Arabic dictionary-aware TrOCR.
 
 ## Prediction output
 
