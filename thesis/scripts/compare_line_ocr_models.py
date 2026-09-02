@@ -16,6 +16,7 @@ DEFAULT_MODELS = {
     "invizo": common.PROJECT_ROOT / "thesis" / "predictions" / "invizo",
     "my_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "my_TrOCR",
     "general_arabic_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "general_arabic_TrOCR",
+    "cnn_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "cnn_TrOCR",
 }
 
 
@@ -27,6 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--invizo-root", type=Path, default=DEFAULT_MODELS["invizo"])
     parser.add_argument("--trocr-root", type=Path, default=DEFAULT_MODELS["my_TrOCR"])
     parser.add_argument("--general-arabic-root", type=Path, default=DEFAULT_MODELS["general_arabic_TrOCR"])
+    parser.add_argument("--cnn-trocr-root", type=Path, default=DEFAULT_MODELS["cnn_TrOCR"])
     return parser.parse_args()
 
 
@@ -65,12 +67,15 @@ def main() -> None:
     args.chandra_root = project_path(args.chandra_root)
     args.invizo_root = project_path(args.invizo_root)
     args.trocr_root = project_path(args.trocr_root)
+    args.general_arabic_root = project_path(args.general_arabic_root)
+    args.cnn_trocr_root = project_path(args.cnn_trocr_root)
     records = read_manifest(args.test_manifest)
     model_roots = {
         "chandra": args.chandra_root,
         "invizo": args.invizo_root,
         "my_TrOCR": args.trocr_root,
         "general_arabic_TrOCR": args.general_arabic_root,
+        "cnn_TrOCR": args.cnn_trocr_root,
     }
 
     detail_rows = []

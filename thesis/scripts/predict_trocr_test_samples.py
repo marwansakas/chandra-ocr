@@ -96,12 +96,18 @@ def load_experiment_config(model_dir: Path) -> dict:
     return json.loads(config_path.read_text(encoding="utf-8"))
 
 
-def write_evaluation_result(model_dir: Path, output_root: Path, test_manifest: Path, metrics: dict) -> Path:
+def write_evaluation_result(
+    model_dir: Path,
+    output_root: Path,
+    test_manifest: Path,
+    metrics: dict,
+    model_label: str = "TrOCR",
+) -> Path:
     experiment = load_experiment_config(model_dir)
     report_dir = common.PROJECT_ROOT / "thesis" / "reports" / "trocr_experiments"
     report_dir.mkdir(parents=True, exist_ok=True)
     result = {
-        "model": "TrOCR",
+        "model": model_label,
         "checkpoint": str(model_dir),
         "prediction_root": str(output_root),
         "test_split": str(test_manifest),

@@ -29,6 +29,7 @@ ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_
 line_common = load("line_common", ROOT / "pipelines" / "line_runner_common.py")
 ground_truth_cleaner = load("ground_truth_cleaner", ROOT / "build_ground_truth_lines_dataset.py")
 general_decoder = load("general_decoder", ROOT / "pipelines" / "general_arabic_trocr_run.py")
+cnn_trocr_model = load("cnn_trocr_model", ROOT / "thesis" / "scripts" / "cnn_trocr_model.py")
 
 
 class FakeArabicLexicon:
@@ -338,3 +339,12 @@ def test_dictionary_decoder_selects_clear_dictionary_improvement():
     )
     assert prediction == "ذهب الولد"
     assert used_dictionary
+
+
+def test_cnn_trocr_config_defaults_preserve_rgb_shape_contract():
+    config = cnn_trocr_model.CNNTrOCRConfig()
+    assert config.input_channels == 3
+    assert config.hidden_channels == 32
+    assert config.layers == 2
+    assert config.kernel_size == 3
+    assert config.residual_scale == 0.1
