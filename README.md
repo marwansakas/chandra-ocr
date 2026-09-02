@@ -1,13 +1,13 @@
 # Arabic children handwriting OCR
 
 This project creates line images from elementary-school Arabic handwriting and
-runs three independent OCR systems plus one dictionary-aware TrOCR variant over
-the same images:
+runs three independent OCR systems plus two TrOCR variants over the same images:
 
 1. Chandra
 2. Invizo
 3. The fine-tuned thesis TrOCR model
 4. General-Arabic dictionary-aware TrOCR decoding
+5. Experimental CNN-fronted TrOCR
 
 The clean labeled line dataset supports held-out evaluation. Chandra-generated
 pseudo-labels must not be treated as manual ground truth.
@@ -28,6 +28,8 @@ thesis/datasets/ground_truth_lines/<global>_<page>_<line>/image.png
         +--> my_TrOCR_run.py --> thesis/predictions/my_TrOCR/
         +--> general_arabic_trocr_run.py
                              --> thesis/predictions/general_arabic_TrOCR/
+        +--> cnn_TrOCR_run.py
+                             --> thesis/predictions/cnn_TrOCR/
 ```
 
 The OCR runners read only `image.png`. Training and evaluation read
@@ -119,7 +121,9 @@ Then train:
 ```bash
 python thesis/scripts/train_line_ocr_model.py \
   --epochs 5 \
-  --batch-size 4
+  --batch-size 4 \
+  --views-per-line 3 \
+  --augmentation-profile light
 ```
 
 The model is saved to:
@@ -187,7 +191,86 @@ python pipelines/my_TrOCR_run.py \
 
 TrOCR uses a ViT image encoder and autoregressive text decoder.
 
-## 7. General-Arabic dictionary-aware TrOCR
+## 7. TrOCR augmentation experiments
+
+The baseline TrOCR trainer can produce multiple models from the same data split
+by changing only the image augmentation used for extra training views:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 \
+  --batch-size 4 \
+  --views-per-line 3 \
+  --device cuda
+```
+
+Each profile still trains the same `my_TrOCR` architecture. The profiles save
+separate checkpoints under:
+
+```text
+thesis/models/augmentation_trocr/<profile>/
+```
+
+and separate predictions under:
+
+```text
+thesis/predictions/augmentation_trocr/<profile>/
+```
+
+The launcher writes the augmentation comparison to:
+
+```text
+thesis/reports/trocr_augmentation_experiments.csv
+```
+
+Available profiles:
+
+- `none`: no image changes; control model
+- `light`: brightness, contrast, and white margin changes
+- `scan`: brightness, contrast, blur/sharpen, and scanner-like intensity noise
+- `geometry`: small rotation, translation, and width scaling
+- `stroke`: small stroke thickening or thinning
+- `mixed`: combines scan, geometry, and stroke changes
+
+## 8. Experimental CNN-fronted TrOCR
+
+The CNN experiment adds a small residual convolutional block before the TrOCR
+Transformer encoder. It is trained and stored separately from the baseline so
+the baseline remains a clean comparison point.
+
+Train the CNN-fronted model on the same split:
+
+```bash
+python thesis/scripts/train_cnn_trocr_model.py \
+  --epochs 5 \
+  --batch-size 4
+```
+
+The model is saved to:
+
+```text
+thesis/models/ground_truth_line_cnn_trocr/
+```
+
+Predict only the held-out test split:
+
+```bash
+python thesis/scripts/predict_cnn_trocr_test_samples.py --device cuda
+```
+
+To run it over the clean line dataset:
+
+```bash
+python pipelines/cnn_TrOCR_run.py \
+  --model thesis/models/ground_truth_line_cnn_trocr \
+  --input-root thesis/datasets/ground_truth_lines \
+  --output-root thesis/predictions/cnn_TrOCR \
+  --batch-size 8 \
+  --device cuda
+```
+
+## 9. General-Arabic dictionary-aware TrOCR
 
 This decoder does not retrain the image model. It generates six TrOCR beam
 candidates, checks Arabic word forms with the LibreOffice Hunspell dictionary,
@@ -223,10 +306,10 @@ The dictionary is a linguistic decoding aid, not a source of ground truth. The
 Grade 1 decoder is intentionally deferred until the correct curriculum is
 available.
 
-## 8. Compare all prediction models on the held-out test split
+## 10. Compare all prediction models on the held-out test split
 
-After Chandra, Invizo, raw TrOCR, and dictionary-aware TrOCR predictions exist,
-compare them against the same ground-truth test lines:
+After Chandra, Invizo, raw TrOCR, dictionary-aware TrOCR, and CNN-TrOCR
+predictions exist, compare them against the same ground-truth test lines:
 
 ```bash
 python thesis/scripts/compare_line_ocr_models.py
@@ -240,7 +323,8 @@ thesis/reports/line_ocr_model_comparison_summary.csv
 ```
 
 The report includes letter accuracy, word accuracy, and exact-line accuracy for
-Chandra, Invizo, raw thesis TrOCR, and general-Arabic dictionary-aware TrOCR.
+Chandra, Invizo, raw thesis TrOCR, general-Arabic dictionary-aware TrOCR, and
+CNN-TrOCR.
 
 ## Prediction output
 

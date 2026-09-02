@@ -448,8 +448,8 @@ def evaluate(model, loader, idx_to_char: dict[int, str], device, eval_limit: int
             for record, ids in zip(batch["records"], pred_ids):
                 prediction = ctc_greedy_decode(ids, idx_to_char)
                 total_cer += common.ratio_error(
-                    common.normalize_text(record.text),
-                    common.normalize_text(prediction),
+                    common.normalize_text_for_evaluation(record.text),
+                    common.normalize_text_for_evaluation(prediction),
                 )
                 count += 1
                 if eval_limit is not None and count >= eval_limit:

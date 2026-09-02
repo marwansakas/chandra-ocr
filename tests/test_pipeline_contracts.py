@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "thesis" / "scripts"))
 sys.path.insert(0, str(ROOT / "pipelines"))
 
+import common
+
 
 def load(name: str, path: Path):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -27,6 +29,7 @@ ctc_trainer = load("ctc_trainer", ROOT / "thesis" / "scripts" / "train_ctc_line_
 line_common = load("line_common", ROOT / "pipelines" / "line_runner_common.py")
 ground_truth_cleaner = load("ground_truth_cleaner", ROOT / "build_ground_truth_lines_dataset.py")
 general_decoder = load("general_decoder", ROOT / "pipelines" / "general_arabic_trocr_run.py")
+cnn_trocr_model = load("cnn_trocr_model", ROOT / "thesis" / "scripts" / "cnn_trocr_model.py")
 
 
 class FakeArabicLexicon:
@@ -185,6 +188,37 @@ def test_line_split_strategy_produces_even_split():
     assert len(test) == 20
 
 
+def test_ocr_evaluation_normalizes_diacritics_and_alef_only():
+    assert common.normalize_text_for_evaluation("أَكَلَ") == "اكل"
+    assert common.normalize_text_for_evaluation("إلى آمال ٱدم") == "الى امال ادم"
+    assert common.normalize_text_for_evaluation("ئ") == "ئ"
+
+    assert common.score_line_ocr("اكل", "أَكَلَ")["line_accuracy"] == 1.0
+    assert common.score_line_ocr("سئل", "سال")["line_accuracy"] == 0.0
+
+
+def test_khatt_normalization_restores_rtl_logical_order():
+    assert trainer.normalize_khatt_text("هبحصب") == "بصحبه"
+    assert trainer.normalize_khatt_text("بهذ") == "ذهب"
+
+
+def test_khatt_records_are_added_to_training_only():
+    own_train = [
+        trainer.LineRecord("own", "own_page", "page", 1, 1, "own.png", "own text", [], [], None, "ground_truth_ready")
+    ]
+    khatt = [
+        trainer.LineRecord("khatt_000001", "khatt/train", "khatt", 1_000_001, 1, "khatt.png", "khatt text", [], [], None, "khatt_ready")
+    ]
+    test = [
+        trainer.LineRecord("test", "test_page", "page", 2, 1, "test.png", "test text", [], [], None, "ground_truth_ready")
+    ]
+
+    combined = trainer.combine_training_records(own_train, khatt, seed=42)
+
+    assert {record.sample_id for record in combined} == {"own", "khatt_000001"}
+    assert [record.sample_id for record in test] == ["test"]
+
+
 def test_page_complete_requires_image_and_ground_truth(tmp_path: Path):
     original_root = builder.PROJECT_ROOT
     builder.PROJECT_ROOT = tmp_path
@@ -305,3 +339,25 @@ def test_dictionary_decoder_selects_clear_dictionary_improvement():
     )
     assert prediction == "ذهب الولد"
     assert used_dictionary
+
+
+def test_cnn_trocr_config_defaults_preserve_rgb_shape_contract():
+    config = cnn_trocr_model.CNNTrOCRConfig()
+    assert config.input_channels == 3
+    assert config.hidden_channels == 32
+    assert config.layers == 2
+    assert config.kernel_size == 3
+    assert config.residual_scale == 0.1
+
+
+def test_trocr_augmentation_profiles_include_control_and_handwriting_variants():
+    assert trainer.AUGMENTATION_PROFILES == ("none", "light", "scan", "geometry", "stroke", "mixed")
+
+
+def test_geometry_augmentation_preserves_image_size():
+    from PIL import Image
+
+    image = Image.new("RGB", (120, 32), "white")
+    rng = __import__("random").Random("augmentation-test")
+    augmented = trainer.apply_line_augmentation(image, rng, "geometry")
+    assert augmented.size == image.size

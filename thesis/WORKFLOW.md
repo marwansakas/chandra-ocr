@@ -3,8 +3,7 @@
 This folder turns the Chandra OCR output into reports you can use for comparing
 children by page, student/notebook, grade, gender, and school/place.
 
-The four OCR stages and the general-Arabic decoding variant have separate entry
-points:
+The OCR stages and TrOCR variants have separate entry points:
 
 ```bash
 python pipelines/surya.py --start-pdf 1 --limit 100
@@ -12,6 +11,7 @@ python pipelines/chandra_run.py --continue-on-error
 python pipelines/invizo_run.py --command "YOUR INVIZO COMMAND {input} {output}"
 python pipelines/my_TrOCR_run.py
 python pipelines/general_arabic_trocr_run.py --device cuda
+python pipelines/cnn_TrOCR_run.py --device cuda
 ```
 
 Surya creates line crops and geometry. Chandra recognizes those line crops.
@@ -89,13 +89,41 @@ Train with multiple label-preserving full-line views:
 
 ```bash
 python thesis/scripts/train_line_ocr_model.py \
-  --epochs 5 --batch-size 4 --views-per-line 3
+  --epochs 5 --batch-size 4 --views-per-line 3 --augmentation-profile light
 ```
 
-Generate predictions from both custom models:
+To answer which augmentation helps most, train separate baseline TrOCR models
+with different augmentation profiles and compare their held-out scores:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 --batch-size 4 --views-per-line 3 --device cuda
+```
+
+This writes:
+
+```text
+thesis/models/augmentation_trocr/<profile>/
+thesis/predictions/augmentation_trocr/<profile>/
+thesis/reports/trocr_augmentation_experiments.csv
+```
+
+Generate predictions from the baseline TrOCR model:
 
 ```bash
 python pipelines/my_TrOCR_run.py
+```
+
+Train and run the experimental CNN-fronted TrOCR model. This model adds a
+small residual convolutional feature block before the TrOCR Transformer encoder,
+and saves to a separate checkpoint so its scores can be compared fairly with the
+baseline.
+
+```bash
+python thesis/scripts/train_cnn_trocr_model.py \
+  --epochs 5 --batch-size 4 --views-per-line 3
+python thesis/scripts/predict_cnn_trocr_test_samples.py --device cuda
 ```
 
 Download the pinned LibreOffice Arabic dictionary once, then generate the

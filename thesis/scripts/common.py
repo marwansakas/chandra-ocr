@@ -210,9 +210,33 @@ def write_utf8_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+ARABIC_DIACRITICS_RE = re.compile(
+    "[\u0610-\u061a\u064b-\u065f\u0670\u06d6-\u06dc\u06df-\u06e8\u06ea-\u06ed]"
+)
+ARABIC_EVALUATION_TRANSLATION = str.maketrans(
+    {
+        "آ": "ا",
+        "أ": "ا",
+        "إ": "ا",
+        "ٱ": "ا",
+        "ٲ": "ا",
+        "ٳ": "ا",
+        "ٵ": "ا",
+        "ـ": "",
+    }
+)
+
+
 def normalize_text(text: str) -> str:
     """Normalize whitespace without changing letters or punctuation."""
     return re.sub(r"\s+", " ", text).strip()
+
+
+def normalize_text_for_evaluation(text: str) -> str:
+    """Normalize text for OCR metrics without changing distinct hamza letters."""
+    text = ARABIC_DIACRITICS_RE.sub("", text or "")
+    text = text.translate(ARABIC_EVALUATION_TRANSLATION)
+    return normalize_text(text)
 
 
 def tokenize_words(text: str):
@@ -240,6 +264,77 @@ def ratio_error(reference, hypothesis) -> float:
     if not reference:
         return 0.0 if not hypothesis else 1.0
     return edit_distance(reference, hypothesis) / len(reference)
+
+
+def safe_accuracy(error_rate: float) -> float:
+    """Convert an error rate to an accuracy, clamped at zero."""
+    return max(0.0, 1.0 - error_rate)
+
+
+def score_line_ocr(reference: str, prediction: str) -> dict[str, float | int]:
+    """Score one OCR prediction using the project-wide line OCR metrics."""
+    reference = normalize_text_for_evaluation(reference)
+    prediction = normalize_text_for_evaluation(prediction)
+    ref_words = tokenize_words(reference)
+    pred_words = tokenize_words(prediction)
+    char_distance = edit_distance(reference, prediction)
+    word_distance = edit_distance(ref_words, pred_words)
+    char_error = char_distance / len(reference) if reference else (0.0 if not prediction else 1.0)
+    word_error = word_distance / len(ref_words) if ref_words else (0.0 if not pred_words else 1.0)
+    return {
+        "reference_chars": len(reference),
+        "prediction_chars": len(prediction),
+        "reference_words": len(ref_words),
+        "prediction_words": len(pred_words),
+        "char_distance": char_distance,
+        "word_distance": word_distance,
+        "letter_accuracy": safe_accuracy(char_error),
+        "word_accuracy": safe_accuracy(word_error),
+        "line_accuracy": 1.0 if reference == prediction else 0.0,
+    }
+
+
+def empty_ocr_aggregate() -> dict[str, int]:
+    return {
+        "evaluated_lines": 0,
+        "missing_predictions": 0,
+        "exact_lines": 0,
+        "reference_chars": 0,
+        "char_distance": 0,
+        "reference_words": 0,
+        "word_distance": 0,
+    }
+
+
+def add_ocr_score(aggregate: dict[str, int], scores: dict[str, float | int], missing: bool = False) -> None:
+    aggregate["evaluated_lines"] += 1
+    aggregate["missing_predictions"] += int(missing)
+    aggregate["exact_lines"] += int(scores["line_accuracy"])
+    aggregate["reference_chars"] += int(scores["reference_chars"])
+    aggregate["char_distance"] += int(scores["char_distance"])
+    aggregate["reference_words"] += int(scores["reference_words"])
+    aggregate["word_distance"] += int(scores["word_distance"])
+
+
+def finalize_ocr_aggregate(aggregate: dict[str, int]) -> dict[str, float | int]:
+    evaluated = aggregate["evaluated_lines"]
+    line_accuracy = aggregate["exact_lines"] / evaluated if evaluated else 0.0
+    letter_accuracy = (
+        safe_accuracy(aggregate["char_distance"] / aggregate["reference_chars"])
+        if aggregate["reference_chars"]
+        else 0.0
+    )
+    word_accuracy = (
+        safe_accuracy(aggregate["word_distance"] / aggregate["reference_words"])
+        if aggregate["reference_words"]
+        else 0.0
+    )
+    return {
+        **aggregate,
+        "letter_accuracy": letter_accuracy,
+        "word_accuracy": word_accuracy,
+        "line_accuracy": line_accuracy,
+    }
 
 
 def ocr_markdown_output_path(ocr_root: Path, source_path: Path | str) -> Optional[Path]:

@@ -44,6 +44,10 @@ def project_path(path: str | Path) -> Path:
     return path if path.is_absolute() else common.PROJECT_ROOT / path
 
 
+def pct(value: float) -> str:
+    return f"{100 * value:.2f}"
+
+
 def write_prediction(output_dir: Path, text: str, metadata: dict) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "prediction.txt").write_text(text.strip() + "\n", encoding="utf-8")
@@ -53,8 +57,79 @@ def write_prediction(output_dir: Path, text: str, metadata: dict) -> None:
     )
 
 
+def read_prediction(path: Path) -> str:
+    if not path.is_file():
+        return ""
+    return path.read_text(encoding="utf-8", errors="replace").strip()
+
+
+def evaluate_predictions(records: list[dict], output_root: Path) -> dict:
+    aggregate = common.empty_ocr_aggregate()
+    for record in records:
+        pred_path = prediction_dir(output_root, record["sample_id"]) / "prediction.txt"
+        prediction = common.normalize_text_for_evaluation(read_prediction(pred_path))
+        reference = common.normalize_text_for_evaluation(record.get("text") or "")
+        scores = common.score_line_ocr(reference, prediction)
+        common.add_ocr_score(aggregate, scores, missing=not pred_path.is_file())
+    summary = common.finalize_ocr_aggregate(aggregate)
+    return {
+        "test_lines": summary["evaluated_lines"],
+        "missing_predictions": summary["missing_predictions"],
+        "letter_accuracy": summary["letter_accuracy"],
+        "word_accuracy": summary["word_accuracy"],
+        "exact_line_accuracy": summary["line_accuracy"],
+        "letter_accuracy_pct": pct(float(summary["letter_accuracy"])),
+        "word_accuracy_pct": pct(float(summary["word_accuracy"])),
+        "exact_line_accuracy_pct": pct(float(summary["line_accuracy"])),
+        "exact_lines_correct": summary["exact_lines"],
+        "total_reference_chars": summary["reference_chars"],
+        "total_char_distance": summary["char_distance"],
+        "total_reference_words": summary["reference_words"],
+        "total_word_distance": summary["word_distance"],
+    }
+
+
+def load_experiment_config(model_dir: Path) -> dict:
+    config_path = model_dir / "experiment_config.json"
+    if not config_path.is_file():
+        return {}
+    return json.loads(config_path.read_text(encoding="utf-8"))
+
+
+def write_evaluation_result(
+    model_dir: Path,
+    output_root: Path,
+    test_manifest: Path,
+    metrics: dict,
+    model_label: str = "TrOCR",
+) -> Path:
+    experiment = load_experiment_config(model_dir)
+    report_dir = common.PROJECT_ROOT / "thesis" / "reports" / "trocr_experiments"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    result = {
+        "model": model_label,
+        "checkpoint": str(model_dir),
+        "prediction_root": str(output_root),
+        "test_split": str(test_manifest),
+        "khatt_enabled": experiment.get("khatt_enabled", False),
+        "khatt_samples_requested": experiment.get("khatt_samples_requested", 0),
+        "khatt_samples_used": experiment.get("khatt_samples_used", 0),
+        "khatt_dataset_name": experiment.get("khatt_dataset_name", ""),
+        "own_training_lines": experiment.get("own_training_samples"),
+        "combined_training_lines": experiment.get("combined_training_samples"),
+        "random_seed": experiment.get("random_seed"),
+        **metrics,
+    }
+    result_path = report_dir / f"{model_dir.name}_evaluation.json"
+    result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return result_path
+
+
 def main() -> None:
     args = parse_args()
+    args.test_manifest = project_path(args.test_manifest)
+    args.model = project_path(args.model)
+    args.output_root = project_path(args.output_root)
     if args.batch_size < 1:
         raise SystemExit("--batch-size must be at least 1")
     if args.max_length < 1:
@@ -135,11 +210,19 @@ def main() -> None:
         "device": str(device),
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
+    metrics = evaluate_predictions(records, args.output_root)
+    result_path = write_evaluation_result(args.model, args.output_root, args.test_manifest, metrics)
     (args.output_root / "run_summary.json").write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
     print(json.dumps(summary, indent=2), flush=True)
+    print("TrOCR evaluation:")
+    print(f"  Letter accuracy:     {metrics['letter_accuracy_pct']}%")
+    print(f"  Word accuracy:       {metrics['word_accuracy_pct']}%")
+    print(f"  Exact line accuracy: {metrics['exact_line_accuracy_pct']}%")
+    print(f"  Exact lines correct: {metrics['exact_lines_correct']} / {metrics['test_lines']}")
+    print(f"Wrote {result_path}", flush=True)
 
 
 if __name__ == "__main__":

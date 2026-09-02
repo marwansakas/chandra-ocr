@@ -1,7 +1,7 @@
 # OCR pipelines
 
-The project has four primary stages and one dictionary-aware TrOCR decoding
-variant. Each owns one output directory and can run without changing another
+The project has four primary stages plus dictionary-aware and CNN-fronted TrOCR
+variants. Each owns one output directory and can run without changing another
 engine's output.
 
 | Stage | Entry point | Default output |
@@ -11,6 +11,7 @@ engine's output.
 | Invizo line OCR | `python pipelines/invizo_run.py` | `thesis/predictions/invizo` |
 | Thesis TrOCR | `python pipelines/my_TrOCR_run.py` | `thesis/predictions/my_TrOCR` |
 | General-Arabic TrOCR | `python pipelines/general_arabic_trocr_run.py` | `thesis/predictions/general_arabic_TrOCR` |
+| CNN-TrOCR | `python pipelines/cnn_TrOCR_run.py` | `thesis/predictions/cnn_TrOCR` |
 
 All paths may be overridden on the command line. Large source files, downloaded
 repositories, model weights, and generated outputs stay outside Git.
@@ -22,5 +23,15 @@ The OCR runners never use `ground_truth.txt` as input to recognition or modify
 it. Each writes `prediction.txt`, `metadata.json`, a combined
 `predictions.jsonl`, and `run_summary.json` under its own output directory. The
 general-Arabic decoder additionally preserves `raw_prediction.txt` and all beam
-scores in `candidates.json`.
+scores in `candidates.json`. CNN-TrOCR uses a separate checkpoint trained by
+`python thesis/scripts/train_cnn_trocr_model.py`.
+
+To train multiple baseline TrOCR checkpoints with different image augmentation
+profiles, run:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 --batch-size 4 --views-per-line 3 --device cuda
+```
 

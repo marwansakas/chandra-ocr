@@ -16,6 +16,7 @@ DEFAULT_MODELS = {
     "invizo": common.PROJECT_ROOT / "thesis" / "predictions" / "invizo",
     "my_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "my_TrOCR",
     "general_arabic_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "general_arabic_TrOCR",
+    "cnn_TrOCR": common.PROJECT_ROOT / "thesis" / "predictions" / "cnn_TrOCR",
 }
 
 
@@ -27,7 +28,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--invizo-root", type=Path, default=DEFAULT_MODELS["invizo"])
     parser.add_argument("--trocr-root", type=Path, default=DEFAULT_MODELS["my_TrOCR"])
     parser.add_argument("--general-arabic-root", type=Path, default=DEFAULT_MODELS["general_arabic_TrOCR"])
+    parser.add_argument("--cnn-trocr-root", type=Path, default=DEFAULT_MODELS["cnn_TrOCR"])
     return parser.parse_args()
+
+
+def project_path(path: Path) -> Path:
+    return path if path.is_absolute() else common.PROJECT_ROOT / path
 
 
 def read_manifest(path: Path) -> list[dict]:
@@ -50,61 +56,39 @@ def pct(value: float) -> str:
     return f"{100 * value:.2f}"
 
 
-def safe_accuracy(error_rate: float) -> float:
-    return max(0.0, 1.0 - error_rate)
-
-
 def score_line(reference: str, prediction: str) -> dict[str, float | int]:
-    reference = common.normalize_text(reference)
-    prediction = common.normalize_text(prediction)
-    ref_words = common.tokenize_words(reference)
-    pred_words = common.tokenize_words(prediction)
-    char_distance = common.edit_distance(reference, prediction)
-    word_distance = common.edit_distance(ref_words, pred_words)
-    char_error = char_distance / len(reference) if reference else (0.0 if not prediction else 1.0)
-    word_error = word_distance / len(ref_words) if ref_words else (0.0 if not pred_words else 1.0)
-    return {
-        "reference_chars": len(reference),
-        "prediction_chars": len(prediction),
-        "reference_words": len(ref_words),
-        "prediction_words": len(pred_words),
-        "char_distance": char_distance,
-        "word_distance": word_distance,
-        "letter_accuracy": safe_accuracy(char_error),
-        "word_accuracy": safe_accuracy(word_error),
-        "line_accuracy": 1.0 if reference == prediction else 0.0,
-    }
+    return common.score_line_ocr(reference, prediction)
 
 
 def main() -> None:
     args = parse_args()
+    args.test_manifest = project_path(args.test_manifest)
+    args.reports_dir = project_path(args.reports_dir)
+    args.chandra_root = project_path(args.chandra_root)
+    args.invizo_root = project_path(args.invizo_root)
+    args.trocr_root = project_path(args.trocr_root)
+    args.general_arabic_root = project_path(args.general_arabic_root)
+    args.cnn_trocr_root = project_path(args.cnn_trocr_root)
     records = read_manifest(args.test_manifest)
     model_roots = {
         "chandra": args.chandra_root,
         "invizo": args.invizo_root,
         "my_TrOCR": args.trocr_root,
         "general_arabic_TrOCR": args.general_arabic_root,
+        "cnn_TrOCR": args.cnn_trocr_root,
     }
 
     detail_rows = []
     aggregates = {
-        model: {
-            "evaluated_lines": 0,
-            "missing_predictions": 0,
-            "exact_lines": 0,
-            "reference_chars": 0,
-            "char_distance": 0,
-            "reference_words": 0,
-            "word_distance": 0,
-        }
+        model: common.empty_ocr_aggregate()
         for model in model_roots
     }
 
     for record in records:
-        reference = common.normalize_text(record.get("text") or "")
+        reference = common.normalize_text_for_evaluation(record.get("text") or "")
         for model, root in model_roots.items():
             pred_path = prediction_path(root, record["sample_id"])
-            prediction = common.normalize_text(read_prediction(pred_path))
+            prediction = common.normalize_text_for_evaluation(read_prediction(pred_path))
             scores = score_line(reference, prediction)
             missing = not pred_path.is_file()
             detail_rows.append(
@@ -128,40 +112,23 @@ def main() -> None:
                     "prediction_path": str(pred_path.relative_to(common.PROJECT_ROOT)) if pred_path.is_file() else "",
                 }
             )
-            agg = aggregates[model]
-            agg["evaluated_lines"] += 1
-            agg["missing_predictions"] += int(missing)
-            agg["exact_lines"] += int(scores["line_accuracy"])
-            agg["reference_chars"] += int(scores["reference_chars"])
-            agg["char_distance"] += int(scores["char_distance"])
-            agg["reference_words"] += int(scores["reference_words"])
-            agg["word_distance"] += int(scores["word_distance"])
+            common.add_ocr_score(aggregates[model], scores, missing)
 
     summary_rows = []
     for model, agg in aggregates.items():
-        line_accuracy = agg["exact_lines"] / agg["evaluated_lines"] if agg["evaluated_lines"] else 0.0
-        letter_accuracy = (
-            safe_accuracy(agg["char_distance"] / agg["reference_chars"])
-            if agg["reference_chars"]
-            else 0.0
-        )
-        word_accuracy = (
-            safe_accuracy(agg["word_distance"] / agg["reference_words"])
-            if agg["reference_words"]
-            else 0.0
-        )
+        summary = common.finalize_ocr_aggregate(agg)
         summary_rows.append(
             {
                 "model": model,
-                "evaluated_lines": agg["evaluated_lines"],
-                "missing_predictions": agg["missing_predictions"],
-                "letter_accuracy_pct": pct(letter_accuracy),
-                "word_accuracy_pct": pct(word_accuracy),
-                "line_accuracy_pct": pct(line_accuracy),
-                "total_reference_chars": agg["reference_chars"],
-                "total_char_distance": agg["char_distance"],
-                "total_reference_words": agg["reference_words"],
-                "total_word_distance": agg["word_distance"],
+                "evaluated_lines": summary["evaluated_lines"],
+                "missing_predictions": summary["missing_predictions"],
+                "letter_accuracy_pct": pct(float(summary["letter_accuracy"])),
+                "word_accuracy_pct": pct(float(summary["word_accuracy"])),
+                "line_accuracy_pct": pct(float(summary["line_accuracy"])),
+                "total_reference_chars": summary["reference_chars"],
+                "total_char_distance": summary["char_distance"],
+                "total_reference_words": summary["reference_words"],
+                "total_word_distance": summary["word_distance"],
             }
         )
 

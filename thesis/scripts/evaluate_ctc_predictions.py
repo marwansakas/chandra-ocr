@@ -53,8 +53,8 @@ def main() -> None:
     rows = []
     with args.predictions.open("r", encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle):
-            reference = common.normalize_text(row.get("reference") or "")
-            prediction = common.normalize_text(row.get("prediction") or "")
+            reference = common.normalize_text_for_evaluation(row.get("reference") or "")
+            prediction = common.normalize_text_for_evaluation(row.get("prediction") or "")
             ref_words = common.tokenize_words(reference)
             pred_words = common.tokenize_words(prediction)
             cer = common.ratio_error(reference, prediction)

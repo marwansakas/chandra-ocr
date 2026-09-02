@@ -44,6 +44,9 @@ DEFAULT_DATASET_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "ground_truth_line
 DEFAULT_SPLIT_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "ground_truth_lines_ml"
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "thesis" / "models" / "ground_truth_line_trocr"
 DEFAULT_CHANDRA = Path("/home/sakas/.conda/envs/chandra/bin/chandra")
+DEFAULT_KHATT_DATASET = "johnlockejrr/KHATT_v1.0_dataset"
+DEFAULT_KHATT_CACHE_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "khatt"
+AUGMENTATION_PROFILES = ("none", "light", "scan", "geometry", "stroke", "mixed")
 
 
 @dataclass
@@ -81,6 +84,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--include-empty-labels", action="store_true")
     parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument(
+        "--khatt-samples",
+        type=int,
+        default=0,
+        help="Number of streamed KHATT train samples to add to TrOCR training only. 0 disables KHATT.",
+    )
+    parser.add_argument("--khatt-cache-root", type=Path, default=DEFAULT_KHATT_CACHE_ROOT)
+    parser.add_argument("--khatt-dataset-name", default=DEFAULT_KHATT_DATASET)
+    parser.add_argument(
+        "--refresh-khatt-cache",
+        action="store_true",
+        help="Rebuild the selected KHATT cache for this sample count and seed.",
+    )
 
     parser.add_argument("--fill-missing-ocr", action="store_true")
     parser.add_argument(
@@ -106,6 +122,12 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Full-line training views per record. Extra views use label-preserving augmentation.",
     )
+    parser.add_argument(
+        "--augmentation-profile",
+        choices=AUGMENTATION_PROFILES,
+        default="light",
+        help="Image augmentation family used for extra views when --views-per-line is greater than 1.",
+    )
     parser.add_argument("--no-cuda", action="store_true")
     parser.add_argument("--eval-limit", type=int, default=None)
     return parser.parse_args()
@@ -123,6 +145,10 @@ def portable_path(path: Path) -> str:
         return str(path.relative_to(PROJECT_ROOT))
     except ValueError:
         return str(path)
+
+
+def dataset_slug(name: str) -> str:
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", name).strip("_") or "dataset"
 
 
 def iter_page_dirs(dataset_root: Path) -> Iterable[Path]:
@@ -192,6 +218,210 @@ def read_flat_line_records(dataset_root: Path) -> list[LineRecord]:
 
 def read_line_records(dataset_root: Path) -> list[LineRecord]:
     return read_flat_line_records(dataset_root)
+
+
+def khatt_cache_dir(cache_root: Path, dataset_name: str, samples: int, seed: int) -> Path:
+    return cache_root / dataset_slug(dataset_name) / f"samples_{samples}_seed_{seed}"
+
+
+def normalize_khatt_text(text: str) -> str:
+    """Convert KHATT's stored LTR-flipped label back to normal Arabic order.
+
+    The Hugging Face KHATT dataset card documents that its ``text`` value was
+    intentionally flipped from RTL to LTR for PyLaia. Reversing the codepoint
+    sequence restores labels such as "هبحصب" -> "بصحبه", then the project's
+    existing whitespace-only normalization is applied.
+    """
+    return common.normalize_text((text or "")[::-1])
+
+
+def read_khatt_manifest(path: Path) -> list[LineRecord]:
+    records: list[LineRecord] = []
+    if not path.is_file():
+        return records
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if not raw.strip():
+            continue
+        row = json.loads(raw)
+        records.append(
+            LineRecord(
+                sample_id=row["sample_id"],
+                page_id=row["page_id"],
+                page_dir=row["page_dir"],
+                rank=int(row["rank"]),
+                line_index=int(row["line_index"]),
+                image_path=str(project_path(row["image_path"])),
+                text=row["text"],
+                bbox=row.get("bbox") or [],
+                polygon=row.get("polygon") or [],
+                confidence=row.get("confidence"),
+                status=row.get("status") or "khatt_ready",
+            )
+        )
+    return records
+
+
+def write_khatt_manifest(path: Path, records: list[LineRecord]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as fh:
+        for record in records:
+            fh.write(
+                json.dumps(
+                    {
+                        "sample_id": record.sample_id,
+                        "page_id": record.page_id,
+                        "page_dir": record.page_dir,
+                        "rank": record.rank,
+                        "line_index": record.line_index,
+                        "image_path": portable_path(Path(record.image_path)),
+                        "text": record.text,
+                        "bbox": record.bbox,
+                        "polygon": record.polygon,
+                        "confidence": record.confidence,
+                        "status": record.status,
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+
+
+def prepare_khatt_records(args: argparse.Namespace) -> tuple[list[LineRecord], dict]:
+    requested = args.khatt_samples
+    summary = {
+        "khatt_enabled": requested > 0,
+        "khatt_dataset_name": args.khatt_dataset_name,
+        "khatt_samples_requested": requested,
+        "khatt_samples_used": 0,
+        "khatt_cache_dir": "",
+        "khatt_cache_reused": False,
+        "skipped": {},
+    }
+    if requested <= 0:
+        return [], summary
+
+    cache_root = project_path(args.khatt_cache_root)
+    cache_dir = khatt_cache_dir(cache_root, args.khatt_dataset_name, requested, args.seed)
+    manifest_path = cache_dir / "manifest.jsonl"
+    summary_path = cache_dir / "summary.json"
+    summary["khatt_cache_dir"] = portable_path(cache_dir)
+
+    if manifest_path.is_file() and not args.refresh_khatt_cache:
+        records = read_khatt_manifest(manifest_path)
+        if len(records) >= requested:
+            if summary_path.is_file():
+                summary.update(json.loads(summary_path.read_text(encoding="utf-8")))
+            summary["khatt_samples_used"] = len(records)
+            summary["khatt_cache_reused"] = True
+            return records, summary
+
+    try:
+        from datasets import load_dataset
+    except ImportError as exc:
+        raise SystemExit(
+            "KHATT support requires the Hugging Face datasets package. "
+            "Install it with: python -m pip install datasets"
+        ) from exc
+
+    tmp_dir = cache_dir.with_name(cache_dir.name + ".tmp")
+    if tmp_dir.exists():
+        shutil.rmtree(tmp_dir)
+    tmp_dir.mkdir(parents=True)
+
+    skipped: dict[str, int] = {}
+    records: list[LineRecord] = []
+    stream = load_dataset(args.khatt_dataset_name, split="train", streaming=True)
+    for source_index, sample in enumerate(stream):
+        if len(records) >= requested:
+            break
+
+        image = sample.get("image") if isinstance(sample, dict) else None
+        if image is None:
+            skipped["missing image"] = skipped.get("missing image", 0) + 1
+            continue
+
+        raw_text = sample.get("text") if isinstance(sample, dict) else None
+        if not isinstance(raw_text, str):
+            skipped["invalid transcription"] = skipped.get("invalid transcription", 0) + 1
+            continue
+
+        try:
+            text = normalize_khatt_text(raw_text)
+        except Exception:
+            skipped["failed normalization"] = skipped.get("failed normalization", 0) + 1
+            continue
+        if not text:
+            skipped["empty transcription"] = skipped.get("empty transcription", 0) + 1
+            continue
+
+        sample_number = len(records) + 1
+        sample_id = f"khatt_{sample_number:06d}"
+        sample_dir = tmp_dir / sample_id
+        final_sample_dir = cache_dir / sample_id
+        sample_dir.mkdir(parents=True)
+        image_path = sample_dir / "image.png"
+        final_image_path = final_sample_dir / "image.png"
+        try:
+            image.convert("RGB").save(image_path)
+        except Exception:
+            skipped["missing image"] = skipped.get("missing image", 0) + 1
+            continue
+        (sample_dir / "ground_truth.txt").write_text(text + "\n", encoding="utf-8")
+        (sample_dir / "metadata.json").write_text(
+            json.dumps(
+                {
+                    "dataset": args.khatt_dataset_name,
+                    "source_split": "train",
+                    "source_index": source_index,
+                    "original_text": raw_text,
+                    "text": text,
+                    "text_transform": "reverse_codepoint_sequence_then_project_whitespace_normalize",
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        records.append(
+            LineRecord(
+                sample_id=sample_id,
+                page_id="khatt/train",
+                page_dir=portable_path(final_sample_dir),
+                rank=1_000_000_000 + sample_number,
+                line_index=sample_number,
+                image_path=str(final_image_path),
+                text=text,
+                bbox=[],
+                polygon=[],
+                confidence=None,
+                status="khatt_ready",
+            )
+        )
+
+    if len(records) < requested:
+        shutil.rmtree(tmp_dir)
+        raise SystemExit(f"Only accepted {len(records)} KHATT samples out of requested {requested}. Skipped: {skipped}")
+
+    write_khatt_manifest(tmp_dir / "manifest.jsonl", records)
+    summary.update(
+        {
+            "khatt_samples_used": len(records),
+            "khatt_cache_reused": False,
+            "skipped": skipped,
+        }
+    )
+    (tmp_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if cache_dir.exists():
+        shutil.rmtree(cache_dir)
+    tmp_dir.rename(cache_dir)
+    return read_khatt_manifest(cache_dir / "manifest.jsonl"), summary
+
+
+def combine_training_records(train: list[LineRecord], khatt: list[LineRecord], seed: int) -> list[LineRecord]:
+    combined = [*train, *khatt]
+    random.Random(seed).shuffle(combined)
+    return combined
 
 
 def read_surya_line_records(dataset_root: Path) -> list[LineRecord]:
@@ -469,6 +699,106 @@ def write_summary(
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_training_experiment(
+    output_dir: Path,
+    args: argparse.Namespace,
+    own_train: list[LineRecord],
+    khatt_train: list[LineRecord],
+    combined_train: list[LineRecord],
+    test: list[LineRecord],
+    khatt_summary: dict,
+) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "model": "TrOCR",
+        "base_model": args.model_name,
+        "checkpoint": portable_path(output_dir),
+        "dataset_root": portable_path(project_path(args.dataset_root)),
+        "split_root": portable_path(project_path(args.split_root)),
+        "test_split": portable_path(project_path(args.split_root) / "test.jsonl"),
+        "split_strategy": args.split_strategy,
+        "train_ratio": args.train_ratio,
+        "random_seed": args.seed,
+        "epochs": args.epochs,
+        "batch_size": args.batch_size,
+        "eval_batch_size": args.eval_batch_size,
+        "views_per_line": args.views_per_line,
+        "augmentation_profile": args.augmentation_profile,
+        "learning_rate": args.learning_rate,
+        "weight_decay": args.weight_decay,
+        "own_training_samples": len(own_train),
+        "khatt_enabled": args.khatt_samples > 0,
+        "khatt_samples_requested": args.khatt_samples,
+        "khatt_samples_used": len(khatt_train),
+        "khatt_dataset_name": args.khatt_dataset_name,
+        "khatt_cache_dir": khatt_summary.get("khatt_cache_dir", ""),
+        "khatt_cache_reused": khatt_summary.get("khatt_cache_reused", False),
+        "khatt_skipped": khatt_summary.get("skipped", {}),
+        "combined_training_samples": len(combined_train),
+        "test_samples": len(test),
+    }
+    (output_dir / "experiment_config.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def resample_bicubic():
+    from PIL import Image
+
+    return getattr(getattr(Image, "Resampling", Image), "BICUBIC")
+
+
+def fit_to_original_size(image, original_size: tuple[int, int]):
+    from PIL import ImageOps
+
+    width, height = original_size
+    image = ImageOps.pad(image, (width, height), method=resample_bicubic(), color="white", centering=(0.5, 0.5))
+    return image
+
+
+def apply_line_augmentation(image, rng: random.Random, profile: str):
+    from PIL import ImageEnhance, ImageFilter, ImageOps
+
+    if profile == "none":
+        return image
+    original_size = image.size
+    image = ImageEnhance.Contrast(image).enhance(rng.uniform(0.88, 1.12))
+    image = ImageEnhance.Brightness(image).enhance(rng.uniform(0.92, 1.08))
+
+    if profile in {"scan", "mixed"}:
+        if rng.random() < 0.45:
+            image = image.filter(ImageFilter.GaussianBlur(radius=rng.uniform(0.15, 0.55)))
+        if rng.random() < 0.35:
+            image = image.filter(ImageFilter.SHARPEN)
+        if rng.random() < 0.5:
+            image = image.point(lambda value: max(0, min(255, value + rng.randint(-7, 7))))
+
+    if profile in {"geometry", "mixed"}:
+        angle = rng.uniform(-1.8, 1.8)
+        translate_x = rng.randint(-3, 3)
+        translate_y = rng.randint(-2, 2)
+        image = image.rotate(angle, resample=resample_bicubic(), expand=True, fillcolor="white")
+        image = ImageOps.expand(image, border=(max(0, translate_x), max(0, translate_y), max(0, -translate_x), max(0, -translate_y)), fill="white")
+        width_scale = rng.uniform(0.94, 1.06)
+        scaled_width = max(1, round(image.width * width_scale))
+        image = image.resize((scaled_width, image.height), resample=resample_bicubic())
+        image = fit_to_original_size(image, original_size)
+
+    if profile in {"stroke", "mixed"}:
+        if rng.random() < 0.5:
+            image = image.filter(ImageFilter.MinFilter(3))
+        else:
+            image = image.filter(ImageFilter.MaxFilter(3))
+
+    if profile == "light":
+        image = ImageOps.expand(image, border=rng.randint(1, 5), fill="white")
+    elif profile in {"scan", "stroke", "mixed"}:
+        image = ImageOps.expand(image, border=rng.randint(0, 4), fill="white")
+
+    return image
+
+
 class LineOCRDataset:
     def __init__(
         self,
@@ -477,18 +807,20 @@ class LineOCRDataset:
         max_label_length: int,
         views_per_line: int = 1,
         augment: bool = False,
+        augmentation_profile: str = "light",
     ):
         self.records = records
         self.processor = processor
         self.max_label_length = max_label_length
         self.views_per_line = max(1, views_per_line)
         self.augment = augment
+        self.augmentation_profile = augmentation_profile
 
     def __len__(self) -> int:
         return len(self.records) * self.views_per_line
 
     def __getitem__(self, idx: int):
-        from PIL import Image, ImageEnhance, ImageOps
+        from PIL import Image
 
         record = self.records[idx // self.views_per_line]
         view = idx % self.views_per_line
@@ -496,10 +828,8 @@ class LineOCRDataset:
         if self.augment and view:
             # Preserve the complete line. A fragment cannot be paired with the
             # full transcription without introducing a false training label.
-            rng = random.Random(f"{record.sample_id}:{view}")
-            image = ImageEnhance.Contrast(image).enhance(rng.uniform(0.85, 1.15))
-            image = ImageEnhance.Brightness(image).enhance(rng.uniform(0.9, 1.1))
-            image = ImageOps.expand(image, border=rng.randint(1, 5), fill="white")
+            rng = random.Random(f"{record.sample_id}:{view}:{self.augmentation_profile}")
+            image = apply_line_augmentation(image, rng, self.augmentation_profile)
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze(0)
         labels = self.processor.tokenizer(
             record.text,
@@ -534,7 +864,10 @@ def decode_predictions(processor, generated_ids, label_ids) -> tuple[list[str], 
 
 
 def cer(reference: str, hypothesis: str) -> float:
-    return common.ratio_error(common.normalize_text(reference), common.normalize_text(hypothesis))
+    return common.ratio_error(
+        common.normalize_text_for_evaluation(reference),
+        common.normalize_text_for_evaluation(hypothesis),
+    )
 
 
 def train_model(train: list[LineRecord], test: list[LineRecord], args: argparse.Namespace) -> None:
@@ -568,6 +901,7 @@ def train_model(train: list[LineRecord], test: list[LineRecord], args: argparse.
         args.max_label_length,
         views_per_line=args.views_per_line,
         augment=args.views_per_line > 1,
+        augmentation_profile=args.augmentation_profile,
     )
     test_ds = LineOCRDataset(test, processor, args.max_label_length)
     train_loader = DataLoader(
@@ -662,6 +996,8 @@ def main() -> None:
         raise SystemExit("--train-ratio must be between 0 and 1")
     if args.views_per_line < 1:
         raise SystemExit("--views-per-line must be at least 1")
+    if args.khatt_samples < 0:
+        raise SystemExit("--khatt-samples must be zero or greater")
 
     records = read_line_records(dataset_root)
     if not records:
@@ -685,17 +1021,29 @@ def main() -> None:
     write_jsonl(split_root / "test.jsonl", test)
     write_summary(split_root / "summary.md", records, usable, train, test, args.split_strategy)
 
+    khatt_records, khatt_summary = prepare_khatt_records(args)
+    combined_train = combine_training_records(train, khatt_records, args.seed)
+    if khatt_records:
+        write_jsonl(split_root / "train_with_khatt.jsonl", combined_train)
+
     print(f"Total line records: {len(records)}")
     print(f"Usable labeled line records: {len(usable)}")
     print(f"Train: {len(train)} lines")
     print(f"Test: {len(test)} lines")
     print(f"Split strategy: {args.split_strategy}")
     print(f"Wrote split files to: {split_root}")
+    print(f"Own training lines: {len(train)}")
+    print(f"KHATT requested: {args.khatt_samples}")
+    print(f"KHATT accepted: {len(khatt_records)}")
+    print(f"Combined training lines: {len(combined_train)}")
+    if khatt_summary.get("skipped"):
+        print(f"KHATT skipped: {json.dumps(khatt_summary['skipped'], ensure_ascii=False)}")
 
     if args.prepare_only:
         return
 
-    train_model(train, test, args)
+    write_training_experiment(args.output_dir, args, train, khatt_records, combined_train, test, khatt_summary)
+    train_model(combined_train, test, args)
 
 
 if __name__ == "__main__":
