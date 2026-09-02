@@ -26,3 +26,12 @@ general-Arabic decoder additionally preserves `raw_prediction.txt` and all beam
 scores in `candidates.json`. CNN-TrOCR uses a separate checkpoint trained by
 `python thesis/scripts/train_cnn_trocr_model.py`.
 
+To train multiple baseline TrOCR checkpoints with different image augmentation
+profiles, run:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 --batch-size 4 --views-per-line 3 --device cuda
+```
+

@@ -89,7 +89,24 @@ Train with multiple label-preserving full-line views:
 
 ```bash
 python thesis/scripts/train_line_ocr_model.py \
-  --epochs 5 --batch-size 4 --views-per-line 3
+  --epochs 5 --batch-size 4 --views-per-line 3 --augmentation-profile light
+```
+
+To answer which augmentation helps most, train separate baseline TrOCR models
+with different augmentation profiles and compare their held-out scores:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 --batch-size 4 --views-per-line 3 --device cuda
+```
+
+This writes:
+
+```text
+thesis/models/augmentation_trocr/<profile>/
+thesis/predictions/augmentation_trocr/<profile>/
+thesis/reports/trocr_augmentation_experiments.csv
 ```
 
 Generate predictions from the baseline TrOCR model:

@@ -46,6 +46,7 @@ DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "thesis" / "models" / "ground_truth_line_tro
 DEFAULT_CHANDRA = Path("/home/sakas/.conda/envs/chandra/bin/chandra")
 DEFAULT_KHATT_DATASET = "johnlockejrr/KHATT_v1.0_dataset"
 DEFAULT_KHATT_CACHE_ROOT = PROJECT_ROOT / "thesis" / "datasets" / "khatt"
+AUGMENTATION_PROFILES = ("none", "light", "scan", "geometry", "stroke", "mixed")
 
 
 @dataclass
@@ -120,6 +121,12 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=1,
         help="Full-line training views per record. Extra views use label-preserving augmentation.",
+    )
+    parser.add_argument(
+        "--augmentation-profile",
+        choices=AUGMENTATION_PROFILES,
+        default="light",
+        help="Image augmentation family used for extra views when --views-per-line is greater than 1.",
     )
     parser.add_argument("--no-cuda", action="store_true")
     parser.add_argument("--eval-limit", type=int, default=None)
@@ -716,6 +723,7 @@ def write_training_experiment(
         "batch_size": args.batch_size,
         "eval_batch_size": args.eval_batch_size,
         "views_per_line": args.views_per_line,
+        "augmentation_profile": args.augmentation_profile,
         "learning_rate": args.learning_rate,
         "weight_decay": args.weight_decay,
         "own_training_samples": len(own_train),
@@ -735,6 +743,62 @@ def write_training_experiment(
     )
 
 
+def resample_bicubic():
+    from PIL import Image
+
+    return getattr(getattr(Image, "Resampling", Image), "BICUBIC")
+
+
+def fit_to_original_size(image, original_size: tuple[int, int]):
+    from PIL import ImageOps
+
+    width, height = original_size
+    image = ImageOps.pad(image, (width, height), method=resample_bicubic(), color="white", centering=(0.5, 0.5))
+    return image
+
+
+def apply_line_augmentation(image, rng: random.Random, profile: str):
+    from PIL import ImageEnhance, ImageFilter, ImageOps
+
+    if profile == "none":
+        return image
+    original_size = image.size
+    image = ImageEnhance.Contrast(image).enhance(rng.uniform(0.88, 1.12))
+    image = ImageEnhance.Brightness(image).enhance(rng.uniform(0.92, 1.08))
+
+    if profile in {"scan", "mixed"}:
+        if rng.random() < 0.45:
+            image = image.filter(ImageFilter.GaussianBlur(radius=rng.uniform(0.15, 0.55)))
+        if rng.random() < 0.35:
+            image = image.filter(ImageFilter.SHARPEN)
+        if rng.random() < 0.5:
+            image = image.point(lambda value: max(0, min(255, value + rng.randint(-7, 7))))
+
+    if profile in {"geometry", "mixed"}:
+        angle = rng.uniform(-1.8, 1.8)
+        translate_x = rng.randint(-3, 3)
+        translate_y = rng.randint(-2, 2)
+        image = image.rotate(angle, resample=resample_bicubic(), expand=True, fillcolor="white")
+        image = ImageOps.expand(image, border=(max(0, translate_x), max(0, translate_y), max(0, -translate_x), max(0, -translate_y)), fill="white")
+        width_scale = rng.uniform(0.94, 1.06)
+        scaled_width = max(1, round(image.width * width_scale))
+        image = image.resize((scaled_width, image.height), resample=resample_bicubic())
+        image = fit_to_original_size(image, original_size)
+
+    if profile in {"stroke", "mixed"}:
+        if rng.random() < 0.5:
+            image = image.filter(ImageFilter.MinFilter(3))
+        else:
+            image = image.filter(ImageFilter.MaxFilter(3))
+
+    if profile == "light":
+        image = ImageOps.expand(image, border=rng.randint(1, 5), fill="white")
+    elif profile in {"scan", "stroke", "mixed"}:
+        image = ImageOps.expand(image, border=rng.randint(0, 4), fill="white")
+
+    return image
+
+
 class LineOCRDataset:
     def __init__(
         self,
@@ -743,18 +807,20 @@ class LineOCRDataset:
         max_label_length: int,
         views_per_line: int = 1,
         augment: bool = False,
+        augmentation_profile: str = "light",
     ):
         self.records = records
         self.processor = processor
         self.max_label_length = max_label_length
         self.views_per_line = max(1, views_per_line)
         self.augment = augment
+        self.augmentation_profile = augmentation_profile
 
     def __len__(self) -> int:
         return len(self.records) * self.views_per_line
 
     def __getitem__(self, idx: int):
-        from PIL import Image, ImageEnhance, ImageOps
+        from PIL import Image
 
         record = self.records[idx // self.views_per_line]
         view = idx % self.views_per_line
@@ -762,10 +828,8 @@ class LineOCRDataset:
         if self.augment and view:
             # Preserve the complete line. A fragment cannot be paired with the
             # full transcription without introducing a false training label.
-            rng = random.Random(f"{record.sample_id}:{view}")
-            image = ImageEnhance.Contrast(image).enhance(rng.uniform(0.85, 1.15))
-            image = ImageEnhance.Brightness(image).enhance(rng.uniform(0.9, 1.1))
-            image = ImageOps.expand(image, border=rng.randint(1, 5), fill="white")
+            rng = random.Random(f"{record.sample_id}:{view}:{self.augmentation_profile}")
+            image = apply_line_augmentation(image, rng, self.augmentation_profile)
         pixel_values = self.processor(images=image, return_tensors="pt").pixel_values.squeeze(0)
         labels = self.processor.tokenizer(
             record.text,
@@ -837,6 +901,7 @@ def train_model(train: list[LineRecord], test: list[LineRecord], args: argparse.
         args.max_label_length,
         views_per_line=args.views_per_line,
         augment=args.views_per_line > 1,
+        augmentation_profile=args.augmentation_profile,
     )
     test_ds = LineOCRDataset(test, processor, args.max_label_length)
     train_loader = DataLoader(

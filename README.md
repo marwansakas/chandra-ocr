@@ -121,7 +121,9 @@ Then train:
 ```bash
 python thesis/scripts/train_line_ocr_model.py \
   --epochs 5 \
-  --batch-size 4
+  --batch-size 4 \
+  --views-per-line 3 \
+  --augmentation-profile light
 ```
 
 The model is saved to:
@@ -189,7 +191,49 @@ python pipelines/my_TrOCR_run.py \
 
 TrOCR uses a ViT image encoder and autoregressive text decoder.
 
-## 7. Experimental CNN-fronted TrOCR
+## 7. TrOCR augmentation experiments
+
+The baseline TrOCR trainer can produce multiple models from the same data split
+by changing only the image augmentation used for extra training views:
+
+```bash
+python thesis/scripts/train_trocr_augmentation_models.py \
+  --profiles none,light,scan,geometry,stroke,mixed \
+  --epochs 5 \
+  --batch-size 4 \
+  --views-per-line 3 \
+  --device cuda
+```
+
+Each profile still trains the same `my_TrOCR` architecture. The profiles save
+separate checkpoints under:
+
+```text
+thesis/models/augmentation_trocr/<profile>/
+```
+
+and separate predictions under:
+
+```text
+thesis/predictions/augmentation_trocr/<profile>/
+```
+
+The launcher writes the augmentation comparison to:
+
+```text
+thesis/reports/trocr_augmentation_experiments.csv
+```
+
+Available profiles:
+
+- `none`: no image changes; control model
+- `light`: brightness, contrast, and white margin changes
+- `scan`: brightness, contrast, blur/sharpen, and scanner-like intensity noise
+- `geometry`: small rotation, translation, and width scaling
+- `stroke`: small stroke thickening or thinning
+- `mixed`: combines scan, geometry, and stroke changes
+
+## 8. Experimental CNN-fronted TrOCR
 
 The CNN experiment adds a small residual convolutional block before the TrOCR
 Transformer encoder. It is trained and stored separately from the baseline so
@@ -226,7 +270,7 @@ python pipelines/cnn_TrOCR_run.py \
   --device cuda
 ```
 
-## 8. General-Arabic dictionary-aware TrOCR
+## 9. General-Arabic dictionary-aware TrOCR
 
 This decoder does not retrain the image model. It generates six TrOCR beam
 candidates, checks Arabic word forms with the LibreOffice Hunspell dictionary,
@@ -262,7 +306,7 @@ The dictionary is a linguistic decoding aid, not a source of ground truth. The
 Grade 1 decoder is intentionally deferred until the correct curriculum is
 available.
 
-## 9. Compare all prediction models on the held-out test split
+## 10. Compare all prediction models on the held-out test split
 
 After Chandra, Invizo, raw TrOCR, dictionary-aware TrOCR, and CNN-TrOCR
 predictions exist, compare them against the same ground-truth test lines:

@@ -348,3 +348,16 @@ def test_cnn_trocr_config_defaults_preserve_rgb_shape_contract():
     assert config.layers == 2
     assert config.kernel_size == 3
     assert config.residual_scale == 0.1
+
+
+def test_trocr_augmentation_profiles_include_control_and_handwriting_variants():
+    assert trainer.AUGMENTATION_PROFILES == ("none", "light", "scan", "geometry", "stroke", "mixed")
+
+
+def test_geometry_augmentation_preserves_image_size():
+    from PIL import Image
+
+    image = Image.new("RGB", (120, 32), "white")
+    rng = __import__("random").Random("augmentation-test")
+    augmented = trainer.apply_line_augmentation(image, rng, "geometry")
+    assert augmented.size == image.size

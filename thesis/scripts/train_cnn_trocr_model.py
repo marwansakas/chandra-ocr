@@ -44,6 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-label-length", type=int, default=128)
     parser.add_argument("--num-workers", type=int, default=2)
     parser.add_argument("--views-per-line", type=int, default=1)
+    parser.add_argument("--augmentation-profile", choices=base.AUGMENTATION_PROFILES, default="light")
     parser.add_argument("--no-cuda", action="store_true")
     parser.add_argument("--eval-limit", type=int, default=None)
     parser.add_argument("--cnn-hidden-channels", type=int, default=32)
@@ -78,6 +79,7 @@ def write_experiment_config(
         "batch_size": args.batch_size,
         "eval_batch_size": args.eval_batch_size,
         "views_per_line": args.views_per_line,
+        "augmentation_profile": args.augmentation_profile,
         "learning_rate": args.learning_rate,
         "weight_decay": args.weight_decay,
         "cnn_config": cnn_config.__dict__,
@@ -135,6 +137,7 @@ def train_model(train: list[base.LineRecord], test: list[base.LineRecord], args:
         args.max_label_length,
         views_per_line=args.views_per_line,
         augment=args.views_per_line > 1,
+        augmentation_profile=args.augmentation_profile,
     )
     test_ds = base.LineOCRDataset(test, processor, args.max_label_length)
     train_loader = DataLoader(
