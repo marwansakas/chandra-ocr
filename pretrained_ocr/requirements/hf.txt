@@ -1,0 +1,5 @@
+# Install matching torch AND torchvision wheels separately (CPU or CUDA); see README.md.
+transformers==5.16.1
+accelerate>=1.12,<2
+Pillow>=11,<13
+sentencepiece>=0.2,<0.3

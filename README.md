@@ -1,13 +1,23 @@
 # Arabic children handwriting OCR
 
 This project creates line images from elementary-school Arabic handwriting and
-runs three independent OCR systems plus two TrOCR variants over the same images:
+runs independent OCR systems over the same images:
 
 1. Chandra
 2. Invizo
 3. The fine-tuned thesis TrOCR model
 4. General-Arabic dictionary-aware TrOCR decoding
 5. Experimental CNN-fronted TrOCR
+6. PaddleOCR Arabic PP-OCRv5 (pretrained)
+7. GOT-OCR2.0 (pretrained)
+8. GLM-OCR (pretrained)
+9. HunyuanOCR (pretrained)
+10. LightOnOCR-2 (pretrained)
+
+For the five pretrained baselines, see the
+[installation and evaluation guide](pretrained_ocr/README.md). Each reads the
+existing `ground_truth_lines/<sample>/image.png` layout and reports CER, WER,
+exact-line matches and failures against `ground_truth.txt`, without fine-tuning.
 
 The clean labeled line dataset supports held-out evaluation. Chandra-generated
 pseudo-labels must not be treated as manual ground truth.
@@ -30,6 +40,8 @@ thesis/datasets/ground_truth_lines/<global>_<page>_<line>/image.png
                              --> thesis/predictions/general_arabic_TrOCR/
         +--> cnn_TrOCR_run.py
                              --> thesis/predictions/cnn_TrOCR/
+        +--> python -m pretrained_ocr run --model <model>
+                             --> thesis/predictions/pretrained/<model>/
 ```
 
 The OCR runners read only `image.png`. Training and evaluation read
