@@ -12,7 +12,7 @@ import sys
 import time
 
 from . import __version__
-from .dataset import check_output_path, read_dataset, select_samples
+from .dataset import check_output_path, read_dataset, read_test_manifest, select_samples
 from .metrics import aggregate, score
 from .models import load_backend
 from .registry import MODELS
@@ -44,14 +44,17 @@ def packages():
 
 
 def load_selection(args):
-    samples, skipped = read_dataset(args.dataset)
+    split = read_test_manifest(args.test_manifest) if args.test_manifest else None
+    samples, skipped = read_dataset(args.dataset, sample_ids=split["sample_ids"] if split else None)
     selected = select_samples(samples, args.start_line, args.limit)
+    if split:
+        print(f"Held-out manifest: {split['path']} ({len(split['sample_ids'])} samples)")
     print(f"Dataset: {args.dataset.resolve()}\nEligible: {len(samples)}; selected: {len(selected)}; skipped: {len(skipped)}")
-    return selected, skipped
+    return selected, skipped, split
 
 
 def validate(args):
-    samples, skipped = load_selection(args)
+    samples, skipped, _ = load_selection(args)
     counts = {}
     for item in skipped:
         counts[item["reason"]] = counts.get(item["reason"], 0) + 1
@@ -91,9 +94,10 @@ def write_reports(output, rows, context):
 
 def run(args):
     spec = MODELS[args.model]
-    output = (args.output or DEFAULT_OUTPUT / spec.key).resolve()
+    output_root = DEFAULT_OUTPUT / "held_out" if args.test_manifest else DEFAULT_OUTPUT
+    output = (args.output or output_root / spec.key).resolve()
     check_output_path(args.dataset, output)
-    samples, skipped = load_selection(args)
+    samples, skipped, split = load_selection(args)
     if args.max_new_tokens < 1:
         raise ValueError("--max-new-tokens must be positive")
     if args.dry_run:
@@ -103,6 +107,8 @@ def run(args):
               "attention": args.attention, "max_new_tokens": args.max_new_tokens,
               "normalization": args.normalization, "dataset": str(args.dataset.resolve()),
               "implementation_version": __version__}
+    if split:
+        config["test_manifest"] = {key: split[key] for key in ("path", "sha256")}
     config_path = output / "run_config.json"
     if output.exists() and any(output.iterdir()):
         if not args.resume:
@@ -207,6 +213,8 @@ def parser():
     for command in ("validate", "run"):
         child = sub.add_parser(command)
         child.add_argument("--dataset", "--input-root", type=Path, default=DEFAULT_DATASET)
+        child.add_argument("--test-manifest", type=Path,
+                           help="Evaluate only sample_id folders listed in an existing test.jsonl; no training")
         child.add_argument("--start-line", type=int, default=1, help="1-based index after deterministic sorting/filtering")
         child.add_argument("--limit", type=int)
         if command == "validate":

@@ -112,7 +112,46 @@ equal to `ignore` (case-insensitive) are skipped and reported. Other text contai
 the word `ignore` is retained. Nested sample folders are supported. Use the same
 dataset and sample range for every model. `metadata.json` is optional.
 
-## Run and evaluate each model
+## Evaluate only the existing held-out test set (no training)
+
+Use `--test-manifest` to restrict inference to the sample folders listed in the
+project's existing `thesis/datasets/ground_truth_lines_ml/test.jsonl`. This does
+not create or change a split, train, or fine-tune a model. It uses `sample_id` to
+find each image under `--dataset`, and reads its current `ground_truth.txt` for
+scoring; stored manifest image paths and text are not used as recognition inputs.
+
+After updating the project and installing the environments above, run:
+
+```bash
+cd /home/sakas/chandra-ocr
+DATA=/home/sakas/chandra-ocr/thesis/datasets/ground_truth_lines
+TEST=/home/sakas/chandra-ocr/thesis/datasets/ground_truth_lines_ml/test.jsonl
+
+.venv-ocr-hf/bin/python -m pretrained_ocr validate --dataset "$DATA" --test-manifest "$TEST" --check-images
+
+.venv-ocr-paddle/bin/python -m pretrained_ocr run --model paddle-arabic --dataset "$DATA" --test-manifest "$TEST" --device cpu --resume
+.venv-ocr-hf/bin/python -m pretrained_ocr run --model got-ocr2 --dataset "$DATA" --test-manifest "$TEST" --device cuda --resume
+.venv-ocr-hf/bin/python -m pretrained_ocr run --model glm-ocr --dataset "$DATA" --test-manifest "$TEST" --device cuda --resume
+.venv-ocr-hf/bin/python -m pretrained_ocr run --model hunyuan-ocr --dataset "$DATA" --test-manifest "$TEST" --device cuda --resume
+.venv-ocr-hf/bin/python -m pretrained_ocr run --model lighton-ocr2 --dataset "$DATA" --test-manifest "$TEST" --device cuda --resume
+
+.venv-ocr-hf/bin/python -m pretrained_ocr compare --results thesis/predictions/pretrained/held_out
+```
+
+Results default to `thesis/predictions/pretrained/held_out/<model>/` with the same
+per-sample predictions, CSV scores and JSON reports described below. Full-dataset
+results remain in their own folders. The manifest path and hash are recorded in
+the run configuration. A missing manifest or an invalid, duplicate, missing or
+unusable test sample stops the run before loading model weights; it never falls
+back to evaluating the whole dataset. `--limit` and `--start-line` apply after the
+held-out selection. If your existing test manifest is elsewhere, change `TEST`.
+
+Use the same existing manifest for every model. If you already started a run
+without `--test-manifest`, it remains a full-dataset run; this option takes effect
+when you start a new command. The reported `ok` status means inference returned
+successfully, not that the predicted text was correct. CER/WER measure correctness.
+
+## Run and evaluate each model on the entire dataset
 
 These commands use the **entire eligible dataset**, automatically score it, and
 resume completed predictions when rerun. No separate scoring command is needed.

@@ -18,6 +18,9 @@ For the five pretrained baselines, see the
 [installation and evaluation guide](pretrained_ocr/README.md). Each reads the
 existing `ground_truth_lines/<sample>/image.png` layout and reports CER, WER,
 exact-line matches and failures against `ground_truth.txt`, without fine-tuning.
+Add `--test-manifest thesis/datasets/ground_truth_lines_ml/test.jsonl` to evaluate
+only your existing held-out samples. Those results go under
+`thesis/predictions/pretrained/held_out/<model>/`.
 
 The clean labeled line dataset supports held-out evaluation. Chandra-generated
 pseudo-labels must not be treated as manual ground truth.

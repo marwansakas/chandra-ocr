@@ -3,7 +3,11 @@
 Environment: Windows, Python 3.12; CPU verification.
 
 - Offline dataset, Arabic scoring, output protection, resume, comparison and adapter
-  tests pass (12 tests). Inference in these tests uses a fake backend.
+  tests pass (18 tests, including held-out manifest selection). Together with the
+  existing project tests, 45 tests pass. Inference in these tests uses a fake backend.
+- Held-out tests verify that unlisted samples are not read or inferred, all five
+  models use separate held-out output folders, invalid manifests fail before
+  loading weights, and changed manifests cannot reuse the same run configuration.
 - PyTorch 2.10.0+cpu, Torchvision 0.25.0+cpu and Transformers 5.16.1 install together;
   `pip check` passes.
 - All four real Hugging Face processors/configurations download at the pinned
