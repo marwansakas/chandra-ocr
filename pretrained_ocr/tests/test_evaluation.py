@@ -39,12 +39,50 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(score("كتاب", "كتا")['cer'], 0.25)
         self.assertEqual(score("هذا كتاب", "هذا")['wer'], 0.5)
         self.assertEqual(score("ا", "ا ا ا")['wer'], 2)
-        self.assertEqual(normalize("  هٰذا\n كِتاب  "), "هٰذا كِتاب")
+        self.assertEqual(normalize("  هٰذا\n كِتاب  "), "هذا كتاب")
         self.assertEqual(normalize("كِتـاب", "arabic-light"), "كتاب")
         self.assertNotEqual(normalize("أ", "arabic-light"), normalize("ا", "arabic-light"))
         self.assertNotEqual(normalize("ة", "arabic-light"), normalize("ه", "arabic-light"))
         totals = aggregate([score("a", ""), score("abcdefghi", "abcdefghi")])
         self.assertEqual(totals['cer'], 0.1)  # Corpus weighting, not mean(1, 0).
+
+    def test_diacritics_are_ignored_on_both_sides_by_default(self):
+        pairs = [("هٰذَا كِتَابٌ", "هذا كتاب"), ("كَتَبَ", "كُتِبَ")]
+        # Tanwin, short vowels, shadda, sukun, dagger alif and a Quranic mark.
+        pairs.extend(("ب" + mark, "ب") for mark in "\u064b\u064c\u064d\u064e\u064f\u0650\u0651\u0652\u0670\u06d6")
+        for reference, prediction in pairs:
+            for left, right in [(reference, prediction), (prediction, reference)]:
+                with self.subTest(reference=left, prediction=right):
+                    metrics = score(left, right)
+                    self.assertEqual(metrics['cer'], 0)
+                    self.assertEqual(metrics['wer'], 0)
+                    self.assertTrue(metrics['exact_match'])
+
+    def test_base_character_errors_and_counts_are_preserved(self):
+        metrics = score("كِتَابٌ", "كِتَا")
+        self.assertEqual(metrics['reference_chars'], 4)
+        self.assertEqual(metrics['char_edits'], 1)
+        self.assertEqual(metrics['cer'], 0.25)
+        self.assertEqual(metrics['wer'], 1)
+        self.assertFalse(metrics['exact_match'])
+        for reference, prediction in [("ب", "ت"), ("أ", "ا"), ("ة", "ه"), ("ى", "ي"), ("ب!", "ب"), ("é", "e")]:
+            with self.subTest(reference=reference, prediction=prediction):
+                self.assertFalse(score(reference, prediction)['exact_match'])
+        self.assertTrue(score("ا\u0654", "أ")['exact_match'])
+        totals = aggregate([score("كِتَابٌ", "كِتَا"), score("هٰذَا", "هذا")])
+        self.assertEqual(totals['reference_chars'], 7)
+        self.assertEqual(totals['cer'], 1 / 7)
+
+    def test_explicit_standard_and_raw_keep_diacritics(self):
+        text = "  هٰذا\n كِتاب  "
+        self.assertEqual(normalize(text, "standard"), "هٰذا كِتاب")
+        self.assertEqual(normalize(text, "raw"), text)
+        for mode in ("standard", "raw"):
+            with self.subTest(mode=mode):
+                metrics = score("كِتاب", "كتاب", mode)
+                self.assertEqual(metrics['cer'], 1 / 5)
+                self.assertEqual(metrics['wer'], 1)
+                self.assertFalse(metrics['exact_match'])
 
     def test_missing_and_empty_labels_reported(self):
         for name, text in [("empty", "  "), ("ignored", "IGNORE"), ("missing-image", "نص")]:
@@ -69,6 +107,9 @@ class EvaluationTests(unittest.TestCase):
         self.assertFalse(self.output.exists())
 
     def test_full_run_resume_and_no_reference_leak(self):
+        references = {"000001": "كِتَابٌ", "000002": "هٰذَا كِتَابٌ"}
+        for name, reference in references.items():
+            (self.dataset / name / "ground_truth.txt").write_text(reference, encoding="utf-8")
         before = {p: p.read_bytes() for p in self.dataset.rglob("*") if p.is_file()}
         seen = []
         class FakeBackend:
@@ -82,9 +123,20 @@ class EvaluationTests(unittest.TestCase):
         summary = json.loads((self.output / "run_summary.json").read_text(encoding="utf-8"))
         self.assertEqual(summary['metrics']['cer'], 0)
         self.assertEqual(summary['metrics']['wer'], 0)
+        self.assertEqual(summary['metrics']['exact_match_rate'], 1)
+        self.assertEqual(summary['metrics']['reference_chars'], 12)
+        self.assertEqual(summary['normalization'], 'arabic-light')
+        self.assertEqual(summary['config']['normalization'], 'arabic-light')
+        records = [json.loads(line) for line in (self.output / "predictions.jsonl").read_text(encoding="utf-8").splitlines()]
+        for row in records:
+            self.assertEqual(row['reference'], references[row['sample_id']])
+            self.assertEqual(row['prediction'], "كتاب" if row['sample_id'] == "000001" else "هذا كتاب")
+            self.assertTrue(row['exact_match'])
         with patch("pretrained_ocr.cli.load_backend") as factory:
             self.assertEqual(self.call("--resume"), 0)
             factory.assert_not_called()
+        resumed = json.loads((self.output / "run_summary.json").read_text(encoding="utf-8"))
+        self.assertEqual(resumed['metrics'], summary['metrics'])
         self.assertEqual(before, {p: p.read_bytes() for p in before})
         self.assertEqual(self.call(), 2)  # Never silently replace a run.
         self.assertEqual(self.call("--resume", "--normalization", "raw"), 2)

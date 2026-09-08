@@ -212,17 +212,25 @@ thesis/predictions/pretrained/
 ```
 
 - **CER**: total character insertions/deletions/substitutions divided by total
-  reference characters. Spaces count. Lower is better; 0% means perfect.
+  reference characters after normalization. Arabic diacritics do not count by
+  default; spaces count. Lower is better; 0% means perfect.
 - **WER**: the same calculation on whitespace-delimited words. Lower is better.
 - **Exact lines**: the fraction of lines with an identical normalized transcription.
 - Rates are corpus-weighted, can exceed 100%, and are not clamped.
-- The default `standard` scoring uses NFC Unicode and collapsed whitespace.
-  It preserves punctuation, spelling, Arabic letters and diacritics. Raw reference
-  and prediction strings remain in the reports.
-- `--normalization raw` compares the exact file contents (including line endings
-  in CER); `arabic-light` additionally applies NFKC and removes Arabic combining
-  marks and tatweel. Letter variants such as alif/hamza and ta marbuta remain
-  distinct. Use a separate output directory and consistent normalization to compare.
+- The default `arabic-light` scoring applies NFKC Unicode, collapses whitespace,
+  and removes Arabic combining marks (tashkeel/harakat) and tatweel from both the
+  reference and prediction before calculating CER, WER, and exact lines. For
+  example, `كِتَابٌ` and `كتاب` match perfectly, and the reference has four scored
+  characters. Raw reference and prediction strings remain in the reports.
+- Punctuation, spelling and Arabic letter distinctions are preserved, including
+  dots: `ب` and `ت`, `أ` and `ا`, `ة` and `ه`, and `ى` and `ي` remain different.
+- `--normalization standard` selects the previous NFC/whitespace scoring, which
+  counts diacritics. `--normalization raw` compares the exact file contents
+  (including line endings in CER). Use consistent normalization for comparison.
+- Existing runs retain their saved scores. To evaluate with the new default, use
+  a fresh `--output` directory for each model; runs saved with `standard` cannot
+  resume as `arabic-light`. To resume an older run with its original scoring,
+  explicitly pass `--normalization standard`.
 - Failed inference counts as an empty prediction in the main score. Successful-only
   scores and failure counts are also reported. A run with failures exits with code 1;
   rerunning with `--resume` retries failed lines.

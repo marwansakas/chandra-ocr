@@ -13,7 +13,7 @@ import time
 
 from . import __version__
 from .dataset import check_output_path, read_dataset, read_test_manifest, select_samples
-from .metrics import aggregate, score
+from .metrics import DEFAULT_NORMALIZATION, aggregate, score
 from .models import load_backend
 from .registry import MODELS
 
@@ -227,7 +227,9 @@ def parser():
             child.add_argument("--dtype", choices=("auto", "float32", "float16", "bfloat16"), default="auto")
             child.add_argument("--attention", choices=("eager", "sdpa"), default="eager")
             child.add_argument("--max-new-tokens", type=int, default=512)
-            child.add_argument("--normalization", choices=("raw", "standard", "arabic-light"), default="standard")
+            child.add_argument("--normalization", choices=("raw", "standard", "arabic-light"),
+                               default=DEFAULT_NORMALIZATION,
+                               help="scoring normalization (default: arabic-light, ignores Arabic diacritics and tatweel)")
             child.add_argument("--resume", action="store_true")
             child.add_argument("--dry-run", action="store_true")
             child.set_defaults(func=run)

@@ -1,4 +1,19 @@
-# Validation performed September 7, 2026
+# Validation
+
+## September 8, 2026: diacritic-free scoring default
+
+- All 21 offline tests pass on Windows with Python 3.12 using
+  `py -3 -m unittest discover -s pretrained_ocr/tests -v`.
+- Default CER, WER and exact-line scoring ignore Arabic diacritics on either side.
+  Tests cover short vowels, tanwin, shadda, sukun, dagger alif, a Quranic mark,
+  normalized character counts, and corpus-weighted character errors.
+- Arabic letter differences, punctuation and non-Arabic accents remain significant;
+  explicit `standard` and `raw` scoring continue to count Arabic diacritics.
+- A fake-backend run verifies that reports record `arabic-light`, preserve the raw
+  text, and retain the same metrics when resumed without loading a model.
+- Existing saved reports and real-model inference were not rerun for this change.
+
+## September 7, 2026: initial implementation
 
 Environment: Windows, Python 3.12; CPU verification.
 

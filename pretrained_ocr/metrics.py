@@ -1,9 +1,12 @@
-"""Corpus edit rates, preserving spelling and Arabic letter distinctions."""
+"""Corpus edit rates, ignoring Arabic diacritics by default."""
 
 import unicodedata
 
 
-def normalize(text, mode="standard"):
+DEFAULT_NORMALIZATION = "arabic-light"
+
+
+def normalize(text, mode=DEFAULT_NORMALIZATION):
     if mode == "raw":
         return text
     text = unicodedata.normalize("NFC", text)
@@ -31,7 +34,7 @@ def edit_distance(reference, prediction):
     return previous[-1]
 
 
-def score(reference, prediction, mode="standard"):
+def score(reference, prediction, mode=DEFAULT_NORMALIZATION):
     reference, prediction = normalize(reference, mode), normalize(prediction, mode)
     chars = len(reference)
     words = len(reference.split())
