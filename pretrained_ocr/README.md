@@ -216,6 +216,11 @@ thesis/predictions/pretrained/
   default; spaces count. Lower is better; 0% means perfect.
 - **WER**: the same calculation on whitespace-delimited words. Lower is better.
 - **Exact lines**: the fraction of lines with an identical normalized transcription.
+- **Smith–Waterman similarity**: the best local character alignment, useful when
+  a prediction contains a correct substring among extra errors.
+- **Text alignment similarity**: a whole-line global character alignment score.
+  Both are normalized to 0–100% and use the same Arabic diacritic-free
+  normalization as CER/WER.
 - Rates are corpus-weighted, can exceed 100%, and are not clamped.
 - The default `arabic-light` scoring applies NFKC Unicode, collapses whitespace,
   and removes Arabic combining marks (tashkeel/harakat) and tatweel from both the

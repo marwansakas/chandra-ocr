@@ -197,6 +197,17 @@ def test_ocr_evaluation_normalizes_diacritics_and_alef_only():
     assert common.score_line_ocr("سئل", "سال")["line_accuracy"] == 0.0
 
 
+def test_alignment_metrics_ignore_arabic_diacritics_and_bound_scores():
+    exact = common.score_line_ocr("كَتَبَ", "كتب")
+    assert exact["smith_waterman_similarity"] == 1.0
+    assert exact["text_alignment_similarity"] == 1.0
+    partial = common.score_line_ocr("هذا كتاب", "كتاب")
+    assert 0 < partial["smith_waterman_similarity"] < 1
+    assert 0 <= partial["text_alignment_similarity"] < 1
+    empty = common.score_line_ocr("", "نص")
+    assert empty["smith_waterman_similarity"] == 0
+
+
 def test_khatt_normalization_restores_rtl_logical_order():
     assert trainer.normalize_khatt_text("هبحصب") == "بصحبه"
     assert trainer.normalize_khatt_text("بهذ") == "ذهب"

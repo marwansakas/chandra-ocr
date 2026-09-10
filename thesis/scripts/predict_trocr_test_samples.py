@@ -81,6 +81,8 @@ def evaluate_predictions(records: list[dict], output_root: Path) -> dict:
         "letter_accuracy_pct": pct(float(summary["letter_accuracy"])),
         "word_accuracy_pct": pct(float(summary["word_accuracy"])),
         "exact_line_accuracy_pct": pct(float(summary["line_accuracy"])),
+        "smith_waterman_similarity_pct": pct(float(summary["smith_waterman_similarity"])),
+        "text_alignment_similarity_pct": pct(float(summary["text_alignment_similarity"])),
         "exact_lines_correct": summary["exact_lines"],
         "total_reference_chars": summary["reference_chars"],
         "total_char_distance": summary["char_distance"],

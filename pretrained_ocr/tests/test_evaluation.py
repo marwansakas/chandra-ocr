@@ -46,6 +46,16 @@ class EvaluationTests(unittest.TestCase):
         totals = aggregate([score("a", ""), score("abcdefghi", "abcdefghi")])
         self.assertEqual(totals['cer'], 0.1)  # Corpus weighting, not mean(1, 0).
 
+    def test_alignment_metrics_ignore_diacritics(self):
+        exact = score("كَتَبَ", "كتب")
+        self.assertEqual(exact["smith_waterman_similarity"], 1.0)
+        self.assertEqual(exact["text_alignment_similarity"], 1.0)
+        partial = score("هذا كتاب", "كتاب")
+        self.assertGreater(partial["smith_waterman_similarity"], 0)
+        self.assertLess(partial["smith_waterman_similarity"], 1)
+        self.assertGreaterEqual(partial["text_alignment_similarity"], 0)
+        self.assertLess(partial["text_alignment_similarity"], 1)
+
     def test_diacritics_are_ignored_on_both_sides_by_default(self):
         pairs = [("هٰذَا كِتَابٌ", "هذا كتاب"), ("كَتَبَ", "كُتِبَ")]
         # Tanwin, short vowels, shadda, sukun, dagger alif and a Quranic mark.

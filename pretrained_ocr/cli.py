@@ -83,6 +83,7 @@ def write_reports(output, rows, context):
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
     columns = ["sample_id", "status", "reference", "prediction", "cer", "wer", "exact_match",
+               "smith_waterman_similarity", "text_alignment_similarity",
                "reference_chars", "reference_words", "char_edits", "word_edits",
                "seconds", "hit_token_limit", "error"]
     with (output / "scores.csv").open("w", encoding="utf-8-sig", newline="") as handle:

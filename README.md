@@ -345,6 +345,16 @@ The report includes letter accuracy, word accuracy, and exact-line accuracy for
 Chandra, Invizo, raw thesis TrOCR, general-Arabic dictionary-aware TrOCR, and
 CNN-TrOCR.
 
+All line scores use the project `arabic-light` normalization: Arabic combining
+marks/tashkeel and tatweel are removed before scoring. Reports also include
+Smith–Waterman local character similarity and whole-text global alignment
+similarity. The pretrained baselines write the same metrics under
+`thesis/predictions/pretrained/held_out/` and can be summarized with:
+
+```bash
+python -m pretrained_ocr compare --results thesis/predictions/pretrained/held_out
+```
+
 ## Prediction output
 
 Each runner owns a separate output tree:

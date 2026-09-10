@@ -271,6 +271,43 @@ def safe_accuracy(error_rate: float) -> float:
     return max(0.0, 1.0 - error_rate)
 
 
+def smith_waterman_similarity(reference: str, prediction: str) -> float:
+    """Best local character alignment, normalized to 0..1.
+
+    Inputs are assumed to have gone through ``normalize_text_for_evaluation``.
+    The local score is useful when an OCR result contains a correct substring
+    surrounded by insertion/deletion noise.
+    """
+    if not reference or not prediction:
+        return 0.0
+    previous = [0] * (len(prediction) + 1)
+    best = 0
+    for a in reference:
+        current = [0]
+        for j, b in enumerate(prediction, 1):
+            current.append(max(0, previous[j - 1] + (2 if a == b else -1),
+                               previous[j] - 1, current[j - 1] - 1))
+            best = max(best, current[-1])
+        previous = current
+    return min(1.0, best / (2 * max(len(reference), len(prediction))))
+
+
+def text_alignment_similarity(reference: str, prediction: str) -> float:
+    """Whole-line global alignment similarity, normalized to 0..1."""
+    longest = max(len(reference), len(prediction))
+    if not longest:
+        return 1.0
+    previous = [j * -1 for j in range(len(prediction) + 1)]
+    for i, a in enumerate(reference, 1):
+        current = [-i]
+        for j, b in enumerate(prediction, 1):
+            current.append(max(previous[j - 1] + (2 if a == b else -1),
+                               previous[j] - 1, current[j - 1] - 1))
+        previous = current
+    # Perfect alignment scores 2*longest; unrelated text may score negatively.
+    return max(0.0, min(1.0, previous[-1] / (2 * longest)))
+
+
 def score_line_ocr(reference: str, prediction: str) -> dict[str, float | int]:
     """Score one OCR prediction using the project-wide line OCR metrics."""
     reference = normalize_text_for_evaluation(reference)
@@ -291,6 +328,8 @@ def score_line_ocr(reference: str, prediction: str) -> dict[str, float | int]:
         "letter_accuracy": safe_accuracy(char_error),
         "word_accuracy": safe_accuracy(word_error),
         "line_accuracy": 1.0 if reference == prediction else 0.0,
+        "smith_waterman_similarity": smith_waterman_similarity(reference, prediction),
+        "text_alignment_similarity": text_alignment_similarity(reference, prediction),
     }
 
 
@@ -303,6 +342,8 @@ def empty_ocr_aggregate() -> dict[str, int]:
         "char_distance": 0,
         "reference_words": 0,
         "word_distance": 0,
+        "smith_waterman_sum": 0.0,
+        "text_alignment_sum": 0.0,
     }
 
 
@@ -314,6 +355,8 @@ def add_ocr_score(aggregate: dict[str, int], scores: dict[str, float | int], mis
     aggregate["char_distance"] += int(scores["char_distance"])
     aggregate["reference_words"] += int(scores["reference_words"])
     aggregate["word_distance"] += int(scores["word_distance"])
+    aggregate["smith_waterman_sum"] += float(scores["smith_waterman_similarity"])
+    aggregate["text_alignment_sum"] += float(scores["text_alignment_similarity"])
 
 
 def finalize_ocr_aggregate(aggregate: dict[str, int]) -> dict[str, float | int]:
@@ -334,6 +377,8 @@ def finalize_ocr_aggregate(aggregate: dict[str, int]) -> dict[str, float | int]:
         "letter_accuracy": letter_accuracy,
         "word_accuracy": word_accuracy,
         "line_accuracy": line_accuracy,
+        "smith_waterman_similarity": aggregate["smith_waterman_sum"] / evaluated if evaluated else 0.0,
+        "text_alignment_similarity": aggregate["text_alignment_sum"] / evaluated if evaluated else 0.0,
     }
 
 
