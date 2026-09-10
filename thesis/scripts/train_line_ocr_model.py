@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
         choices=("student", "line"),
         default="student",
         help=(
-            "student keeps pages from the same notebook/student together; "
+            "student keeps notebooks/students together and targets the requested line ratio; "
             "line gives an even random line-level split."
         ),
     )
@@ -595,17 +595,31 @@ def student_group(page_id: str) -> str:
 
 
 def split_records_by_student(records: list[LineRecord], train_ratio: float, seed: int) -> tuple[list[LineRecord], list[LineRecord]]:
+    """Choose whole students with the closest achievable training line count."""
     by_student: dict[str, list[LineRecord]] = {}
     for record in records:
         by_student.setdefault(student_group(record.page_id), []).append(record)
     students = sorted(by_student)
     random.Random(seed).shuffle(students)
-    train_count = (
-        max(1, min(len(students) - 1, round(len(students) * train_ratio)))
-        if len(students) > 1
-        else len(students)
+    if len(students) < 2:
+        return list(records), []
+
+    # Subset sum: retain one reproducible route to each attainable line count.
+    # Snapshot the sums so a student cannot be selected twice in one iteration.
+    parents: dict[int, tuple[int, str] | None] = {0: None}
+    for student in students:
+        size = len(by_student[student])
+        for previous in list(parents):
+            parents.setdefault(previous + size, (previous, student))
+    target = len(records) * train_ratio
+    remaining = min(
+        (count for count in parents if 0 < count < len(records)),
+        key=lambda count: (abs(count - target), -count),
     )
-    train_students = set(students[:train_count])
+    train_students = set()
+    while remaining:
+        remaining, student = parents[remaining]
+        train_students.add(student)
     train = [r for r in records if student_group(r.page_id) in train_students]
     test = [r for r in records if student_group(r.page_id) not in train_students]
     return train, test
