@@ -48,6 +48,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-ratio", type=float, default=0.8)
     parser.add_argument("--split-strategy", choices=("student", "line"), default="student")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--synthetic-root", type=Path)
+    parser.add_argument("--synthetic-limit", type=int)
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--khatt-samples", type=int, default=0)
     parser.add_argument("--khatt-cache-root", type=Path, default=base.DEFAULT_KHATT_CACHE_ROOT)
@@ -115,6 +117,10 @@ def add_common_training_args(command: list[str], args: argparse.Namespace) -> No
     )
     if args.max_samples is not None:
         command.extend(["--max-samples", str(args.max_samples)])
+    if args.synthetic_root is not None:
+        command.extend(["--synthetic-root", str(project_path(args.synthetic_root))])
+    if args.synthetic_limit is not None:
+        command.extend(["--synthetic-limit", str(args.synthetic_limit)])
     if args.eval_limit is not None:
         command.extend(["--eval-limit", str(args.eval_limit)])
     if args.refresh_khatt_cache:
@@ -145,6 +151,7 @@ def collect_evaluation_rows(profiles: list[str], model_root: Path) -> list[dict]
                 "test_lines": row.get("test_lines", ""),
                 "views_per_line": experiment.get("views_per_line", ""),
                 "khatt_samples_used": row.get("khatt_samples_used", 0),
+                "synthetic_samples_used": experiment.get("synthetic_samples_used", 0),
             }
         )
     return rows
@@ -162,6 +169,7 @@ def write_report(path: Path, rows: list[dict]) -> None:
         "test_lines",
         "views_per_line",
         "khatt_samples_used",
+        "synthetic_samples_used",
     ]
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:

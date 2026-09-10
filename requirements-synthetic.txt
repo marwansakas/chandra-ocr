@@ -1,0 +1,6 @@
+# CPU-only generation; no model downloads or GPU needed.
+Pillow>=10,<13
+numpy>=1.26,<3
+fonttools>=4.50,<5
+arabic-reshaper>=3,<4
+python-bidi>=0.6,<0.7

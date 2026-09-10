@@ -81,6 +81,8 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--synthetic-root", type=Path, help="Generated synthetic dataset, added to training only.")
+    parser.add_argument("--synthetic-limit", type=int, help="Maximum generated samples to add.")
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--include-empty-labels", action="store_true")
     parser.add_argument("--prepare-only", action="store_true")
@@ -198,6 +200,8 @@ def read_flat_line_records(dataset_root: Path) -> list[LineRecord]:
                 metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 metadata = {}
+        if metadata.get("synthetic"):
+            raise ValueError("Synthetic samples cannot be split as real data. Use --synthetic-root.")
         records.append(
             LineRecord(
                 sample_id=line_dir.name,
@@ -422,6 +426,23 @@ def combine_training_records(train: list[LineRecord], khatt: list[LineRecord], s
     combined = [*train, *khatt]
     random.Random(seed).shuffle(combined)
     return combined
+
+
+def prepare_synthetic_records(args, train, test):
+    from synthetic_training import load_synthetic_records
+
+    args.synthetic_samples_used = 0
+    if args.synthetic_root is None:
+        if args.synthetic_limit is not None:
+            raise ValueError("--synthetic-limit requires --synthetic-root.")
+        return []
+    root = project_path(args.synthetic_root).resolve()
+    real_root = project_path(args.dataset_root).resolve()
+    if root == real_root or root in real_root.parents or real_root in root.parents:
+        raise ValueError("Synthetic and real dataset directories must not overlap.")
+    records = load_synthetic_records(root, train, test, LineRecord, args.synthetic_limit)
+    args.synthetic_samples_used = len(records)
+    return records
 
 
 def read_surya_line_records(dataset_root: Path) -> list[LineRecord]:
@@ -724,6 +745,8 @@ def write_training_experiment(
         "eval_batch_size": args.eval_batch_size,
         "views_per_line": args.views_per_line,
         "augmentation_profile": args.augmentation_profile,
+        "synthetic_root": portable_path(project_path(args.synthetic_root)) if args.synthetic_root else None,
+        "synthetic_samples_used": args.synthetic_samples_used,
         "learning_rate": args.learning_rate,
         "weight_decay": args.weight_decay,
         "own_training_samples": len(own_train),
@@ -1014,6 +1037,7 @@ def main() -> None:
         raise SystemExit("Not enough labeled line records to split into train/test.")
 
     train, test = split_records(usable, args.train_ratio, args.seed, args.split_strategy)
+    synthetic_records = prepare_synthetic_records(args, train, test)
     split_root.mkdir(parents=True, exist_ok=True)
     write_manifest(split_root / "train.csv", train)
     write_manifest(split_root / "test.csv", test)
@@ -1022,9 +1046,11 @@ def main() -> None:
     write_summary(split_root / "summary.md", records, usable, train, test, args.split_strategy)
 
     khatt_records, khatt_summary = prepare_khatt_records(args)
-    combined_train = combine_training_records(train, khatt_records, args.seed)
+    combined_train = combine_training_records(train, [*khatt_records, *synthetic_records], args.seed)
     if khatt_records:
         write_jsonl(split_root / "train_with_khatt.jsonl", combined_train)
+    if synthetic_records:
+        write_jsonl(split_root / "train_with_synthetic.jsonl", combined_train)
 
     print(f"Total line records: {len(records)}")
     print(f"Usable labeled line records: {len(usable)}")
@@ -1035,6 +1061,7 @@ def main() -> None:
     print(f"Own training lines: {len(train)}")
     print(f"KHATT requested: {args.khatt_samples}")
     print(f"KHATT accepted: {len(khatt_records)}")
+    print(f"Synthetic training samples: {len(synthetic_records)}")
     print(f"Combined training lines: {len(combined_train)}")
     if khatt_summary.get("skipped"):
         print(f"KHATT skipped: {json.dumps(khatt_summary['skipped'], ensure_ascii=False)}")

@@ -208,6 +208,10 @@ TrOCR uses a ViT image encoder and autoregressive text decoder.
 
 ## 7. TrOCR augmentation experiments
 
+To generate separate Arabic synthetic training pairs or variations of your real
+training handwriting, see [Synthetic data](thesis/SYNTHETIC_DATA.md).
+The standard, CNN, and augmentation trainers accept --synthetic-root.
+
 The baseline TrOCR trainer can produce multiple models from the same data split
 by changing only the image augmentation used for extra training views:
 

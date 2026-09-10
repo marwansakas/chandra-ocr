@@ -29,6 +29,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-ratio", type=float, default=0.8)
     parser.add_argument("--split-strategy", choices=("student", "line"), default="student")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--synthetic-root", type=Path, help="Generated synthetic dataset, added to training only.")
+    parser.add_argument("--synthetic-limit", type=int, help="Maximum generated samples to add.")
     parser.add_argument("--max-samples", type=int, default=None)
     parser.add_argument("--include-empty-labels", action="store_true")
     parser.add_argument("--prepare-only", action="store_true")
@@ -80,6 +82,8 @@ def write_experiment_config(
         "eval_batch_size": args.eval_batch_size,
         "views_per_line": args.views_per_line,
         "augmentation_profile": args.augmentation_profile,
+        "synthetic_root": base.portable_path(base.project_path(args.synthetic_root)) if args.synthetic_root else None,
+        "synthetic_samples_used": args.synthetic_samples_used,
         "learning_rate": args.learning_rate,
         "weight_decay": args.weight_decay,
         "cnn_config": cnn_config.__dict__,
@@ -227,6 +231,7 @@ def main() -> None:
         raise SystemExit("Not enough labeled line records to split into train/test.")
 
     train, test = base.split_records(usable, args.train_ratio, args.seed, args.split_strategy)
+    synthetic_records = base.prepare_synthetic_records(args, train, test)
     args.split_root.mkdir(parents=True, exist_ok=True)
     base.write_manifest(args.split_root / "train.csv", train)
     base.write_manifest(args.split_root / "test.csv", test)
@@ -235,9 +240,11 @@ def main() -> None:
     base.write_summary(args.split_root / "summary.md", records, usable, train, test, args.split_strategy)
 
     khatt_records, khatt_summary = base.prepare_khatt_records(args)
-    combined_train = base.combine_training_records(train, khatt_records, args.seed)
+    combined_train = base.combine_training_records(train, [*khatt_records, *synthetic_records], args.seed)
     if khatt_records:
         base.write_jsonl(args.split_root / "train_with_khatt.jsonl", combined_train)
+    if synthetic_records:
+        base.write_jsonl(args.split_root / "train_with_synthetic.jsonl", combined_train)
 
     print(f"Total line records: {len(records)}")
     print(f"Usable labeled line records: {len(usable)}")
@@ -245,6 +252,7 @@ def main() -> None:
     print(f"Test: {len(test)} lines")
     print(f"Split strategy: {args.split_strategy}")
     print(f"Combined training lines: {len(combined_train)}")
+    print(f"Synthetic training samples: {len(synthetic_records)}")
 
     if args.prepare_only:
         return

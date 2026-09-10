@@ -1,0 +1,2 @@
+# Preserve upstream font/license bytes used by sources.json checksums.
+thesis/assets/synthetic_fonts/** -text

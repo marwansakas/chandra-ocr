@@ -117,6 +117,7 @@ def write_evaluation_result(
         "khatt_dataset_name": experiment.get("khatt_dataset_name", ""),
         "own_training_lines": experiment.get("own_training_samples"),
         "combined_training_lines": experiment.get("combined_training_samples"),
+        "synthetic_samples_used": experiment.get("synthetic_samples_used", 0),
         "random_seed": experiment.get("random_seed"),
         **metrics,
     }

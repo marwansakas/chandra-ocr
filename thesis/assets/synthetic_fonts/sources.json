@@ -1,0 +1,35 @@
+{
+  "revision": "8e44913e4ff26fc997e6856c1ec40ff4791c98c5",
+  "files": [
+    {
+      "file": "arefruqaa/ArefRuqaa-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/arefruqaa/ArefRuqaa-Regular.ttf",
+      "sha256": "ceb786d83ba92f35e96efcd8623c2858d288e0c543c8761ba35b1020989464f9"
+    },
+    {
+      "file": "arefruqaa/OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/arefruqaa/OFL.txt",
+      "sha256": "41ac14451a624c69490e24b9aaaaa1f65dc9dc17c3f6f38172fc43d5ba654a1b"
+    },
+    {
+      "file": "lateef/Lateef-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/lateef/Lateef-Regular.ttf",
+      "sha256": "fcbd9e0227a4d7238880defa5fd74c012d69351150709e559a8577446145c2fc"
+    },
+    {
+      "file": "lateef/OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/lateef/OFL.txt",
+      "sha256": "63fbda065921d34b9421154fbdeba09075efa2405a5bcb32fbbcfd0aeea892c9"
+    },
+    {
+      "file": "amiri/Amiri-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/amiri/Amiri-Regular.ttf",
+      "sha256": "ab391c4147d054c48976e98322ad0eefe1427aa0e0502a12a4c75d80a70cfcd7"
+    },
+    {
+      "file": "amiri/OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/8e44913e4ff26fc997e6856c1ec40ff4791c98c5/ofl/amiri/OFL.txt",
+      "sha256": "72de68e5954f4fdd24702292ef5a32f003ca960ec9330dc86e5eefb5dffb9b22"
+    }
+  ]
+}
