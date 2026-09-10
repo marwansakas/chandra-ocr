@@ -37,6 +37,29 @@ def make_training(tmp_path):
     return rows, manifest
 
 
+def test_label_whitespace_is_normalized():
+    assert generator.clean_text("  هَذا\tكتاب\r\nجميل  ") == "هَذا كتاب جميل"
+
+
+def test_invalid_control_identifies_source(tmp_path):
+    manifest = tmp_path / "train.jsonl"
+    manifest.write_text(json.dumps({"sample_id": "bad-label", "text": "word\x00word",
+                                    "image_path": "unused.png"}) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="bad-label.*U\\+0000"):
+        generator.read_training_sources(manifest)
+
+
+def test_normalized_source_still_passes_training_validation(tmp_path):
+    rows, manifest = make_training(tmp_path)
+    rows[0].text = "هذا\tكتاب\nجميل"
+    trainer.write_jsonl(manifest, rows)
+    output = tmp_path / "generated"
+    generator.generate(generator.parse_args(["--mode", "augment", "--train-manifest", str(manifest),
+                                             "--output-root", str(output), "--count", "1"]))
+    loaded = synthetic_training.load_synthetic_records(output, rows, [], trainer.LineRecord)
+    assert loaded[0].text == "هذا كتاب جميل"
+
+
 def generate_augmented(tmp_path):
     rows, manifest = make_training(tmp_path)
     output = tmp_path / "generated"

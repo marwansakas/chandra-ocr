@@ -23,11 +23,14 @@ def text_hash(text: str) -> str:
 
 
 def clean_text(text: str) -> str:
-    text = unicodedata.normalize("NFC", text.strip())
+    # Labels belong to single-line crops, but transcription files may contain
+    # tabs or wrapped text. Normalize whitespace without changing the letters.
+    text = unicodedata.normalize("NFC", " ".join(text.split()))
     if not text or text.casefold() == "ignore":
         raise ValueError("Labels must contain nonempty, verified text.")
     if any(unicodedata.category(c) == "Cc" for c in text):
-        raise ValueError("A sample must contain one text line, without control characters.")
+        codes = sorted({f"U+{ord(c):04X}" for c in text if unicodedata.category(c) == "Cc"})
+        raise ValueError(f"Label contains unsupported control characters: {', '.join(codes)}")
     if any(c in text for c in "\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069"):
         raise ValueError("Use logical-order Unicode text without explicit bidi controls.")
     return text
@@ -51,10 +54,14 @@ def read_training_sources(manifest: Path) -> list[dict]:
         seen.add(sample_id)
         if row.get("split", "train") != "train" or row.get("synthetic", False):
             raise ValueError("Use a manifest containing only original training samples.")
+        try:
+            text = clean_text(row["text"])
+        except ValueError as exc:
+            raise ValueError(f"Training sample {sample_id!r}: {exc}") from exc
         rows.append({
             "source_sample_id": sample_id,
             "source_page_id": row.get("page_id", ""),
-            "text": clean_text(row["text"]),
+            "text": text,
             "image_path": resolve_project_path(row["image_path"]),
         })
     if not rows:
