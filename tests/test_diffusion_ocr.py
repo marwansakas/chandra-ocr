@@ -400,6 +400,30 @@ def test_epoch_resume_matches_uninterrupted_cpu_training(tmp_path):
         assert state["selected"] == exact
 
 
+def test_checkpoint_weight_initialization_resets_stage_and_preserves_parent_candidate(tmp_path):
+    root = tmp_path / "data"
+    writers = fixture_data(root)
+    split = tmp_path / "split"
+    freeze_splits(audit_dataset(root, writers), split)
+    common = ["thesis/scripts/train_diffusion_line_ocr_model.py", "--dataset-root", root, "--split-root", split,
+              "--batch-size", "2", "--height", "16", "--max-width", "128", "--patch-size", "4", "--d-model", "16",
+              "--heads", "4", "--encoder-layers", "1", "--decoder-layers", "1", "--sampling-steps", "2", "--device", "cpu"]
+    parent = tmp_path / "parent"
+    initialized = tmp_path / "initialized"
+    run_cli(*common, "--output-dir", parent, "--epochs", "1")
+    source = parent / "checkpoint-0001"
+    run_cli(*common, "--output-dir", initialized, "--epochs", "1", "--initialize-from", source,
+            "--learning-rate", "0.00003", "--augmentation", "trocr_views_v1")
+
+    metadata = json.loads((initialized / "run.json").read_text(encoding="utf-8"))
+    assert metadata["initialization"]["type"] == "checkpoint_weights_reset_optimizer"
+    assert metadata["initialization"]["source_epoch"] == 1
+    assert metadata["arguments"]["learning_rate"] == 0.00003
+    assert metadata["arguments"]["augmentation"] == "trocr_views_v1"
+    assert (initialized / "initial-checkpoint" / "model.pt").read_bytes() == (source / "model.pt").read_bytes()
+    assert json.loads((initialized / "checkpoint_selection.json").read_text(encoding="utf-8"))["candidates"]
+
+
 def test_runner_never_reads_labels_and_preserves_edge_spaces(tmp_path):
     root = tmp_path / "data"
     writers = fixture_data(root)

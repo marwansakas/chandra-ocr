@@ -77,6 +77,7 @@ COMPARISON_FIELDS = (
     "heads",
     "height",
     "ink_mode",
+    "initialize_from",
     "learning_rate",
     "max_width",
     "monitor_train",

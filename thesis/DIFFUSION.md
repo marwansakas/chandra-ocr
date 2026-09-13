@@ -210,6 +210,15 @@ from the saved checkpoint when resuming. Cross-device/version bitwise equality
 is not guaranteed. Disk usage grows by one checkpoint and validation trace set
 per epoch; no checkpoints are automatically deleted.
 
+`--initialize-from CHECKPOINT` is a separate fine-tuning operation for an
+ordinary train/validation split. It verifies the checkpoint against the current
+frozen data/tokenizer, loads its model weights and image/model configuration,
+then resets the optimizer and stage epoch count in a new run directory. The
+source checkpoint is copied as stage epoch 0 and remains eligible for both
+recognition pointers, so a worse fine-tuning stage cannot replace it. Run
+metadata records the parent checkpoint path, epoch and model hash. It cannot be
+combined with `--resume`, a new ViT checkpoint, line-pilot mode or overfit mode.
+
 ## Local correctness checks
 
 Requires Python 3.10+ and the isolated dependencies. These commands are real

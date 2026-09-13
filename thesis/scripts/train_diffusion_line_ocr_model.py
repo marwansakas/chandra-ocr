@@ -19,6 +19,8 @@ def parse_args():
     parser.add_argument("--split-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True, help="NEW run directory; never overwrites a run")
     parser.add_argument("--resume", type=Path, help="Checkpoint to continue in a NEW output directory; --epochs is total epochs")
+    parser.add_argument("--initialize-from", type=Path,
+                        help="Validation-selected checkpoint whose weights initialize a NEW run; optimizer and epoch count reset")
     parser.add_argument("--vit-checkpoint", type=Path, help="Optional LOCAL ViTModel + image processor directory; no network download")
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=8)
@@ -69,8 +71,10 @@ def parse_args():
         parser.error("--overfit-samples must be positive")
     if args.overfit_manifest and not args.overfit_samples:
         parser.error("--overfit-manifest requires --overfit-samples")
-    if args.resume and args.vit_checkpoint:
-        parser.error("Resume already includes the visual encoder; omit --vit-checkpoint")
+    if args.resume and args.initialize_from:
+        parser.error("--resume and --initialize-from are mutually exclusive")
+    if (args.resume or args.initialize_from) and args.vit_checkpoint:
+        parser.error("Checkpoint initialization already includes the visual encoder; omit --vit-checkpoint")
     if args.full_mask_probability is not None and not 0 <= args.full_mask_probability <= 1:
         parser.error("--full-mask-probability must be in [0, 1]")
     if args.checkpoint_every < 1 or args.diagnostics_every < 0 or args.train_loss_samples < 1 or args.early_stopping_patience < 0 or args.selection_min_delta < 0 or args.exact_line_cer_band < 0:
@@ -106,7 +110,7 @@ def main():
     from thesis.diffusion.model import DiffusionRecognizer, ModelConfig
     from thesis.diffusion.runtime import (ROOT, Collator, LineDataset, checkpoint_path, get_device, load_checkpoint,
                                           load_training_state, restore_rng, rng_state, runtime_info, save_checkpoint,
-                                          seed_everything, seed_worker)
+                                          seed_everything, seed_worker, verify_checkpoint_provenance)
     from thesis.diffusion.runtime import all_mask_loss, fixed_corruption_loss, full_mask_diagnostics
     from thesis.diffusion.tokenizer import training_text, HARAKAT_V1
     from thesis.diffusion.subsets import read_subset
@@ -133,18 +137,24 @@ def main():
         train_records = (read_subset(args.overfit_manifest, train_records, lock["dataset_fingerprint"], split_hash, args.overfit_samples)
                          if args.overfit_manifest else train_records[:args.overfit_samples])
         validation_records = train_records
+    if args.initialize_from and (line_pilot or args.overfit_samples):
+        raise ValueError("--initialize-from requires an ordinary train/validation split")
 
     encoder_source = None
     model = None
-    if args.resume:
-        model, saved_tokenizer, image_config, previous = load_checkpoint(args.resume, device)
+    initialization_checkpoint = None
+    if args.resume or args.initialize_from:
+        checkpoint_source = args.resume or args.initialize_from
+        model, saved_tokenizer, image_config, previous = load_checkpoint(checkpoint_source, device)
+        initialization_checkpoint = checkpoint_path(checkpoint_source)
         config = model.config
         if saved_tokenizer.as_dict() != tokenizer.as_dict() or config.capacity != lock["capacity"]:
-            raise ValueError("Resume vocabulary/capacity differs from frozen data")
+            raise ValueError("Checkpoint vocabulary/capacity differs from frozen data")
+        verify_checkpoint_provenance(previous, saved_tokenizer, tokenizer, lock, split_hash)
         encoder_source = previous.get("encoder_source")
         for name, saved in (("eos_target", config.eos_target), ("full_mask_probability", config.full_mask_probability), ("ink_mode", image_config.ink_mode), ("text_policy", config.text_policy)):
             if getattr(args, name) is not None and getattr(args, name) != saved:
-                raise ValueError(f"Resume cannot change {name}; use a fresh run")
+                raise ValueError(f"Checkpoint initialization cannot change {name}")
     else:
         vit_config = None
         image_config = ImageConfig(args.height, args.max_width, args.patch_size)
@@ -278,6 +288,13 @@ def main():
            "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
            "mode": "training_subset_overfit_diagnostic" if args.overfit_samples else "fixed_epochs_line_pilot" if line_pilot else "validation_selected_training",
            "resume_checkpoint": str(checkpoint_path(args.resume)) if args.resume else None,
+           "initialization": ({"type": "checkpoint_weights_reset_optimizer", "checkpoint": str(initialization_checkpoint),
+                               "checkpoint_model_sha256": file_hash(initialization_checkpoint / "model.pt"),
+                               "source_epoch": previous.get("epoch"),
+                               "dataset_fingerprint": previous.get("dataset_fingerprint"),
+                               "split_lock_sha256": previous.get("split_lock_sha256")}
+                              if args.initialize_from else {"type": "resume_optimizer_and_rng", "checkpoint": str(initialization_checkpoint)}
+                              if args.resume else {"type": "random_initialization"}),
            "sampler": ("greedy_one_pass" if args.evaluation_decoding == "greedy_one_pass" else "absorbing_ancestral_categorical") if config.decoder_kind == "diffusion" else "autoregressive_greedy", "precision": "float32",
            "selection_metric": "strict CER on training subset" if args.overfit_samples else "fixed final epoch; test never evaluated during training" if line_pilot else "strict CER on validation",
            "checkpoint_selection_policy": checkpoint_selection_policy}
@@ -299,6 +316,35 @@ def main():
     best_loss = float("inf")
     selection_candidates = []
     epochs_without_cer_improvement = 0
+    if args.initialize_from:
+        initial_row = previous.get("metrics") or {}
+        initial_strict = (initial_row.get("metrics") or {}).get("strict") or {}
+        if initial_row.get("metrics_partition") != "validation" or initial_strict.get("cer") is None:
+            raise ValueError("--initialize-from requires a checkpoint with strict validation metrics")
+        initial_name = "initial-checkpoint"
+        shutil.copytree(initialization_checkpoint, args.output_dir / initial_name)
+        best_cer = initial_strict["cer"]
+        initial_validation_loss = initial_row.get("validation_loss")
+        best_loss = initial_validation_loss if initial_validation_loss is not None else float("inf")
+        selection_candidates = [checkpoint_candidate(initial_name, 0, best_cer, initial_strict.get("exact_lines", 0))]
+        initial_best = {"checkpoint": initial_name, "epoch": 0, "source_epoch": previous.get("epoch"),
+                        "strict_cer": best_cer, "selection_metric": "absolute_lowest_validation_strict_cer"}
+        initial_exact = {"checkpoint": initial_name, "epoch": 0, "source_epoch": previous.get("epoch"),
+                         "strict_cer": best_cer, "exact_lines": initial_strict.get("exact_lines", 0),
+                         "selection_metric": "most_exact_validation_lines_within_cer_band",
+                         "absolute_best_strict_cer": best_cer, "cer_band": args.exact_line_cer_band,
+                         "cer_band_percentage_points": 100 * args.exact_line_cer_band,
+                         "tie_breakers": ["lower_strict_cer", "earlier_epoch"]}
+        (args.output_dir / "best.json").write_bytes(json_bytes(initial_best))
+        (args.output_dir / "best_exact.json").write_bytes(json_bytes(initial_exact))
+        (args.output_dir / "checkpoint_selection.json").write_bytes(json_bytes({
+            "absolute_best_strict_cer": best_cer, "cer_band": args.exact_line_cer_band,
+            "candidates": selection_candidates, "selected": initial_exact}))
+        if best_loss != float("inf"):
+            (args.output_dir / "best_loss.json").write_bytes(json_bytes({
+                "checkpoint": initial_name, "epoch": 0, "source_epoch": previous.get("epoch"),
+                "validation_loss": best_loss, "selection_metric": "fixed_validation_denoising_loss",
+                "schedule_seed": args.validation_loss_seed}))
     if args.resume:
         # Keep the previous best eligible; a worse resumed epoch must not replace it.
         parent_run = checkpoint_path(args.resume).parent
