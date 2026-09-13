@@ -1,0 +1,6 @@
+# Isolated baseline; no Surya, Chandra, dataset or pretrained weight downloads.
+# Install the torch build appropriate for the university CUDA environment first.
+torch>=2.6,<3
+numpy>=1.26,<3
+Pillow>=10,<13
+pytest>=8,<10

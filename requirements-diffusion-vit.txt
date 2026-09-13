@@ -1,0 +1,3 @@
+-r requirements-diffusion.txt
+# Optional local ViT encoder adapter, tested with tiny random weights.
+transformers==4.57.6

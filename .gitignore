@@ -9,6 +9,7 @@
 /.venv_surya/
 /.venv-surya/
 /.venv-ocr-*/
+/.venv-diffusion/
 
 # Python bytecode and caches
 __pycache__/
