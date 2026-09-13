@@ -20,6 +20,7 @@ __pycache__/
 
 # Official Invizo release models and run artifacts are local baseline data.
 /thesis/invizo/models/*.onnx
+/thesis/invizo/vendor/
 /thesis/invizo/outputs/*
 !/thesis/invizo/outputs/.gitkeep
 /thesis/invizo/logs/*
