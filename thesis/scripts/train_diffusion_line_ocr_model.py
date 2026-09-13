@@ -47,7 +47,9 @@ def parse_args():
     parser.add_argument("--validation-loss-seed", type=int, default=300042, help="Fixed generator seed used for comparable validation/train denoising loss")
     parser.add_argument("--train-loss-samples", type=int, default=128, help="Fixed TRAIN-only subset size for evaluation-mode loss diagnostics")
     parser.add_argument("--early-stopping-patience", type=int, default=30, help="Validation-CER evaluations without a qualifying improvement; 0 disables")
-    parser.add_argument("--selection-min-delta", type=float, default=0.0, help="Minimum strict-CER decrease required to update the selected checkpoint")
+    parser.add_argument("--selection-min-delta", type=float, default=0.0, help="Minimum strict-CER decrease that resets early-stop patience; absolute-best checkpoint still records every decrease")
+    parser.add_argument("--exact-line-cer-band", type=float, default=0.005,
+                        help="Absolute CER band for selecting the checkpoint with most exact validation lines; 0.005 is 0.5 percentage points")
     parser.add_argument("--save-traces", action="store_true", help="Include all sampling token states in saved predictions")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--workers", type=int, default=0)
@@ -71,7 +73,7 @@ def parse_args():
         parser.error("Resume already includes the visual encoder; omit --vit-checkpoint")
     if args.full_mask_probability is not None and not 0 <= args.full_mask_probability <= 1:
         parser.error("--full-mask-probability must be in [0, 1]")
-    if args.checkpoint_every < 1 or args.diagnostics_every < 0 or args.train_loss_samples < 1 or args.early_stopping_patience < 0 or args.selection_min_delta < 0:
+    if args.checkpoint_every < 1 or args.diagnostics_every < 0 or args.train_loss_samples < 1 or args.early_stopping_patience < 0 or args.selection_min_delta < 0 or args.exact_line_cer_band < 0:
         parser.error("Invalid checkpoint or diagnostic interval")
     return args
 
@@ -109,6 +111,7 @@ def main():
     from thesis.diffusion.tokenizer import training_text, HARAKAT_V1
     from thesis.diffusion.subsets import read_subset
     from thesis.diffusion.decoding_diagnostics import greedy_decode
+    from thesis.diffusion.selection import checkpoint_candidate, update_exact_line_frontier
 
     if args.output_dir.exists() and not args.check_only:
         raise FileExistsError(f"Run directory exists; choose a new --output-dir: {args.output_dir}")
@@ -213,13 +216,20 @@ def main():
         training_options["training_subset_sha256"] = file_hash(args.overfit_manifest)
     if args.evaluation_decoding != "ancestral":
         training_options["evaluation_decoding"] = args.evaluation_decoding
+    checkpoint_selection_policy = None if line_pilot or args.overfit_samples else {
+        "absolute_best": "lowest validation strict CER",
+        "near_tie": "most exact validation lines within the CER band; ties use lower CER then earlier epoch",
+        "exact_line_cer_band": args.exact_line_cer_band,
+        "exact_line_cer_band_percentage_points": 100 * args.exact_line_cer_band,
+        "test_used_for_selection": False,
+    }
     if args.resume and (previous["split_lock_sha256"] != split_hash or previous["training_options"] != training_options):
         raise ValueError("Resume split or training settings changed; retain original settings for reproducible continuation")
     if args.check_only:
         print(json.dumps({"checked": True, "model": config.as_dict(), "image": image_config.as_dict(), "partitions": lock["counts"],
                           "training_samples": len(train_records), "training_views_per_sample": training_views_per_sample,
                           "training_examples_per_epoch": training_examples_per_epoch,
-                          "evaluation_samples": len(validation_records),
+                           "evaluation_samples": len(validation_records), "checkpoint_selection_policy": checkpoint_selection_policy,
                            "evaluation_decoding": args.evaluation_decoding, "training_options": training_options,
                            "train_loss_subset": {"samples": len(train_loss_records), "seed": args.seed + 400000},
                           "mode": "overfit" if args.overfit_samples else "fixed_epochs_line_pilot" if line_pilot else "validation"}, indent=2))
@@ -269,7 +279,8 @@ def main():
            "mode": "training_subset_overfit_diagnostic" if args.overfit_samples else "fixed_epochs_line_pilot" if line_pilot else "validation_selected_training",
            "resume_checkpoint": str(checkpoint_path(args.resume)) if args.resume else None,
            "sampler": ("greedy_one_pass" if args.evaluation_decoding == "greedy_one_pass" else "absorbing_ancestral_categorical") if config.decoder_kind == "diffusion" else "autoregressive_greedy", "precision": "float32",
-           "selection_metric": "strict CER on training subset" if args.overfit_samples else "fixed final epoch; test never evaluated during training" if line_pilot else "strict CER on validation"}
+           "selection_metric": "strict CER on training subset" if args.overfit_samples else "fixed final epoch; test never evaluated during training" if line_pilot else "strict CER on validation",
+           "checkpoint_selection_policy": checkpoint_selection_policy}
     (args.output_dir / "run.json").write_bytes(json_bytes(run))
     (args.output_dir / "training_targets.jsonl").write_bytes(b"".join(json_bytes({"sample_id": r["sample_id"], "source_text": r["source_text"], "target_text": r["text"], "policy": config.text_policy}) for r in train_records))
     (args.output_dir / "train_loss_subset.json").write_bytes(json_bytes({"partition": "train", "seed": args.seed + 400000,
@@ -286,6 +297,7 @@ def main():
                                                      generator=torch.Generator().manual_seed(args.seed + 500000))
     best_cer = float("inf")
     best_loss = float("inf")
+    selection_candidates = []
     epochs_without_cer_improvement = 0
     if args.resume:
         # Keep the previous best eligible; a worse resumed epoch must not replace it.
@@ -298,7 +310,26 @@ def main():
                 raise ValueError("Parent best is later than resumed checkpoint; resume the latest checkpoint")
             shutil.copytree(best_path, args.output_dir / "inherited-best")
             best_cer = parent_best["strict_cer"]
-            (args.output_dir / "best.json").write_bytes(json_bytes({"checkpoint": "inherited-best", "strict_cer": best_cer}))
+            inherited_best = {**parent_best, "checkpoint": "inherited-best"}
+            (args.output_dir / "best.json").write_bytes(json_bytes(inherited_best))
+            if checkpoint_selection_policy is not None:
+                state_path = parent_run / "checkpoint_selection.json"
+                parent_candidates = json.loads(state_path.read_text(encoding="utf-8"))["candidates"] if state_path.is_file() else []
+                if not parent_candidates:
+                    strict = best_metadata.get("metrics", {}).get("metrics", {}).get("strict", {})
+                    parent_candidates = [checkpoint_candidate(parent_best["checkpoint"], parent_best.get("epoch", best_metadata["epoch"]),
+                                                                best_cer, strict.get("exact_lines", 0))]
+                copied = {parent_best["checkpoint"]: "inherited-best"}
+                for item in parent_candidates:
+                    if item["epoch"] > start_epoch:
+                        raise ValueError("Parent checkpoint-selection candidate is later than resumed checkpoint; resume the latest checkpoint")
+                    source_name = item["checkpoint"]
+                    destination_name = copied.get(source_name)
+                    if destination_name is None:
+                        destination_name = f"inherited-selection-{item['epoch']:04d}"
+                        shutil.copytree(parent_run / source_name, args.output_dir / destination_name)
+                        copied[source_name] = destination_name
+                    selection_candidates.append({**item, "checkpoint": destination_name})
         # Loading the inherited model constructs modules and consumes RNG state.
         restore_rng(state["rng"])
     training_dataset = LineDataset(args.dataset_root, train_records, views_per_sample=training_views_per_sample)
@@ -359,9 +390,11 @@ def main():
             row["full_mask_diagnostics"] = full_mask_diagnostics(model, validation_loader, device)
         name = f"checkpoint-{epoch:04d}"
         cer = scores["strict"]["cer"] if scores else None
-        is_best = not line_pilot and cer is not None and cer < best_cer - args.selection_min_delta
+        previous_best_cer = best_cer
+        is_best = not line_pilot and cer is not None and cer < best_cer
+        qualifying_cer_improvement = is_best and cer < previous_best_cer - args.selection_min_delta
         is_best_loss = not line_pilot and validation_loss is not None and validation_loss < best_loss - args.selection_min_delta
-        if is_best:
+        if qualifying_cer_improvement:
             epochs_without_cer_improvement = 0
         elif not line_pilot and cer is not None:
             epochs_without_cer_improvement += 1
@@ -371,7 +404,15 @@ def main():
             row["early_stop"] = {"reason": "validation_strict_cer_patience", "patience": args.early_stopping_patience,
                                   "epochs_without_improvement": epochs_without_cer_improvement,
                                   "selection_min_delta": args.selection_min_delta}
-        if epoch % args.checkpoint_every == 0 or epoch == args.epochs or is_best or is_best_loss or stopping:
+        selected_exact = None
+        is_selection_candidate = False
+        if checkpoint_selection_policy is not None and cer is not None:
+            if is_best:
+                best_cer = cer
+            current_candidate = checkpoint_candidate(name, epoch, cer, scores["strict"]["exact_lines"])
+            selection_candidates, selected_exact, is_selection_candidate = update_exact_line_frontier(
+                selection_candidates, current_candidate, best_cer, args.exact_line_cer_band)
+        if epoch % args.checkpoint_every == 0 or epoch == args.epochs or is_best or is_best_loss or is_selection_candidate or stopping:
             save_checkpoint(args.output_dir / name, model, tokenizer, image_config, metadata={**run, "epoch": epoch, "metrics": row},
                             training_state={"epoch": epoch, "optimizer": optimizer.state_dict(), "rng": rng_state()})
             if predictions:
@@ -380,9 +421,22 @@ def main():
         with (args.output_dir / "training_metrics.jsonl").open("ab") as handle:
             handle.write(json_bytes(row))
         if is_best:
-            best_cer = cer
             (args.output_dir / "best.json").write_bytes(json_bytes({"checkpoint": name, "epoch": epoch, "strict_cer": cer,
-                "selection_metric": "validation_strict_cer", "selection_min_delta": args.selection_min_delta}))
+                "selection_metric": f"absolute_lowest_{run['epoch_metrics_partition']}_strict_cer"}))
+        if selected_exact is not None:
+            selection_report = {
+                "checkpoint": selected_exact["checkpoint"], "epoch": selected_exact["epoch"],
+                "strict_cer": selected_exact["strict_cer"], "exact_lines": selected_exact["exact_lines"],
+                "selection_metric": "most_exact_validation_lines_within_cer_band",
+                "absolute_best_strict_cer": best_cer, "cer_band": args.exact_line_cer_band,
+                "cer_band_percentage_points": 100 * args.exact_line_cer_band,
+                "tie_breakers": ["lower_strict_cer", "earlier_epoch"],
+            }
+            (args.output_dir / "best_exact.json").write_bytes(json_bytes(selection_report))
+            (args.output_dir / "checkpoint_selection.json").write_bytes(json_bytes({
+                "absolute_best_strict_cer": best_cer, "cer_band": args.exact_line_cer_band,
+                "candidates": selection_candidates, "selected": selection_report,
+            }))
         if is_best_loss:
             best_loss = validation_loss
             (args.output_dir / "best_loss.json").write_bytes(json_bytes({"checkpoint": name, "epoch": epoch, "validation_loss": validation_loss,

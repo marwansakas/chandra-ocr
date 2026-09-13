@@ -37,7 +37,7 @@ def main():
     parser.add_argument("--format", choices=("table", "json"), default="table",
                         help="Saved evaluation table (default), or full JSON; without evaluation, prints JSON")
     parser.add_argument("--metric-policy", choices=("historical", "strict"), default="historical")
-    parser.add_argument("--checkpoint-selection", choices=("best_cer", "best_loss", "last"), default="best_cer",
+    parser.add_argument("--checkpoint-selection", choices=("best_cer", "best_exact", "best_loss", "last"), default="best_cer",
                         help="Checkpoint represented by optional evaluation and controls")
     args = parser.parse_args()
     run = json.loads((args.run / "run.json").read_text(encoding="utf-8"))
@@ -45,7 +45,7 @@ def main():
     if not rows or run["sampler"] != "greedy_one_pass":
         raise ValueError("Requires a fitting run with greedy epoch metrics")
     split_lock = json.loads((args.run / "splits" / "split_lock.json").read_text(encoding="utf-8"))
-    pointer_name = {"best_cer": "best.json", "best_loss": "best_loss.json", "last": "last.json"}[args.checkpoint_selection]
+    pointer_name = {"best_cer": "best.json", "best_exact": "best_exact.json", "best_loss": "best_loss.json", "last": "last.json"}[args.checkpoint_selection]
     selected_path = args.run / pointer_name
     if not selected_path.exists() and args.checkpoint_selection == "best_cer":
         selected_path = args.run / "last.json"

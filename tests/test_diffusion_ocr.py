@@ -390,6 +390,14 @@ def test_epoch_resume_matches_uninterrupted_cpu_training(tmp_path):
     a = torch.load(tmp_path / "whole" / "checkpoint-0002" / "model.pt", weights_only=True)
     b = torch.load(tmp_path / "resumed" / "checkpoint-0002" / "model.pt", weights_only=True)
     assert a.keys() == b.keys() and all(torch.equal(a[key], b[key]) for key in a)
+    for run in (tmp_path / "whole", tmp_path / "first", tmp_path / "resumed"):
+        absolute = json.loads((run / "best.json").read_text(encoding="utf-8"))
+        exact = json.loads((run / "best_exact.json").read_text(encoding="utf-8"))
+        state = json.loads((run / "checkpoint_selection.json").read_text(encoding="utf-8"))
+        assert (run / absolute["checkpoint"] / "model.pt").is_file()
+        assert (run / exact["checkpoint"] / "model.pt").is_file()
+        assert exact["cer_band"] == 0.005
+        assert state["selected"] == exact
 
 
 def test_runner_never_reads_labels_and_preserves_edge_spaces(tmp_path):

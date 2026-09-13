@@ -70,6 +70,7 @@ COMPARISON_FIELDS = (
     "early_stopping_patience",
     "encoder_layers",
     "eos_target",
+    "exact_line_cer_band",
     "epochs",
     "evaluation_decoding",
     "full_mask_probability",
@@ -131,7 +132,7 @@ def load_run(label: str, root: Path, selection: str = "best_cer") -> RunResult:
     model = evaluation["models"]["diffusion"]
     if model.get("completed") != model.get("expected") or model.get("missing") or model.get("failed"):
         raise ValueError(f"{label} TEST evaluation is incomplete")
-    pointer_name = {"best_cer": "best.json", "best_loss": "best_loss.json", "last": "last.json"}[selection]
+    pointer_name = {"best_cer": "best.json", "best_exact": "best_exact.json", "best_loss": "best_loss.json", "last": "last.json"}[selection]
     pointer = read_json(root / pointer_name)
     checkpoint_sha256 = hashlib.sha256((root / pointer["checkpoint"] / "model.pt").read_bytes()).hexdigest()
     summary = read_json(root / f"test_predictions_greedy_one_pass{suffix}" / "run_summary.json")

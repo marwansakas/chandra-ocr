@@ -19,9 +19,12 @@ writer IDs, and pages/children can occur in both train and test. The original
 three-way writer-isolated workflow remains unchanged.
 
 Pilot training uses fixed epochs with no validation subset or test-based
-checkpoint selection. `last.json` points to the final completed epoch;
-`best.json` remains the selection pointer for ordinary validation runs. The
-test partition cannot expand the training vocabulary or output capacity.
+checkpoint selection. `last.json` points to the final completed epoch. Ordinary
+validation runs preserve `best.json` for the absolute lowest strict validation
+CER and `best_exact.json` for the most exact validation lines among checkpoints
+within 0.5 absolute CER percentage points of that minimum. Ties use lower CER,
+then the earlier epoch. The test partition cannot expand the training vocabulary
+or output capacity.
 
 The downloaded pilot, PowerShell wrapper, pairing CSV, per-page counts, and
 instructions are under `../Diffusion/drive_first100`. Read its
@@ -192,12 +195,16 @@ hashes protect configuration, tokenizer order and model state; loading uses
 strict state shapes. A reordered same-size vocabulary cannot silently reuse a
 head. Test coverage uses tiny random ViT weights, not an Arabic pretrained model.
 
-Every epoch saves model/config/tokenizer, optimizer, epoch and Python/NumPy/
-torch/CUDA RNG state. Runs retain frozen manifests, source copies/hashes, source
+Saved checkpoints contain model/config/tokenizer, optimizer, epoch and Python/
+NumPy/torch/CUDA RNG state. Runs retain frozen manifests, source copies/hashes, source
 revision/dirty status, versions, preprocessing, parameter count, precision,
 sampling settings, validation predictions and traces. Validation strict CER
-selects `best.json`. Resume is at an epoch boundary into a **new run directory**;
-it restores optimizer/RNG and retains the earlier best checkpoint. It rejects
+selects `best.json`. A nondominated checkpoint frontier preserves every model
+that could later win the 0.5-point exact-line near-tie rule without saving every
+epoch. Its selected pointer is `best_exact.json`, and its complete selection
+state is `checkpoint_selection.json`. Resume is at an epoch boundary into a
+**new run directory**; it restores optimizer/RNG and retains the applicable
+earlier selection checkpoints. It rejects
 changed splits or core training settings. Architecture and preprocessing come
 from the saved checkpoint when resuming. Cross-device/version bitwise equality
 is not guaranteed. Disk usage grows by one checkpoint and validation trace set
@@ -387,8 +394,9 @@ never completely removed. Input policy is saved in the checkpoint and reused by
 inference. It is not a handwriting/annotation segmentation model.
 
 `--diagnostics-every 20` logs full-mask character, first-EOS and tail-EOS scores.
-`--checkpoint-every 20` saves periodic, best and final checkpoints, while epoch
-metrics remain complete. `--save-traces` opts into detailed sampling traces.
+`--checkpoint-every 20` saves periodic, absolute-best-CER, exact-line-frontier
+and final checkpoints, while epoch metrics remain complete. `--save-traces`
+opts into detailed sampling traces.
 `diagnose_diffusion_run.py` evaluates an explicit final memorization checkpoint
 with three sampling seeds and optional image controls; it does not evaluate the
 held-out test partition. `report_diffusion_ablations.py` produces the comparison
