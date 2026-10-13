@@ -13,6 +13,11 @@ runs independent OCR systems over the same images:
 8. GLM-OCR (pretrained)
 9. HunyuanOCR (pretrained)
 10. LightOnOCR-2 (pretrained)
+11. Frozen TrOCR + transformer diffusion refiner (trainable)
+
+For the new cached-feature refiner, see the [training and cluster guide](thesis/TROCR_DIFFUSION_REFINER.md).
+It trains a small diffusion decoder, selects checkpoints on validation, and
+reports held-out CER/WER against the unchanged TrOCR baseline.
 
 For the five pretrained baselines, see the
 [installation and evaluation guide](pretrained_ocr/README.md). Each reads the
