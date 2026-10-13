@@ -15,6 +15,7 @@ from thesis.diffusion.tokenizer import CharacterTokenizer
 from thesis.refiner.cache import CachedLines, base_source, save_json
 from thesis.refiner.cli import choose_strategy, load_run, main
 from thesis.refiner.model import DiffusionRefiner, RefinerConfig, encode_draft
+from thesis.refiner.processor import load_processor
 
 torch.set_num_threads(2)
 
@@ -138,11 +139,25 @@ def tiny_hf_checkpoint(path):
     processor.save_pretrained(path)
 
 
-def test_actual_hf_cache_train_test_pipeline(tmp_path):
+@pytest.mark.parametrize("legacy_tokenizer", [False, True], ids=["modern_tokenizer_json", "legacy_vocab_merges"])
+def test_actual_hf_cache_train_test_pipeline(tmp_path, legacy_tokenizer):
     """Runs actual tiny TrOCR encoder/generation, not a mocked cache extractor."""
     root, split = fixture_split(tmp_path)
     base, cache, run, report = [tmp_path / name for name in ("base", "cache", "run", "report")]
     tiny_hf_checkpoint(base)
+    if legacy_tokenizer:
+        # Match the released microsoft/trocr-base-handwritten layout: no
+        # tokenizer.json, and an explicit RobertaTokenizer in the metadata.
+        (base / "tokenizer.json").unlink()
+        tokenizer_config = json.loads((base / "tokenizer_config.json").read_text(encoding="utf-8"))
+        tokenizer_config["tokenizer_class"] = "RobertaTokenizer"
+        save_json(base / "tokenizer_config.json", tokenizer_config)
+        from transformers import RobertaTokenizer
+        expected = RobertaTokenizer.from_pretrained(base, local_files_only=True)
+        loaded = load_processor(str(base), local_files_only=True, trust_remote_code=False)
+        for text in ("hello", "أب بت", "  punctuation, 123!"):
+            assert loaded.tokenizer.encode(text) == expected.encode(text)
+        assert loaded.tokenizer.get_vocab() == expected.get_vocab()
     weight_hash = file_hash(base / "model.safetensors")
     common = ["--dataset-root", str(root), "--split-root", str(split), "--cache-root", str(cache), "--device", "cpu"]
     cache_options = ["--base-model", str(base), "--external-base", "--max-new-tokens", "3", "--batch-size", "2"]
@@ -183,3 +198,30 @@ def test_actual_hf_cache_train_test_pipeline(tmp_path):
     save_json(run / "selection.json", {"strategy": "tampered"})
     with pytest.raises(ValueError, match="integrity"):
         load_run(run, torch.device("cpu"))
+
+
+def test_processor_does_not_hide_unrelated_loading_errors(monkeypatch):
+    from transformers import TrOCRProcessor
+
+    def fail(*args, **kwargs):
+        raise ValueError("unrelated processor configuration error")
+
+    monkeypatch.setattr(TrOCRProcessor, "from_pretrained", fail)
+    with pytest.raises(ValueError, match="unrelated processor"):
+        load_processor("unused", local_files_only=True)
+
+
+def test_processor_never_substitutes_unknown_tokenizers(tmp_path, monkeypatch):
+    from transformers import TrOCRProcessor
+    from transformers.utils import hub
+
+    config = tmp_path / "tokenizer_config.json"
+    save_json(config, {"tokenizer_class": "CustomArabicTokenizer"})
+
+    def fail(*args, **kwargs):
+        raise ValueError("Couldn't instantiate the backend tokenizer")
+
+    monkeypatch.setattr(TrOCRProcessor, "from_pretrained", fail)
+    monkeypatch.setattr(hub, "cached_file", lambda *args, **kwargs: str(config))
+    with pytest.raises(ValueError, match="backend tokenizer"):
+        load_processor("unused", local_files_only=True)

@@ -11,6 +11,7 @@ import torch
 
 from thesis.diffusion.data import digest_bytes, file_hash, json_bytes, load_frozen, resolve_relative
 from .model import encode_draft
+from .processor import load_processor
 
 DEFAULT_BASE = "microsoft/trocr-base-handwritten"
 DEFAULT_REVISION = "eaacaf452b06415df8f10bb6fad3a4c11e609406"
@@ -91,13 +92,13 @@ def extract_batch(model, processor, images, *, device, max_new_tokens):
 
 
 def prepare_cache(args):
-    from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+    from transformers import VisionEncoderDecoderModel
     from thesis.diffusion.runtime import get_device
 
     parts, lock, _ = frozen_data(args.dataset_root, args.split_root)
     source, revision = base_source(args.base_model, args.base_revision, args.base_training_manifest,
                                    args.external_base, parts)
-    base = {"version": 1, "split_lock_sha256": file_hash(args.split_root / "split_lock.json"),
+    base = {"version": 2, "processor_loader": "legacy_roberta_compatible_v1", "split_lock_sha256": file_hash(args.split_root / "split_lock.json"),
             "dataset_fingerprint": lock["dataset_fingerprint"], "source": source,
             "extraction_versions": {name: importlib.metadata.version(name) for name in ("torch", "transformers", "tokenizers", "Pillow")},
             "max_new_tokens": args.max_new_tokens, "preprocessing": "saved TrOCR processor; RGB; no image augmentation"}
@@ -116,7 +117,7 @@ def prepare_cache(args):
     options = {"local_files_only": Path(args.base_model).is_dir(), "trust_remote_code": False}
     if revision and not Path(args.base_model).is_dir():
         options["revision"] = revision
-    processor = TrOCRProcessor.from_pretrained(args.base_model, **options)
+    processor = load_processor(args.base_model, **options)
     model = VisionEncoderDecoderModel.from_pretrained(args.base_model, **options).to(device).eval()
     model.requires_grad_(False)
     for partition in args.partition:

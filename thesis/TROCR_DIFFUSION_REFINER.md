@@ -190,6 +190,32 @@ encoder, plus filesystem overhead; allow several GB for thousands of lines.
 Changing preprocessing or augmentation requires a new cache. No new image
 augmentation is applied during cached training.
 
+## Legacy TrOCR tokenizer compatibility
+
+The pinned Microsoft checkpoint contains `vocab.json` and `merges.txt` rather
+than `tokenizer.json`. Some Transformers 5 releases route its automatic processor
+loading to a generic tokenizer backend and raise `Couldn't instantiate the
+backend tokenizer`. This is not caused by the unauthenticated HF Hub warning.
+
+The processor loader now detects that specific failure, verifies the saved
+tokenizer class is RoBERTa, and loads the same checkpoint's `RobertaTokenizer`
+explicitly. It preserves the original vocabulary, token IDs and special tokens;
+other/custom tokenizers and unrelated loading errors are not substituted. No
+SentencePiece, tiktoken, HF token or Transformers downgrade is needed for this
+checkpoint. The fallback may print a one-time compatibility warning.
+
+After pulling this fix, use a NEW `CACHE_ROOT` and NEW `RUN_ROOT`/`REPORT_ROOT`.
+The feature-cache format is now version 2 and records the processor-loader
+policy, preventing old and new extraction behavior from being mixed. Do not
+delete or alter existing dataset/split files. Restart the normal run script;
+Hugging Face will reuse any already-downloaded checkpoint files.
+
+Verification includes the actual pinned Microsoft processor (without downloading
+model weights): vocabulary size 50,265, original English token IDs, Arabic text
+round-trip and 384x384 image preprocessing. Offline end-to-end tests also cover
+both modern and legacy tokenizer layouts through caching, training and held-out
+evaluation with tiny random model weights.
+
 ## Outputs
 
 `RUN_ROOT` contains model configuration, tokenizer, `best.pt`, `last.pt`,
