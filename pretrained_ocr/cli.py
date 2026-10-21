@@ -10,10 +10,11 @@ import json
 from pathlib import Path
 import sys
 import time
+from statistics import median
 
 from . import __version__
 from .dataset import check_output_path, read_dataset, read_test_manifest, select_samples
-from .metrics import DEFAULT_NORMALIZATION, aggregate, score
+from .metrics import DEFAULT_NORMALIZATION, aggregate, normalize, score
 from .models import load_backend
 from .registry import MODELS
 
@@ -77,20 +78,45 @@ def write_reports(output, rows, context):
         failed_samples=len(rows) - len(successful),
         token_limit_samples=sum(row["hit_token_limit"] for row in rows),
         metrics=aggregate(rows), successful_only_metrics=aggregate(successful),
+        performance=performance_metrics(rows),
     )
     dump_json(output / "run_summary.json", summary)
     with (output / "predictions.jsonl").open("w", encoding="utf-8") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False, allow_nan=False) + "\n")
-    columns = ["sample_id", "status", "reference", "prediction", "cer", "wer", "exact_match",
+    columns = ["sample_id", "status", "reference", "prediction", "raw_prediction", "cer", "wer", "exact_match",
+               "char_precision", "char_recall", "char_f1", "word_precision", "word_recall", "word_f1",
                "smith_waterman_similarity", "text_alignment_similarity",
-               "reference_chars", "reference_words", "char_edits", "word_edits",
+               "reference_chars", "reference_words", "predicted_chars", "predicted_words",
+               "char_correct", "word_correct", "char_substitutions", "char_deletions", "char_insertions",
+               "word_substitutions", "word_deletions", "word_insertions", "char_edits", "word_edits",
                "seconds", "hit_token_limit", "error"]
     with (output / "scores.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
     return summary
+
+
+def performance_metrics(rows):
+    seconds = sorted(row["seconds"] for row in rows if row.get("seconds") is not None)
+    if not seconds:
+        return {"timed_samples": 0, "total_seconds": 0, "mean_seconds": None,
+                "median_seconds": None, "p95_seconds": None, "samples_per_second": None,
+                "reference_chars_per_second": None}
+    total = sum(seconds)
+    p95 = seconds[min(len(seconds) - 1, max(0, int(len(seconds) * 0.95 + 0.999999) - 1))]
+    return {
+        "timed_samples": len(seconds), "total_seconds": total,
+        "mean_seconds": total / len(seconds), "median_seconds": median(seconds), "p95_seconds": p95,
+        "samples_per_second": len(seconds) / total if total else None,
+        "reference_chars_per_second": sum(row["reference_chars"] for row in rows) / total if total else None,
+    }
+
+
+def display_prediction(text):
+    """Return the accent-free transcription shown in prediction reports."""
+    return normalize(text, DEFAULT_NORMALIZATION)
 
 
 def run(args):
@@ -141,6 +167,9 @@ def run(args):
                     raise ValueError(f"Sample changed since the saved prediction: {sample.sample_id}. Use a new --output.")
             if cached and cached["status"] == "ok":
                 row = cached
+                row["raw_prediction"] = row.get("raw_prediction", row["prediction"])
+                row["prediction"] = display_prediction(row["raw_prediction"])
+                row.update(score(sample.reference, row["raw_prediction"], args.normalization))
             else:
                 if backend is None:
                     print(f"Loading {spec.name}: {spec.checkpoint}", flush=True)
@@ -148,19 +177,18 @@ def run(args):
                     context["backend"] = backend.info
                 start = time.perf_counter()
                 try:
-                    prediction = backend.predict(sample.image)
-                    row = {"prediction": prediction.text, "status": "ok", "error": "",
-                           "generated_tokens": prediction.generated_tokens,
-                           "hit_token_limit": prediction.hit_token_limit,
-                           "confidence": prediction.confidence}
+                    generated = backend.predict(sample.image)
+                    row = {"raw_prediction": generated.text, "prediction": display_prediction(generated.text),
+                           "status": "ok", "error": "", "generated_tokens": generated.generated_tokens,
+                           "hit_token_limit": generated.hit_token_limit, "confidence": generated.confidence}
                 except Exception as error:
-                    row = {"prediction": "", "status": "error", "error": f"{type(error).__name__}: {error}",
+                    row = {"raw_prediction": "", "prediction": "", "status": "error", "error": f"{type(error).__name__}: {error}",
                            "generated_tokens": None, "hit_token_limit": False, "confidence": None}
                     print(f"Failed {sample.sample_id}: {row['error']}", file=sys.stderr, flush=True)
                 row.update(sample_id=sample.sample_id, image_path=str(sample.image), reference=sample.reference,
                            input_fingerprint=fingerprints[sample.sample_id], seconds=time.perf_counter() - start,
                            backend=backend.info)
-                row.update(score(sample.reference, row["prediction"], args.normalization))
+                row.update(score(sample.reference, row["raw_prediction"], args.normalization))
                 sample_output.mkdir(parents=True, exist_ok=True)
                 (sample_output / "prediction.txt").write_text(row["prediction"], encoding="utf-8")
                 dump_json(record_path, row)
@@ -175,13 +203,31 @@ def run(args):
         context["finished_utc"] = datetime.now(timezone.utc).isoformat()
         summary = write_reports(output, rows, context)
     metrics = summary["metrics"]
-    print(f"CER: {percent(metrics['cer'])}; WER: {percent(metrics['wer'])}; exact lines: {percent(metrics['exact_match_rate'])}")
+    performance = summary["performance"]
+    print(f"CER: {percent(metrics['cer'])}; WER: {percent(metrics['wer'])}; "
+          f"character F1: {percent(metrics['char_f1'])}; word F1: {percent(metrics['word_f1'])}; "
+          f"exact lines: {percent(metrics['exact_match_rate'])}")
+    print("Character errors (substitutions/deletions/insertions): "
+          f"{metrics['char_substitutions']}/{metrics['char_deletions']}/{metrics['char_insertions']}; "
+          "word errors (substitutions/deletions/insertions): "
+          f"{metrics['word_substitutions']}/{metrics['word_deletions']}/{metrics['word_insertions']}")
+    print(f"Speed: median {format_seconds(performance['median_seconds'])}/line; "
+          f"p95 {format_seconds(performance['p95_seconds'])}/line; "
+          f"{format_rate(performance['reference_chars_per_second'])} reference chars/sec")
     print(f"Successful: {summary['successful_samples']}; failed: {summary['failed_samples']}\nReports: {output}")
     return 1 if summary["failed_samples"] else 0
 
 
 def percent(value):
     return "n/a" if value is None else f"{100 * value:.2f}%"
+
+
+def format_seconds(value):
+    return "n/a" if value is None else f"{value:.3f}s"
+
+
+def format_rate(value):
+    return "n/a" if value is None else f"{value:.2f}"
 
 
 def compare(args):
@@ -195,12 +241,13 @@ def compare(args):
     if len(identities) != 1:
         raise ValueError("Runs used different samples, input contents, or normalization. Compare matching runs only.")
     summaries.sort(key=lambda item: item["metrics"]["cer"] if item["metrics"]["cer"] is not None else float("inf"))
-    lines = ["| Model | Lines | Failed | CER | WER | Exact lines | Token limit |",
-             "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
+    lines = ["| Model | Lines | Failed | CER | WER | Char F1 | Word F1 | Exact lines | Token limit |",
+             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for item in summaries:
         metric = item["metrics"]
         lines.append(f"| {item['model_name']} | {metric['samples']} | {item['failed_samples']} | "
-                     f"{percent(metric['cer'])} | {percent(metric['wer'])} | {percent(metric['exact_match_rate'])} | "
+                     f"{percent(metric['cer'])} | {percent(metric['wer'])} | {percent(metric['char_f1'])} | "
+                     f"{percent(metric['word_f1'])} | {percent(metric['exact_match_rate'])} | "
                      f"{item['token_limit_samples']} |")
     report = "\n".join(lines) + "\n"
     (args.results / "comparison.md").write_text(report, encoding="utf-8")
@@ -230,7 +277,7 @@ def parser():
             child.add_argument("--max-new-tokens", type=int, default=512)
             child.add_argument("--normalization", choices=("raw", "standard", "arabic-light"),
                                default=DEFAULT_NORMALIZATION,
-                               help="scoring normalization (default: arabic-light, ignores Arabic diacritics and tatweel)")
+                               help="scoring normalization (default: arabic-light, ignores Unicode accents, diacritics and tatweel)")
             child.add_argument("--resume", action="store_true")
             child.add_argument("--dry-run", action="store_true")
             child.set_defaults(func=run)

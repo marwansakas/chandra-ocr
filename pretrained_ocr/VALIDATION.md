@@ -1,5 +1,12 @@
 # Validation
 
+## October 21, 2026: expanded metrics and accent-free outputs
+
+- Reports add corpus character/word precision, recall and F1, detailed edit
+  operations, and inference latency/throughput summaries.
+- Default scoring removes all Unicode combining marks; displayed predictions are
+  accent-free while the untouched response remains available as `raw_prediction`.
+
 ## September 8, 2026: diacritic-free scoring default
 
 - All 21 offline tests pass on Windows with Python 3.12 using

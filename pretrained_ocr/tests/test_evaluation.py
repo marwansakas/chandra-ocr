@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 from pretrained_ocr.cli import main
 from pretrained_ocr.dataset import check_output_path, read_dataset
-from pretrained_ocr.metrics import aggregate, edit_distance, normalize, score
+from pretrained_ocr.metrics import aggregate, edit_distance, edit_operations, normalize, score
 from pretrained_ocr.models.hf_common import Prediction
 
 
@@ -41,10 +41,23 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(score("ا", "ا ا ا")['wer'], 2)
         self.assertEqual(normalize("  هٰذا\n كِتاب  "), "هذا كتاب")
         self.assertEqual(normalize("كِتـاب", "arabic-light"), "كتاب")
-        self.assertNotEqual(normalize("أ", "arabic-light"), normalize("ا", "arabic-light"))
+        self.assertEqual(normalize("أ", "arabic-light"), normalize("ا", "arabic-light"))
+        self.assertEqual(normalize("Crème naïve", "arabic-light"), "Creme naive")
         self.assertNotEqual(normalize("ة", "arabic-light"), normalize("ه", "arabic-light"))
         totals = aggregate([score("a", ""), score("abcdefghi", "abcdefghi")])
         self.assertEqual(totals['cer'], 0.1)  # Corpus weighting, not mean(1, 0).
+
+    def test_alignment_metrics_distinguish_error_types(self):
+        self.assertEqual(edit_operations("كتاب", "كتا"), (0, 1, 0))
+        self.assertEqual(edit_operations("كتاب", "كتابب"), (0, 0, 1))
+        self.assertEqual(edit_operations("كتاب", "كتتب"), (1, 0, 0))
+        metrics = score("abc", "axcd")
+        self.assertEqual(metrics['char_substitutions'], 1)
+        self.assertEqual(metrics['char_insertions'], 1)
+        self.assertEqual(metrics['char_correct'], 2)
+        self.assertEqual(metrics['char_precision'], 0.5)
+        self.assertEqual(metrics['char_recall'], 2 / 3)
+        self.assertAlmostEqual(metrics['char_f1'], 4 / 7)
 
     def test_alignment_metrics_ignore_diacritics(self):
         exact = score("كَتَبَ", "كتب")
@@ -75,9 +88,12 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(metrics['cer'], 0.25)
         self.assertEqual(metrics['wer'], 1)
         self.assertFalse(metrics['exact_match'])
-        for reference, prediction in [("ب", "ت"), ("أ", "ا"), ("ة", "ه"), ("ى", "ي"), ("ب!", "ب"), ("é", "e")]:
+        for reference, prediction in [("ب", "ت"), ("ة", "ه"), ("ى", "ي"), ("ب!", "ب")]:
             with self.subTest(reference=reference, prediction=prediction):
                 self.assertFalse(score(reference, prediction)['exact_match'])
+        for reference, prediction in [("أ", "ا"), ("é", "e"), ("Crème", "Creme")]:
+            with self.subTest(reference=reference, prediction=prediction):
+                self.assertTrue(score(reference, prediction)['exact_match'])
         self.assertTrue(score("ا\u0654", "أ")['exact_match'])
         totals = aggregate([score("كِتَابٌ", "كِتَا"), score("هٰذَا", "هذا")])
         self.assertEqual(totals['reference_chars'], 7)
@@ -93,6 +109,7 @@ class EvaluationTests(unittest.TestCase):
                 self.assertEqual(metrics['cer'], 1 / 5)
                 self.assertEqual(metrics['wer'], 1)
                 self.assertFalse(metrics['exact_match'])
+        self.assertFalse(score("é", "e", "standard")['exact_match'])
 
     def test_missing_and_empty_labels_reported(self):
         for name, text in [("empty", "  "), ("ignored", "IGNORE"), ("missing-image", "نص")]:
@@ -126,7 +143,7 @@ class EvaluationTests(unittest.TestCase):
             info = {"device": "fake"}
             def predict(self, image):
                 seen.append(image)
-                return Prediction("كتاب" if image.parent.name == "000001" else "هذا كتاب")
+                return Prediction("كِتَابٌ" if image.parent.name == "000001" else "هذا كتاب")
         with patch("pretrained_ocr.cli.load_backend", return_value=FakeBackend()):
             self.assertEqual(self.call(), 0)
         self.assertTrue(all(isinstance(path, Path) and path.name == "image.png" for path in seen))
@@ -135,12 +152,16 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(summary['metrics']['wer'], 0)
         self.assertEqual(summary['metrics']['exact_match_rate'], 1)
         self.assertEqual(summary['metrics']['reference_chars'], 12)
+        self.assertEqual(summary['metrics']['char_f1'], 1)
+        self.assertEqual(summary['metrics']['word_f1'], 1)
+        self.assertEqual(summary['performance']['timed_samples'], 2)
         self.assertEqual(summary['normalization'], 'arabic-light')
         self.assertEqual(summary['config']['normalization'], 'arabic-light')
         records = [json.loads(line) for line in (self.output / "predictions.jsonl").read_text(encoding="utf-8").splitlines()]
         for row in records:
             self.assertEqual(row['reference'], references[row['sample_id']])
             self.assertEqual(row['prediction'], "كتاب" if row['sample_id'] == "000001" else "هذا كتاب")
+            self.assertEqual(row['raw_prediction'], "كِتَابٌ" if row['sample_id'] == "000001" else "هذا كتاب")
             self.assertTrue(row['exact_match'])
         with patch("pretrained_ocr.cli.load_backend") as factory:
             self.assertEqual(self.call("--resume"), 0)

@@ -197,7 +197,7 @@ models being compared. Hunyuan uses eager attention by default per its
 thesis/predictions/pretrained/
   paddle-arabic/                 # same structure for every model
     samples/<sample-folder>/
-      prediction.txt
+      prediction.txt                 # accent-free display transcription
       metadata.json
     predictions.jsonl
     scores.csv
@@ -212,23 +212,32 @@ thesis/predictions/pretrained/
 ```
 
 - **CER**: total character insertions/deletions/substitutions divided by total
-  reference characters after normalization. Arabic diacritics do not count by
+  reference characters after normalization. Accents and diacritics do not count by
   default; spaces count. Lower is better; 0% means perfect.
 - **WER**: the same calculation on whitespace-delimited words. Lower is better.
 - **Exact lines**: the fraction of lines with an identical normalized transcription.
+- **Character/word precision, recall and F1**: corpus metrics that distinguish
+  missing text from extra generated text.
+- **Error breakdown**: character and word substitutions, deletions, insertions,
+  and correctly aligned units.
+- **Performance**: `run_summary.json` records total, mean, median and p95
+  prediction latency plus sample and character throughput.
 - **Smith–Waterman similarity**: the best local character alignment, useful when
   a prediction contains a correct substring among extra errors.
 - **Text alignment similarity**: a whole-line global character alignment score.
   Both are normalized to 0–100% and use the same Arabic diacritic-free
   normalization as CER/WER.
 - Rates are corpus-weighted, can exceed 100%, and are not clamped.
-- The default `arabic-light` scoring applies NFKC Unicode, collapses whitespace,
-  and removes Arabic combining marks (tashkeel/harakat) and tatweel from both the
+- The default `arabic-light` scoring applies Unicode compatibility decomposition,
+  collapses whitespace, and removes all combining marks (accents and diacritics)
+  and tatweel from both the
   reference and prediction before calculating CER, WER, and exact lines. For
-  example, `كِتَابٌ` and `كتاب` match perfectly, and the reference has four scored
-  characters. Raw reference and prediction strings remain in the reports.
-- Punctuation, spelling and Arabic letter distinctions are preserved, including
-  dots: `ب` and `ت`, `أ` and `ا`, `ة` and `ه`, and `ى` and `ي` remain different.
+  example, `كِتَابٌ` matches `كتاب`, `أ` matches `ا`, and `é` matches `e`.
+- Reported transcriptions (`prediction.txt`, `prediction` in `predictions.jsonl`,
+  and `scores.csv`) are accent-free. The untouched model response is retained in
+  `raw_prediction`, so `standard` and `raw` scoring can still measure accents.
+- Punctuation, spelling and base-letter distinctions are preserved, including
+  dots: `ب` and `ت`, `ة` and `ه`, and `ى` and `ي` remain different.
 - `--normalization standard` selects the previous NFC/whitespace scoring, which
   counts diacritics. `--normalization raw` compares the exact file contents
   (including line endings in CER). Use consistent normalization for comparison.
