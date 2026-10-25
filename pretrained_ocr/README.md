@@ -277,3 +277,25 @@ Optional real-processor check (downloads configurations/tokenizers, no weights):
 
 Full inference and accuracy on your Linux dataset must be verified on that host;
 the Windows workspace cannot access its dataset or GPU allocation.
+
+## Clean saved prediction reports
+
+Create a separate, normalized copy of every model report without modifying the
+original results:
+
+```bash
+cd /home/sakas/chandra-ocr
+.venv-ocr-hf/bin/python -m pretrained_ocr.clean_predictions \
+  --input thesis/predictions \
+  --output thesis/cleaned_predictions
+```
+
+The command copies each model folder containing `predictions.jsonl`, removes
+Unicode accents/diacritics and tatweel, converts Arabic and Persian digits to
+`0123456789`, then regenerates `predictions.jsonl`, `scores.csv`, per-sample
+files, and `run_summary.json`. It also writes
+`thesis/cleaned_predictions/summary.csv`, one row per model, with letter, word
+and exact-line accuracy, edit distances, Smith–Waterman local-alignment
+similarity, and global text-alignment similarity. Both references and
+predictions are normalized so every reported score uses the same comparison
+policy. The output directory must be new, protecting the original reports.
