@@ -43,6 +43,19 @@ class CleanPredictionsTests(unittest.TestCase):
             cleaned = json.loads((destination / "legacy" / "predictions.jsonl").read_text(encoding="utf-8"))
             self.assertEqual(cleaned["status"], "ok")
 
+    def test_resume_reuses_a_completed_model(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "predictions" / "legacy"
+            source.mkdir(parents=True)
+            row = {"sample_id": "000001", "reference": "١٢", "prediction": "12"}
+            (source / "predictions.jsonl").write_text(json.dumps(row) + "\n", encoding="utf-8")
+            destination = root / "cleaned_predictions"
+            self.assertEqual(main(["--input", str(root / "predictions"), "--output", str(destination)]), 0)
+            self.assertEqual(main(["--input", str(root / "predictions"), "--output", str(destination), "--resume"]), 0)
+            with (destination / "summary.csv").open(encoding="utf-8-sig", newline="") as handle:
+                self.assertEqual(len(list(csv.DictReader(handle))), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
