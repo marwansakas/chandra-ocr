@@ -73,6 +73,9 @@ def clean_row(row):
         reference=reference,
         raw_prediction=prediction,
         prediction=prediction,
+        # Older thesis reports predate the explicit status field. A non-empty
+        # prediction in those reports is a completed recognition result.
+        status=result.get("status") or ("ok" if prediction else "error"),
         hit_token_limit=bool(result.get("hit_token_limit", False)),
         seconds=result.get("seconds"),
     )
