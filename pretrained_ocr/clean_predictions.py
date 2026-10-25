@@ -149,33 +149,49 @@ def clean_model(source, destination):
     return summary_row(context["model"], rows)
 
 
+def write_summary(destination, summaries, source, complete):
+    if summaries:
+        columns = list(summaries[0])
+        with (destination / "summary.csv").open("w", encoding="utf-8-sig", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=columns)
+            writer.writeheader()
+            writer.writerows(summaries)
+    dump_json(destination / "cleaning_manifest.json", {
+        "source": str(source), "destination": str(destination),
+        "models": [item["model"] for item in summaries], "status": "complete" if complete else "running",
+        "normalization": "NFKD, remove all Unicode marks and tatweel, Arabic/Persian digits to ASCII",
+    })
+
+
 def run(args):
     source, destination = args.input.resolve(), args.output.resolve()
     if not source.is_dir():
         raise ValueError(f"Prediction folder does not exist: {source}")
-    if destination.exists():
+    if destination.exists() and not args.resume:
         raise ValueError(f"Destination already exists: {destination}. Choose a new --output path.")
     model_folders = sorted(path.parent for path in source.rglob("predictions.jsonl"))
     if not model_folders:
         raise ValueError(f"No model folders containing predictions.jsonl found in {source}")
-    destination.mkdir(parents=True)
+    destination.mkdir(parents=True, exist_ok=True)
     summaries = []
     for folder in model_folders:
         cleaned_model = destination / folder.relative_to(source)
-        cleaned_model.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(folder, cleaned_model)
+        old_summary = cleaned_model / "run_summary.json"
+        if args.resume and old_summary.is_file():
+            saved = json.loads(old_summary.read_text(encoding="utf-8"))
+            if saved.get("cleaned_from") == str(folder.resolve()) and (cleaned_model / "predictions.jsonl").is_file():
+                summaries.append(summary_row(saved.get("model", folder.name), read_rows(cleaned_model / "predictions.jsonl")))
+                print(f"Reused {folder.name}")
+                write_summary(destination, summaries, source, complete=False)
+                continue
+        if not cleaned_model.exists():
+            cleaned_model.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(folder, cleaned_model)
         summaries.append(clean_model(folder, cleaned_model))
         print(f"Cleaned {folder.name}")
-    columns = list(summaries[0])
-    with (destination / "summary.csv").open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=columns)
-        writer.writeheader()
-        writer.writerows(summaries)
-    dump_json(destination / "cleaning_manifest.json", {
-        "source": str(source), "destination": str(destination),
-        "models": [item["model"] for item in summaries],
-        "normalization": "NFKD, remove all Unicode marks and tatweel, Arabic/Persian digits to ASCII",
-    })
+        # Persist progress so a scheduler timeout still leaves a useful partial summary.
+        write_summary(destination, summaries, source, complete=False)
+    write_summary(destination, summaries, source, complete=True)
     print(f"Wrote cleaned reports and summary: {destination}")
     return 0
 
@@ -186,6 +202,8 @@ def parser():
                                  help="source thesis/predictions folder")
     argument_parser.add_argument("--output", type=Path, default=DEFAULT_CLEANED_OUTPUT,
                                  help="new cleaned-report folder; must not already exist")
+    argument_parser.add_argument("--resume", action="store_true",
+                                 help="reuse already-cleaned model folders in an interrupted output")
     argument_parser.set_defaults(func=run)
     return argument_parser
 
