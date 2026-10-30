@@ -1,0 +1,4 @@
+# Install in the PaddleOCR fine-tuning environment in addition to PaddleOCR's
+# own requirements. python-bidi converts logical Arabic labels to the visual
+# order expected by the official Arabic PP-OCRv5 training configuration.
+python-bidi>=0.6,<0.7

@@ -1,0 +1,7 @@
+# Install into a separate GPU environment; these are intentionally not mixed with Paddle training.
+diffusers>=0.35,<1
+transformers>=4.48,<6
+accelerate>=1,<2
+safetensors>=0.5,<1
+torch>=2.4
+pillow>=10
