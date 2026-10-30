@@ -30,6 +30,8 @@ def predict(recognizer, image):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True, help="A directory of cropped line images")
+    parser.add_argument("--manifest", type=Path,
+                        help="Optional PaddleOCR list (for example test_list.txt); limits input to its first-column images")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--paddle-model", default="arabic_PP-OCRv5_mobile_rec", help="Paddle model name or exported model directory")
     parser.add_argument("--diffusion-model", required=True, help="Hugging Face image-to-image diffusion model ID or local path")
@@ -56,7 +58,18 @@ def main(argv=None):
     pipe = AutoPipelineForImage2Image.from_pretrained(args.diffusion_model, torch_dtype=torch.float16 if args.device.startswith("cuda") else torch.float32)
     pipe = pipe.to(args.device)
     rows = []
-    images = sorted([*args.input.rglob("*.png"), *args.input.rglob("*.jpg"), *args.input.rglob("*.jpeg")])
+    if args.manifest:
+        images = []
+        for line in args.manifest.read_text(encoding="utf-8-sig").splitlines():
+            if not line.strip():
+                continue
+            relative = line.split("\t", 1)[0]
+            image = (args.input / relative).resolve()
+            if not image.is_file() or args.input.resolve() not in image.parents:
+                raise ValueError(f"Invalid manifest image path: {relative}")
+            images.append(image)
+    else:
+        images = sorted([*args.input.rglob("*.png"), *args.input.rglob("*.jpg"), *args.input.rglob("*.jpeg")])
     for index, path in enumerate(images):
         original = Image.open(path).convert("RGB")
         base_text, base_score = predict(recognizer, original)

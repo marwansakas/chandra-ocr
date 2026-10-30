@@ -61,7 +61,8 @@ binary environment:
 ```bash
 pip install -r paddle_training/requirements-diffusion.txt
 python paddle_training/diffusion_paddle_infer.py \
-  --input /path/to/held_out_line_images \
+  --input /path/to/ground_truth_lines \
+  --manifest thesis/datasets/paddle_split/test_list.txt \
   --output thesis/predictions/paddle_diffusion_conservative \
   --paddle-model /path/to/exported_finetuned_paddle_model \
   --diffusion-model YOUR_IMAGE_TO_IMAGE_MODEL_ID
