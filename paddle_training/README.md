@@ -79,3 +79,14 @@ restoration audit. For a genuine, higher-risk OCR experiment, use
 `--selection consensus --variants 3`: it may use a different transcription only
 when at least two independently seeded diffusion variants agree and their mean
 Paddle confidence exceeds the original by the requested margin.
+
+Score both the original Paddle prediction and the diffusion-selected prediction
+against the adjacent `ground_truth.txt` files:
+
+```bash
+python paddle_training/evaluate_diffusion_predictions.py \
+  --predictions thesis/predictions/paddle_diffusion_conservative/predictions.csv
+```
+
+It prints CER and exact-line accuracy for both systems and writes JSON/CSV reports
+beside the input predictions.
