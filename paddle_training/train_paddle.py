@@ -27,10 +27,15 @@ def make_config(source: Path, target: Path, args, dataset: Path, splits: Path, o
         save_model_dir=str(output),
         pretrained_model=str(args.pretrained_model.resolve()),
     )
-    config["max_text_length"] = args.max_text_length
+    global_config["max_text_length"] = args.max_text_length
     for head in config["Architecture"]["Head"]["head_list"]:
         if "NRTRHead" in head:
             head["NRTRHead"]["max_text_length"] = args.max_text_length
+    # YAML anchors have already been resolved by PyYAML, so update the train
+    # augmentation's former ``*max_text_length`` value explicitly as well.
+    for transform in config["Train"]["dataset"]["transforms"]:
+        if "RecConAug" in transform:
+            transform["RecConAug"]["max_text_length"] = args.max_text_length
     for partition, manifest in (("Train", "train_list.txt"), ("Eval", "val_list.txt")):
         config[partition]["dataset"]["data_dir"] = str(dataset)
         config[partition]["dataset"]["label_file_list"] = [str(splits / manifest)]
