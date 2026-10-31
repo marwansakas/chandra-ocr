@@ -19,7 +19,14 @@ NEGATIVE = "changed text, extra text, missing text, printed font, watermark, sig
 
 
 def predict(recognizer, image):
+    # PaddleOCR v3 accepts paths or BGR NumPy arrays, but not Pillow images.
+    # Diffusers produces Pillow RGB images, so convert without changing pixels.
+    if not isinstance(image, (str, bytes)):
+        import numpy as np
+        image = np.asarray(image.convert("RGB"))[:, :, ::-1].copy()
     result = list(recognizer.predict(input=image, batch_size=1))
+    if not result:
+        raise RuntimeError("PaddleOCR returned no result for an image candidate")
     payload = result[0].json if hasattr(result[0], "json") else result[0]
     if isinstance(payload, str):
         payload = json.loads(payload)
