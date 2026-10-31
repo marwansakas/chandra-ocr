@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import unicodedata
 from pathlib import Path
 
@@ -50,6 +51,21 @@ def metadata_value(metadata: dict, key: str):
     return value
 
 
+def notebook_group_from_sample_id(sample_id: str) -> str:
+    """Infer a writer/notebook ID from this project's generated line folder ID.
+
+    Example input:
+    ``000001_0001_0001_Kfar__Yasif__Fourth__Grade__Notebook_5_Female_Fourth_Grade_Page_030_line_001``
+    becomes:
+    ``Kfar__Yasif__Fourth__Grade__Notebook_5_Female_Fourth_Grade``.
+    """
+    value = re.sub(r"^\d+_\d+_\d+_", "", sample_id)
+    value = re.sub(r"_Page_\d+(?:_line_\d+)?$", "", value, flags=re.IGNORECASE)
+    if value == sample_id or "Notebook_" not in value:
+        raise ValueError(f"Cannot infer a notebook group from sample folder: {sample_id}")
+    return value
+
+
 def split_name(group: str, seed: int, train: float, validation: float) -> str:
     # Hashing is deterministic across machines and independent of filesystem order.
     bucket = int.from_bytes(hashlib.sha256(f"{seed}:{group}".encode()).digest()[:8], "big") / 2**64
@@ -81,7 +97,8 @@ def collect(root: Path, group_key: str | None, label_order: str):
                 metadata = json.loads(metadata_path.read_text(encoding="utf-8-sig"))
             except (json.JSONDecodeError, UnicodeError) as error:
                 raise ValueError(f"Invalid metadata for {sample_id}: {error}") from error
-        group = metadata_value(metadata, group_key) if group_key else sample_id
+        group = (notebook_group_from_sample_id(sample_id) if group_key == "notebook-folder"
+                 else metadata_value(metadata, group_key) if group_key else sample_id)
         if group is None or not str(group).strip():
             raise ValueError(f"{sample_id} has no nonempty metadata key {group_key!r}")
         rows.append({"sample_id": sample_id, "image": image, "text": text, "group": str(group)})
@@ -109,7 +126,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--group-key", help="Dot-path in metadata.json, e.g. student_id. Required for writer-disjoint splits.")
+    parser.add_argument("--group-key", help="Dot-path in metadata.json, e.g. student_id; use notebook-folder to infer it from this project's sample folder names.")
     parser.add_argument("--label-order", choices=("logical", "visual"), default="logical",
                         help="Order used by ground_truth.txt; logical is converted for Arabic PP-OCRv5 training.")
     parser.add_argument("--seed", type=int, default=42)

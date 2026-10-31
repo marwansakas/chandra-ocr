@@ -20,12 +20,14 @@ when available, `metadata.json`:
 python paddle_training/prepare_dataset.py \
   --dataset /path/to/ground_truth_lines \
   --output thesis/datasets/paddle_split \
-  --group-key student_id
+  --group-key notebook-folder
 ```
 
 `--group-key` is a dotted metadata path such as `writer.id`. It makes all samples
-from the same child land in the same train/validation/test partition. Omit it only
-when writer IDs truly are unavailable; the fallback is a line-level split.
+from the same child land in the same train/validation/test partition. For this
+project's folders, use `--group-key notebook-folder`: it derives the notebook ID
+from the folder name, removing its page and line suffix. Omit it only when writer
+IDs truly are unavailable; the fallback is a line-level split.
 
 By default, labels are read in logical Unicode order and converted once to the
 visual order used for Arabic PP-OCRv5 training. Do not reverse the source labels.
