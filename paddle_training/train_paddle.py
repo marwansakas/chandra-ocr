@@ -7,6 +7,41 @@ import sys
 from pathlib import Path
 
 
+def make_config(source: Path, target: Path, args, dataset: Path, splits: Path, output: Path) -> None:
+    """Write a concrete config rather than addressing YAML list items via ``-o``.
+
+    PaddleOCR's ``-o`` merger supports dictionary paths but not ``head_list.1``.
+    The official Arabic config keeps the NRTR head in such a list, and its text
+    length must match the global text length.  Resolving the config here avoids
+    that parser limitation.
+    """
+    try:
+        import yaml
+    except ImportError as error:
+        raise RuntimeError("PyYAML is required; install PaddleOCR requirements first.") from error
+    config = yaml.safe_load(source.read_text(encoding="utf-8"))
+    global_config = config["Global"]
+    global_config.update(
+        use_gpu=args.device == "gpu",
+        epoch_num=args.epochs,
+        save_model_dir=str(output),
+        pretrained_model=str(args.pretrained_model.resolve()),
+    )
+    config["max_text_length"] = args.max_text_length
+    for head in config["Architecture"]["Head"]["head_list"]:
+        if "NRTRHead" in head:
+            head["NRTRHead"]["max_text_length"] = args.max_text_length
+    for partition, manifest in (("Train", "train_list.txt"), ("Eval", "val_list.txt")):
+        config[partition]["dataset"]["data_dir"] = str(dataset)
+        config[partition]["dataset"]["label_file_list"] = [str(splits / manifest)]
+        config[partition]["loader"]["batch_size_per_card"] = args.batch_size
+    config["Optimizer"]["lr"]["learning_rate"] = args.learning_rate
+    # Small handwriting datasets can have fewer than 1,000 train batches.
+    config["Global"]["save_epoch_step"] = 1
+    config["Global"]["eval_batch_step"] = [0, 100]
+    target.write_text(yaml.safe_dump(config, allow_unicode=True, sort_keys=False), encoding="utf-8")
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--paddleocr-root", type=Path, required=True, help="Clone of github.com/PaddlePaddle/PaddleOCR")
@@ -29,17 +64,10 @@ def main(argv=None):
             parser.error(f"Missing required file: {required}")
     if output.exists():
         parser.error(f"output must not already exist: {output}")
-    # Overrides keep the official architecture, dictionary, decoder and augmentations intact.
-    overrides = [
-        f"Global.use_gpu={str(args.device == 'gpu')}", f"Global.epoch_num={args.epochs}",
-        f"Global.save_model_dir={output}", f"Global.pretrained_model={args.pretrained_model.resolve()}",
-        f"Train.dataset.data_dir={dataset}", f"Train.dataset.label_file_list=[{splits / 'train_list.txt'}]",
-        f"Eval.dataset.data_dir={dataset}", f"Eval.dataset.label_file_list=[{splits / 'val_list.txt'}]",
-        f"Train.loader.batch_size_per_card={args.batch_size}", f"Eval.loader.batch_size_per_card={args.batch_size}",
-        f"Optimizer.lr.learning_rate={args.learning_rate}", f"max_text_length={args.max_text_length}",
-        f"Architecture.Head.head_list.1.NRTRHead.max_text_length={args.max_text_length}",
-    ]
-    command = [sys.executable, str(train_tool), "-c", str(config), "-o", *overrides]
+    output.parent.mkdir(parents=True, exist_ok=True)
+    generated_config = output.parent / f"{output.name}_training.yaml"
+    make_config(config, generated_config, args, dataset, splits, output)
+    command = [sys.executable, str(train_tool), "-c", str(generated_config)]
     print("Running:\n", " ".join(map(str, command)))
     subprocess.run(command, cwd=root, check=True)
 
