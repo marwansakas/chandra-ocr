@@ -1,10 +1,10 @@
 """A distinct, conservative diffusion + PaddleOCR recognition pipeline.
 
-It keeps the original crop as candidate zero.  A diffusion img2img model creates
-additional restoration candidates, each is recognized by PaddleOCR, and a
-diffusion result is accepted only when it produces exactly the same text as the
-original with a configurable confidence gain.  This protects against invented
-Arabic dots/letters; it is an experiment, not a general-purpose OCR fix.
+It keeps the original crop as candidate zero. A diffusion img2img model creates
+additional restoration candidates, each recognized by PaddleOCR. ``strict``
+mode never alters text; ``consensus`` mode may use an alternative only when at
+least two seeded variants agree and beat the original confidence. This is an
+experiment, not a general-purpose OCR fix.
 """
 from __future__ import annotations
 
@@ -40,10 +40,14 @@ def main(argv=None):
     parser.add_argument("--strength", type=float, default=.15)
     parser.add_argument("--guidance-scale", type=float, default=4.0)
     parser.add_argument("--minimum-confidence-gain", type=float, default=.03)
+    parser.add_argument("--selection", choices=("strict", "consensus"), default="strict",
+                        help="strict keeps the original text; consensus may replace it when at least two diffusion variants agree on a higher-confidence alternative")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args(argv)
     if not 1 <= args.variants <= 8 or not 0 < args.strength <= .35:
         parser.error("variants must be 1..8 and strength must be in (0,.35]")
+    if args.selection == "consensus" and args.variants < 2:
+        parser.error("--selection consensus requires at least --variants 2")
     if args.output.exists():
         parser.error("output must not already exist")
     from PIL import Image
@@ -75,16 +79,32 @@ def main(argv=None):
         base_text, base_score = predict(recognizer, original)
         chosen_text, chosen_score, chosen = base_text, base_score, "original"
         candidates = []
+        candidate_images = {}
         for variant in range(args.variants):
             generator = torch.Generator(device=args.device).manual_seed(args.seed + index * 100 + variant)
             restored = pipe(prompt=PROMPT, negative_prompt=NEGATIVE, image=original, strength=args.strength,
                             guidance_scale=args.guidance_scale, generator=generator).images[0]
             text, confidence = predict(recognizer, restored)
             candidates.append({"variant": variant, "text": text, "confidence": confidence})
-            # Do not use a visually altered image to change a transcription. Agreement is mandatory.
-            if text == base_text and confidence >= base_score + args.minimum_confidence_gain and confidence > chosen_score:
+            candidate_images[variant] = restored
+            # Strict mode never changes the text and is useful as a visual-restoration
+            # audit. Consensus mode below is the actual OCR-improvement experiment.
+            if args.selection == "strict" and text == base_text and confidence >= base_score + args.minimum_confidence_gain and confidence > chosen_score:
                 chosen_text, chosen_score, chosen = text, confidence, f"diffusion_{variant}"
-                restored.save(output / f"{path.stem}_accepted_variant_{variant}.png")
+        if args.selection == "consensus":
+            groups = {}
+            for candidate in candidates:
+                groups.setdefault(candidate["text"], []).append(candidate)
+            alternatives = []
+            for text, group in groups.items():
+                mean_confidence = sum(item["confidence"] for item in group) / len(group)
+                if (text != base_text and len(group) >= 2 and
+                        mean_confidence >= base_score + args.minimum_confidence_gain):
+                    alternatives.append((mean_confidence, text, group))
+            if alternatives:
+                chosen_score, chosen_text, group = max(alternatives, key=lambda item: item[0])
+                chosen = "diffusion_consensus_" + "_".join(str(item["variant"]) for item in group)
+                candidate_images[group[0]["variant"]].save(output / f"{path.stem}_{chosen}.png")
         rows.append({"image": str(path), "prediction": chosen_text, "confidence": chosen_score,
                      "selected": chosen, "original_prediction": base_text, "original_confidence": base_score,
                      "candidates": json.dumps(candidates, ensure_ascii=False)})

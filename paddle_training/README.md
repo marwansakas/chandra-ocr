@@ -73,3 +73,9 @@ python paddle_training/diffusion_paddle_infer.py \
 Start with `--strength 0.10` to `0.15`. Compare its predictions directly with the
 normal Paddle model on exactly the same untouched test set. Retain it only if CER
 improves; visual appeal is not an OCR metric.
+
+`--selection strict` (the default) never changes Paddle's text and is only a
+restoration audit. For a genuine, higher-risk OCR experiment, use
+`--selection consensus --variants 3`: it may use a different transcription only
+when at least two independently seeded diffusion variants agree and their mean
+Paddle confidence exceeds the original by the requested margin.
