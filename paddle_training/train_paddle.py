@@ -40,6 +40,11 @@ def make_config(source: Path, target: Path, args, dataset: Path, splits: Path, o
         config[partition]["dataset"]["data_dir"] = str(dataset)
         config[partition]["dataset"]["label_file_list"] = [str(splits / manifest)]
         config[partition]["loader"]["batch_size_per_card"] = args.batch_size
+    # MultiScaleSampler owns the effective training batch size.  Leaving the
+    # upstream value (128) here overrides the loader value and exhausts a 12 GB
+    # GPU even when the command requested --batch-size 8.
+    config["Train"]["sampler"]["first_bs"] = args.batch_size
+    config["Train"]["sampler"]["fix_bs"] = True
     config["Optimizer"]["lr"]["learning_rate"] = args.learning_rate
     # Small handwriting datasets can have fewer than 1,000 train batches.
     config["Global"]["save_epoch_step"] = 1
