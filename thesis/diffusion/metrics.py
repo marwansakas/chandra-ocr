@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from thesis.scripts.common import normalize_text_for_evaluation, tokenize_words
+from .tokenizer import training_text
 
 
 def align(reference, prediction):
@@ -28,12 +29,17 @@ def align(reference, prediction):
     return operations[::-1]
 
 
-def score_pair(reference: str, prediction: str, *, historical=False):
+def score_pair(reference: str, prediction: str, *, historical=False, no_harakat_v1=False):
+    if historical and no_harakat_v1:
+        raise ValueError("Metric normalizations are mutually exclusive")
     if historical:
         reference = normalize_text_for_evaluation(reference)
         prediction = normalize_text_for_evaluation(prediction)
         ref_words, pred_words = tokenize_words(reference), tokenize_words(prediction)
     else:
+        if no_harakat_v1:
+            reference = training_text(reference, "no_harakat_v1")
+            prediction = training_text(prediction, "no_harakat_v1")
         ref_words, pred_words = reference.split(), prediction.split()
     operations = align(reference, prediction)
     counts = Counter(op[0] for op in operations)
@@ -47,11 +53,11 @@ def score_pair(reference: str, prediction: str, *, historical=False):
             "space_substitutions": sum(op == "substitution" and (expected == " " or actual == " ") for op, _, expected, actual in operations)}
 
 
-def aggregate(pairs, *, historical=False):
+def aggregate(pairs, *, historical=False, no_harakat_v1=False):
     totals = Counter()
     count = 0
     for reference, prediction in pairs:
-        totals.update(score_pair(reference, prediction, historical=historical))
+        totals.update(score_pair(reference, prediction, historical=historical, no_harakat_v1=no_harakat_v1))
         count += 1
     return {**dict(totals), "lines": count,
             "cer": totals["char_distance"] / totals["reference_chars"] if totals["reference_chars"] else None,

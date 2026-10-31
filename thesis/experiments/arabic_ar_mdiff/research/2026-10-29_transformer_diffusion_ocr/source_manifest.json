@@ -1,0 +1,239 @@
+{
+  "papers": [
+    {
+      "name": "diffusionstr.pdf",
+      "url": "https://arxiv.org/pdf/2306.16707",
+      "pages": 5,
+      "sha256": "b87dc66698e6c64c4a3d97085674dcb142c16876df5d698c407e177c9c3ed39b"
+    },
+    {
+      "name": "mdiff4str.pdf",
+      "url": "https://arxiv.org/pdf/2512.01422",
+      "pages": 13,
+      "sha256": "ffdb6e97e36a40902135b6e09b853ba3a92d8e795326347b4e2fff343566e101"
+    },
+    {
+      "name": "gryphone_v2.pdf",
+      "url": "https://arxiv.org/pdf/2602.03370v2",
+      "pages": 16,
+      "sha256": "9090f8f2116c0327d630641cd71e59f64f7eca93a8e76457be19cb32e521895e"
+    },
+    {
+      "name": "diffbrush.pdf",
+      "url": "https://openaccess.thecvf.com/content/ICCV2025/papers/Dai_Beyond_Isolated_Words_Diffusion_Brush_for_Handwritten_Text-Line_Generation_ICCV_2025_paper.pdf",
+      "pages": 11,
+      "sha256": "5b2f11eee3c94113f71e0dadec8ac34c26ae39d3fd931b6a0629c767270366ff"
+    },
+    {
+      "name": "diffusionpen_arxiv.pdf",
+      "url": "https://arxiv.org/pdf/2409.06065",
+      "pages": 32,
+      "sha256": "0db620afe5b7aeb17299bb013a1e9fc8276a26618b9d5a7fff27d08f73151219"
+    },
+    {
+      "name": "diffbrush_supplement.pdf",
+      "url": "https://openaccess.thecvf.com/content/ICCV2025/supplemental/Dai_Beyond_Isolated_Words_ICCV_2025_supplemental.pdf",
+      "pages": 26,
+      "sha256": "06bf4e80631528eb12fb0008b6beec5328bbe8329ab71eb79026dce8fc631624"
+    },
+    {
+      "name": "ctig_dm.pdf",
+      "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Zhu_Conditional_Text_Image_Generation_With_Diffusion_Models_CVPR_2023_paper.pdf",
+      "pages": 11,
+      "sha256": "6a96a28b875035e39039a66ab455750d86ec5066b9a9d32abdb63287b90e38b3"
+    },
+    {
+      "name": "diffusionpen_eccv.pdf",
+      "url": "https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/11492.pdf",
+      "pages": 17,
+      "sha256": "e6683b678ab48f7f5e10f45a736ef2eb73c08687463502e289c97fa97c5d0a45"
+    },
+    {
+      "name": "trocr.pdf",
+      "url": "https://arxiv.org/pdf/2109.10282",
+      "pages": 10,
+      "sha256": "46baf09c8757a7358b02ceb9e521457d44e4133a7e1cde33b24071455e2dfa19"
+    },
+    {
+      "name": "levocr.pdf",
+      "url": "https://arxiv.org/pdf/2209.03594",
+      "pages": 17,
+      "sha256": "11efc00ef81bdbd89d15c576deaf2ab5741b5d872f0c8f8a279c20c8a0042c79"
+    },
+    {
+      "name": "quo_vadis.pdf",
+      "url": "https://openaccess.thecvf.com/content/ICCV2025W/VisionDocs/papers/Pippi_Quo_Vadis_Handwritten_Text_Generation_for_Handwritten_Text_Recognition_ICCVW_2025_paper.pdf",
+      "pages": 11,
+      "sha256": "4761d05ebab5db73daef5c2ec84f47dc659a8d34b2baa53476bea1ea56b9413b"
+    },
+    {
+      "name": "ricoh_transformer.pdf",
+      "url": "https://jp.ricoh.com/-/Media/Ricoh/Sites/jp_ricoh/technology/techreport/47/pdf/RTR47a16.pdf",
+      "pages": 7,
+      "sha256": "54b2b6e333378f997dd624265bc5a9a6f3d1e79192cbdbf33fd2de783eeb78ba"
+    }
+  ],
+  "repositories": [
+    {
+      "repo": "Topdu/OpenOCR",
+      "stars": 1485,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "commit": "1ccfc6ee6161f7133b192e16af3a9265273997ba",
+      "branch": "main",
+      "pushed_at": "2026-09-21T12:09:01Z",
+      "tree_truncated": false,
+      "file_count": 493
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "stars": 2,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58",
+      "branch": "master",
+      "pushed_at": "2026-09-23T09:45:23Z",
+      "tree_truncated": false,
+      "file_count": 58
+    },
+    {
+      "repo": "koninik/DiffusionPen",
+      "stars": 111,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "059e2f2bcb7372231038719e955597917c1a8783",
+      "branch": "main",
+      "pushed_at": "2024-10-24T07:59:41Z",
+      "tree_truncated": false,
+      "file_count": 29
+    },
+    {
+      "repo": "dailenson/DiffBrush",
+      "stars": 196,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "da9addc1140bdfec463b2d41a974a0a392f80798",
+      "branch": "main",
+      "pushed_at": "2025-11-24T08:00:32Z",
+      "tree_truncated": false,
+      "file_count": 3115
+    },
+    {
+      "repo": "baudm/parseq",
+      "stars": 746,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "commit": "1902db043c029a7e03a3818c616c06600af574be",
+      "branch": "main",
+      "pushed_at": "2024-05-29T02:02:27Z",
+      "tree_truncated": false,
+      "file_count": 128
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "stars": 1834,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "commit": "fb6187ebe5374d5682ac0bc05f31e3639ab6fb15",
+      "branch": "main",
+      "pushed_at": "2026-03-17T02:55:55Z",
+      "tree_truncated": false,
+      "file_count": 1203
+    },
+    {
+      "repo": "FangShancheng/ABINet",
+      "stars": 463,
+      "license": {
+        "key": "other",
+        "name": "Other",
+        "spdx_id": "NOASSERTION",
+        "url": null,
+        "node_id": "MDc6TGljZW5zZTA="
+      },
+      "commit": "789743c56eacbf114c2d63dfaeada533098dd19a",
+      "branch": "main",
+      "pushed_at": "2022-10-14T08:44:04Z",
+      "tree_truncated": false,
+      "file_count": 76
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "stars": 576,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "dde2205a70a2c70d1786503d198a795358c80ee4",
+      "branch": "main",
+      "pushed_at": "2025-10-15T03:32:59Z",
+      "tree_truncated": false,
+      "file_count": 47
+    },
+    {
+      "repo": "microsoft/unilm",
+      "stars": 22233,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "31c5b904ca1bf2afb4c234a6675c683a4e5fc7cd",
+      "branch": "master",
+      "pushed_at": "2026-09-21T03:27:00Z",
+      "tree_truncated": false,
+      "file_count": 7307
+    },
+    {
+      "repo": "koninik/WordStylist",
+      "stars": 82,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "commit": "03bb684e0eb26c42bcfc2ed719e73d60db888226",
+      "branch": "main",
+      "pushed_at": "2024-06-25T10:35:31Z",
+      "tree_truncated": false,
+      "file_count": 12
+    }
+  ],
+  "errors": []
+}

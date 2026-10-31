@@ -1,3 +1,23 @@
 # Preserve upstream font/license bytes used by sources.json checksums.
 thesis/assets/synthetic_fonts/** -text
 *.sh text eol=lf
+
+# These experiment sources/runners are bound by raw SHA256 in completed runs.
+# Preserve their exact bytes, including existing CRLF/mixed line endings.
+thesis/mdiff_arabic_v1/** -text
+thesis/ar_mdiff_hybrid_v1/** -text
+thesis/ar_mdiff_fusion_v2/** -text
+thesis/scripts/run_mdiff_arabic_v1.py -text
+thesis/scripts/run_ar_mdiff_hybrid_v1.py -text
+thesis/scripts/run_ar_mdiff_fusion_v2.py -text
+tests/test_mdiff_arabic_v1.py -text
+tests/test_ar_mdiff_hybrid_v1.py -text
+tests/test_ar_mdiff_fusion_v2.py -text
+thesis/diffusion/data.py text eol=crlf
+thesis/diffusion/images.py text eol=crlf
+thesis/diffusion/metrics.py -text
+thesis/diffusion/tokenizer.py text eol=crlf
+thesis/diffusion/paddle_conditioning.py -text
+thesis/scripts/common.py text eol=crlf
+thesis/experiments/arabic_ar_mdiff/runners/** -text
+thesis/experiments/arabic_ar_mdiff/research/** -text

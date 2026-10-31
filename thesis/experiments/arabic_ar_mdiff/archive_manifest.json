@@ -1,0 +1,65 @@
+{
+  "purpose": "Byte-identical copies of external project runners and historical research notes. Active originals remain unchanged.",
+  "files": {
+    "thesis/experiments/arabic_ar_mdiff/runners/run_mdiff_arabic_v1.ps1": {
+      "original_project_path": "Diffusion/run_mdiff_arabic_v1.ps1",
+      "sha256": "7f94b675144642f48e82f057b9be1030b16b78987217f998e268623a7e30a6fa"
+    },
+    "thesis/experiments/arabic_ar_mdiff/runners/run_mdiff_arabic_v1_1.ps1": {
+      "original_project_path": "Diffusion/run_mdiff_arabic_v1_1.ps1",
+      "sha256": "be0667d0c74527e65f23dd6f653830c56ef8e84f9240980ef51245dbe0abb4a7"
+    },
+    "thesis/experiments/arabic_ar_mdiff/runners/run_ar_mdiff_hybrid_v1.ps1": {
+      "original_project_path": "Diffusion/run_ar_mdiff_hybrid_v1.ps1",
+      "sha256": "38d0bb6864a4672838440e53793375e106873b5c41ae789e4de720cf130aa86c"
+    },
+    "thesis/experiments/arabic_ar_mdiff/runners/run_ar_mdiff_fusion_v2.ps1": {
+      "original_project_path": "Diffusion/run_ar_mdiff_fusion_v2.ps1",
+      "sha256": "131c13c1735d9fc140473cf1d7fa70c68a3db3f512fcaa588165752758de4dbd"
+    },
+    "thesis/experiments/arabic_ar_mdiff/runners/evaluate_mdiff_exploratory_v1.py": {
+      "original_project_path": "Diffusion/evaluate_mdiff_exploratory_v1.py",
+      "sha256": "b146bc0cba35ff9dd36305dcd32cb04a68e4ba8fdb871432ad788f49dee63633"
+    },
+    "thesis/experiments/arabic_ar_mdiff/runners/test_exploratory_mdiff_v1.py": {
+      "original_project_path": "Diffusion/test_exploratory_mdiff_v1.py",
+      "sha256": "3b6278d1c8824eac4f82986f85f947ac947ad3dfdf42a65cbf46ee840db785b7"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/FINDINGS.md": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/FINDINGS.md",
+      "sha256": "795ddcfd3fd343a2ec8218b8067cf4698e9af1d1891a5d8bd8db654561416875"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/implementation_manifest.json": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/implementation_manifest.json",
+      "sha256": "98995cc9cd9a8a4d744f2f65c6db05bf2093759f84eba65a73bf2bc8d84f62dc"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/mdiff_arabic_v1_verification.json": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/mdiff_arabic_v1_verification.json",
+      "sha256": "2b362f42afee17ebdc3c42855ef154b0ae8f08f974fd7fb2b93bd1514282ce1e"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/NEXT_CHAT_MDIFF_ARABIC_PROMPT.md": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/NEXT_CHAT_MDIFF_ARABIC_PROMPT.md",
+      "sha256": "c68e00892c11f1f495101668f24e96249622384220f7385f0fcc10811b4985cc"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/readiness_v1_1_verification.json": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/readiness_v1_1_verification.json",
+      "sha256": "23bc78d1682a78c9814e30fc1be70930dc3837a9db92e7461638cc397ba96e9a"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-29_transformer_diffusion_ocr/source_manifest.json": {
+      "original_project_path": "research/2026-10-29_transformer_diffusion_ocr/source_manifest.json",
+      "sha256": "1eace5c85562aef15acbb42f95bb57f4d1c72b897cb78999b88227d9df4981dd"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-31_ar_mdiff_hybrid_research/encoder_identity.json": {
+      "original_project_path": "research/2026-10-31_ar_mdiff_hybrid_research/encoder_identity.json",
+      "sha256": "75dfde32046261a82b0cf737db31df693670b402aa4b765b50dca8fefa7e4b92"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-31_ar_mdiff_hybrid_research/FINDINGS.md": {
+      "original_project_path": "research/2026-10-31_ar_mdiff_hybrid_research/FINDINGS.md",
+      "sha256": "82f11091b8c7a0d1ac07acd2020e4280438d1dc14011ce53869cbfd83591b2fe"
+    },
+    "thesis/experiments/arabic_ar_mdiff/research/2026-10-31_ar_mdiff_hybrid_research/sources.json": {
+      "original_project_path": "research/2026-10-31_ar_mdiff_hybrid_research/sources.json",
+      "sha256": "14425af3ccfb40e0a82d46c6fb42f07a774ed53cc8f8f343ef07a1e3e1092d50"
+    }
+  }
+}

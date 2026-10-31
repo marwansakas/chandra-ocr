@@ -1,0 +1,113 @@
+{
+  "snapshot_date": "2026-10-31",
+  "checkpoints": {
+    "ar1b_s54101": {
+      "selected_epoch": 93,
+      "completed_epoch": 123,
+      "checkpoint": "Diffusion/drive_all/runs/ar1b_s54101/m093.pt",
+      "checkpoint_sha256": "2355240de7b059736845c778bec2a8f62c84124ca6321908e735856e1d0ade97",
+      "validation_metrics": {
+        "cer": 0.47473903966597075,
+        "char_distance": 1137,
+        "completed_lines": 150,
+        "deletions": 326,
+        "eos_failures": 0,
+        "exact_line_accuracy": 0.19333333333333333,
+        "exact_lines": 29,
+        "expected_lines": 150,
+        "failed_lines": 0,
+        "insertions": 154,
+        "length_failures": 0,
+        "lines": 150,
+        "mean_seconds_per_line": 0.20612350266688736,
+        "missing_lines": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "runtime_seconds": 30.918525400033104,
+        "space_deletions": 41,
+        "space_insertions": 24,
+        "space_substitutions": 86,
+        "substitutions": 657,
+        "wer": 0.8201284796573876,
+        "whitespace_diagnostics": {
+          "leading_whitespace_changed_lines": 0,
+          "trailing_whitespace_changed_lines": 1,
+          "whitespace_deletions": 41,
+          "whitespace_insertions": 24,
+          "whitespace_substitutions": 86
+        },
+        "word_distance": 383
+      },
+      "optimizer_updates": 16236,
+      "train_seconds": 22465.6857004,
+      "validation_seconds": 1938.3158924000636
+    },
+    "ma1b_s54101": {
+      "selected_epoch": 177,
+      "completed_epoch": 200,
+      "checkpoint": "Diffusion/drive_all/runs/ma1b_s54101/m177.pt",
+      "checkpoint_sha256": "af4b05ac4bf6dc2b6eabba706b382c7e4e154138dd65b1902263a4fa44a77e45",
+      "validation_metrics": {
+        "cer": 0.5223382045929019,
+        "char_distance": 1251,
+        "completed_lines": 150,
+        "deletions": 283,
+        "eos_failures": 0,
+        "exact_line_accuracy": 0.14,
+        "exact_lines": 21,
+        "expected_lines": 150,
+        "failed_lines": 0,
+        "insertions": 122,
+        "length_failures": 0,
+        "lines": 150,
+        "mean_seconds_per_line": 0.033696359999933825,
+        "missing_lines": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "runtime_seconds": 5.0544539999900735,
+        "space_deletions": 26,
+        "space_insertions": 23,
+        "space_substitutions": 204,
+        "substitutions": 846,
+        "wer": 0.9186295503211992,
+        "whitespace_diagnostics": {
+          "leading_whitespace_changed_lines": 0,
+          "trailing_whitespace_changed_lines": 4,
+          "whitespace_deletions": 26,
+          "whitespace_insertions": 23,
+          "whitespace_substitutions": 204
+        },
+        "word_distance": 429
+      },
+      "optimizer_updates": 26400,
+      "train_seconds": 38827.342802700005,
+      "validation_seconds": 1422.449929100012
+    },
+    "shared_encoder_head": {
+      "selected_epoch": 24,
+      "completed_epoch": 34,
+      "checkpoint": "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/shared/e024_20261031T114014558069Z/model.pt",
+      "checkpoint_sha256": "c0e7bcf25b270138d04959e902e58ee74871bae662434971264b4cf78b835cd2",
+      "backbone_sha256": "cbeadb46711eb153af4015c5f5e3d753369b3539f3269f720dd30bdf7a657666"
+    }
+  },
+  "local_artifacts": {
+    "Diffusion/drive_all/splits_70_05_25_v3/split_lock.json": "892541b8e05223cf1cc21c6a2ff5d08df8c234b4bb08c63b3205b0487e393c95",
+    "Diffusion/drive_all/splits_70_05_25_v3/train.jsonl": "f5de668c4fa271964efdeff669a6209f096628417d0c92b83b8561fc4653b4d1",
+    "Diffusion/drive_all/splits_70_05_25_v3/validation.jsonl": "8dbb10b160185f2b438adf23895f8d138c82ada4b04d8d69185aef6e540a5ebe",
+    "Diffusion/drive_all/splits_70_05_25_v3/test.jsonl": "3c1676c476abe899756a60985ca71df3050cc1bfbaf850366a947073f621bf1b",
+    "Diffusion/drive_all/runs/ma1b_s54101/validation/report.json": "ca503b7aa59f1b3b24db4d967813d611bfcfe2aa8fc888dd0f27ff2b24b27aa9",
+    "Diffusion/drive_all/runs/ma1b_s54101/validation/gate.json": "3b293d9b758da0bf966ebe9801e1e051264098cc2ac6de3fbc81e9c135f5a704",
+    "Diffusion/drive_all/exploratory/mdar_20261031_x01/report.json": "b3aace55a391dac5563e23a6b2aaad7b08155ee7cccea4703eb5d5b52695b02c",
+    "Diffusion/drive_all/exploratory/mdar_20261031_x01/request.json": "a7d4520b72c1f5050d805e852842c403c5084f0b1ad5ee0cfce0032385743cd8",
+    "Diffusion/drive_all/hybrids/ar_md_h1_s54101/validation/report.json": "cf36ed8246a3062c832b233ac95a9059117249add408925914735c61ff043889",
+    "Diffusion/drive_all/hybrids/ar_md_h1_s54101/historical_test/report.json": "6d5e21b2a9f8c135bd5417661f7487c6734cc74f071a06d93569e5f66f00e199",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/check.json": "ea2bfbc85690c5d675b88fdee545d37ec8a71bd11c1ecf16a6cccd12745bac76",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/shared/complete.json": "42bfc303d48a223a0acc35d48527574028e544eb066ecee566ee1d7aba3bca68",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/calibration/frozen/report.json": "eb425bded1503a2cbeca1aa2127c8c4fd2e301f64d15505244370c38362c4e41",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/calibration/shared/report.json": "764aeb036d57237fd54be9c32dae9ab50caa4e77cdce698f61dc95441dc7d84d",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/historical_752/report.json": "7a3eb29375bf4ee0607104bd788b88dde606e87e0ceff0e7a194025a6099f83a",
+    "Diffusion/drive_all/hybrids/ar_md_fusion2_s54101/historical_752/seal.json": "8511264cf044b517f8969b036218831f93a662765456219098e87752dd6c45b2"
+  },
+  "note": "Paths relative to project parent. Weights, datasets, per-line predictions and original full reports remain local and are not part of this Git commit."
+}
