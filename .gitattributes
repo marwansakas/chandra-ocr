@@ -21,3 +21,18 @@ thesis/diffusion/paddle_conditioning.py -text
 thesis/scripts/common.py text eol=crlf
 thesis/experiments/arabic_ar_mdiff/runners/** -text
 thesis/experiments/arabic_ar_mdiff/research/** -text
+
+# Completed KHATT AR runs also bind raw source and launcher bytes.
+thesis/khatt_ablation_v1/** -text
+thesis/khatt_resume_compat_v1.py -text
+thesis/khatt_subset_eval_v1.py -text
+thesis/scripts/run_khatt_ablation_v1.py -text
+thesis/scripts/resume_khatt_ablation_v1.py -text
+tests/test_khatt_ablation_v1.py -text
+tests/test_khatt_resume_compat_v1.py -text
+tests/test_khatt_subset_eval_v1.py -text
+thesis/experiments/khatt_ablation_v1/runners/** -text
+
+# Selected model weights are stored as LFS objects, never ordinary Git blobs.
+thesis/experiments/arabic_ocr_best/checkpoints/*.pt filter=lfs diff=lfs merge=lfs -text
+thesis/experiments/arabic_ocr_best/tokenizers/** -text whitespace=cr-at-eol

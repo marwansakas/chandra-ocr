@@ -1,0 +1,360 @@
+{
+  "snapshot_date": "2026-11-10",
+  "scope": "HISTORICAL DEVELOPMENT-USED; not a fresh held-out test",
+  "test_lines": 752,
+  "results": {
+    "frozen_v2_2": {
+      "metrics": {
+        "cer": 0.5855628844586082,
+        "wer": 0.9301825993555317,
+        "exact_line_accuracy": 0.0625,
+        "exact_lines": 47,
+        "char_distance": 7901,
+        "word_distance": 2598,
+        "substitutions": 2704,
+        "insertions": 111,
+        "deletions": 5086,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 117,
+        "exact_lines_gained": 13,
+        "improved_lines": 210,
+        "worsened_lines": 428,
+        "unchanged_lines": 114
+      }
+    },
+    "khatt100_only": {
+      "metrics": {
+        "cer": 0.7383828651893575,
+        "wer": 1.096312209094164,
+        "exact_line_accuracy": 0.018617021276595744,
+        "exact_lines": 14,
+        "char_distance": 9963,
+        "word_distance": 3062,
+        "substitutions": 5103,
+        "insertions": 3168,
+        "deletions": 1692,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 141,
+        "exact_lines_gained": 4,
+        "improved_lines": 120,
+        "worsened_lines": 582,
+        "unchanged_lines": 50
+      }
+    },
+    "khatt100_ours": {
+      "metrics": {
+        "cer": 0.2991921737197065,
+        "wer": 0.6573576799140709,
+        "exact_line_accuracy": 0.24601063829787234,
+        "exact_lines": 185,
+        "char_distance": 4037,
+        "word_distance": 1836,
+        "substitutions": 2247,
+        "insertions": 786,
+        "deletions": 1004,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 38,
+        "exact_lines_gained": 72,
+        "improved_lines": 404,
+        "worsened_lines": 139,
+        "unchanged_lines": 209
+      }
+    },
+    "khatt30_ours": {
+      "metrics": {
+        "cer": 0.3784925516934707,
+        "wer": 0.698890082348729,
+        "exact_line_accuracy": 0.24468085106382978,
+        "exact_lines": 184,
+        "char_distance": 5107,
+        "word_distance": 1952,
+        "substitutions": 3023,
+        "insertions": 792,
+        "deletions": 1292,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 24,
+        "exact_lines_gained": 57,
+        "improved_lines": 346,
+        "worsened_lines": 157,
+        "unchanged_lines": 249
+      }
+    },
+    "khatt50_ours": {
+      "metrics": {
+        "cer": 0.3796783517379382,
+        "wer": 0.7275331185105621,
+        "exact_line_accuracy": 0.2220744680851064,
+        "exact_lines": 167,
+        "char_distance": 5123,
+        "word_distance": 2032,
+        "substitutions": 2959,
+        "insertions": 909,
+        "deletions": 1255,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 37,
+        "exact_lines_gained": 53,
+        "improved_lines": 357,
+        "worsened_lines": 167,
+        "unchanged_lines": 228
+      }
+    },
+    "mdiff_arabic_raw": {
+      "metrics": {
+        "cer": 0.5383532201882457,
+        "wer": 0.9187253848907985,
+        "exact_line_accuracy": 0.13297872340425532,
+        "exact_lines": 100,
+        "char_distance": 7264,
+        "word_distance": 2566,
+        "substitutions": 5031,
+        "insertions": 596,
+        "deletions": 1637,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 55,
+        "exact_lines_gained": 4,
+        "improved_lines": 132,
+        "worsened_lines": 249,
+        "unchanged_lines": 371
+      }
+    },
+    "paddle": {
+      "metrics": {
+        "cer": 0.5938634847698807,
+        "wer": 0.9283924095954171,
+        "exact_line_accuracy": 0.06515957446808511,
+        "exact_lines": 49,
+        "char_distance": 8013,
+        "word_distance": 2593,
+        "substitutions": 1463,
+        "insertions": 104,
+        "deletions": 6446,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 117,
+        "exact_lines_gained": 15,
+        "improved_lines": 216,
+        "worsened_lines": 417,
+        "unchanged_lines": 119
+      }
+    },
+    "span_hybrid_verifier_v4": {
+      "metrics": {
+        "cer": 0.559104720966427,
+        "wer": 0.9308986752595775,
+        "exact_line_accuracy": 0.0625,
+        "exact_lines": 47,
+        "char_distance": 7544,
+        "word_distance": 2600,
+        "substitutions": 2626,
+        "insertions": 117,
+        "deletions": 4801,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 117,
+        "exact_lines_gained": 13,
+        "improved_lines": 213,
+        "worsened_lines": 422,
+        "unchanged_lines": 117
+      }
+    },
+    "span_merge": {
+      "metrics": {
+        "cer": 0.4877343807900393,
+        "wer": 0.832796276405299,
+        "exact_line_accuracy": 0.20079787234042554,
+        "exact_lines": 151,
+        "char_distance": 6581,
+        "word_distance": 2326,
+        "substitutions": 4160,
+        "insertions": 743,
+        "deletions": 1678,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 0,
+        "exact_lines_gained": 0,
+        "improved_lines": 0,
+        "worsened_lines": 0,
+        "unchanged_lines": 752
+      }
+    },
+    "transformer_arabic_control": {
+      "metrics": {
+        "cer": 0.5140443192766619,
+        "wer": 0.8421052631578947,
+        "exact_line_accuracy": 0.18085106382978725,
+        "exact_lines": 136,
+        "char_distance": 6936,
+        "word_distance": 2352,
+        "substitutions": 4364,
+        "insertions": 845,
+        "deletions": 1727,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 13493,
+        "reference_words": 2793,
+        "lines": 752
+      },
+      "vs_span_merge": {
+        "exact_lines_lost": 32,
+        "exact_lines_gained": 17,
+        "improved_lines": 84,
+        "worsened_lines": 241,
+        "unchanged_lines": 427
+      }
+    }
+  },
+  "selected": {
+    "khatt100_only": {
+      "epoch": 34,
+      "checkpoint_sha256": "02a2b65669c491614a96f7df8e815c06e8c951415d7a6cddc8b417519215a5e5",
+      "validation": {
+        "cer": 0.7599164926931107,
+        "wer": 1.1370449678800856,
+        "exact_line_accuracy": 0.02666666666666667,
+        "exact_lines": 4,
+        "char_distance": 1820,
+        "word_distance": 531,
+        "substitutions": 868,
+        "insertions": 687,
+        "deletions": 265,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "lines": 150
+      }
+    },
+    "khatt100_ours": {
+      "epoch": 40,
+      "checkpoint_sha256": "fed32927b03a240bdc855ec86ec0bfc541cad77ea5cbefd6d55f1ac74f5b9291",
+      "validation": {
+        "cer": 0.267223382045929,
+        "wer": 0.6059957173447538,
+        "exact_line_accuracy": 0.24666666666666667,
+        "exact_lines": 37,
+        "char_distance": 640,
+        "word_distance": 283,
+        "substitutions": 379,
+        "insertions": 104,
+        "deletions": 157,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "lines": 150
+      }
+    },
+    "khatt30_ours": {
+      "epoch": 87,
+      "checkpoint_sha256": "035e505859b2c02ab5251e3bc90449fad7d86e02197ec9f33647b5f91d3a8757",
+      "validation": {
+        "cer": 0.31565762004175363,
+        "wer": 0.6552462526766595,
+        "exact_line_accuracy": 0.23333333333333334,
+        "exact_lines": 35,
+        "char_distance": 756,
+        "word_distance": 306,
+        "substitutions": 417,
+        "insertions": 131,
+        "deletions": 208,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "lines": 150
+      }
+    },
+    "khatt50_ours": {
+      "epoch": 34,
+      "checkpoint_sha256": "75f06fdfb0cc607320b1b17e21bac19d6f8c37c94c8f358aae6bcfe31b9520f6",
+      "validation": {
+        "cer": 0.32734864300626304,
+        "wer": 0.6766595289079229,
+        "exact_line_accuracy": 0.24,
+        "exact_lines": 36,
+        "char_distance": 784,
+        "word_distance": 316,
+        "substitutions": 419,
+        "insertions": 135,
+        "deletions": 230,
+        "failed_lines": 0,
+        "eos_failures": 0,
+        "length_failures": 0,
+        "reference_chars": 2395,
+        "reference_words": 467,
+        "lines": 150
+      }
+    }
+  },
+  "abandoned_trials": [
+    "khatt10_ours"
+  ],
+  "automatic_promotion": false,
+  "source_report_sha256": "41ace39e3b1fcaa2475dbb7136a28fd225361e593c1afa624c00d5060ee6b8fb",
+  "note": "Mixed runs include 704 new child TRAIN lines; old AR/span do not. Different TRAIN sizes also imply different optimizer-update budgets.",
+  "privacy": "Aggregate export only; per-line data and trained weights remain outside Git."
+}

@@ -1,5 +1,7 @@
 # Arabic handwriting: Transformer, MDiff and hybrid experiments
 
+The follow-up [KHATT + children experiments](../khatt_ablation_v1/README.md) completed on 10 November 2026. The best new AR reached 29.92% historical CER. [Selected checkpoints and the original span pair](../arabic_ocr_best/README.md) are preserved with Git LFS; [Marwan's matched MDiff handoff](../khatt_ablation_v1/MDIFF_HANDOFF.md) describes the next experiment. The results below remain the original October comparison.
+
 This is the current record of the experiments implemented and completed during
 29–31 October 2026. It covers the matched recognizers, readiness failures and fix,
 historical evaluation, the first whole-line selector, research, and all three new
