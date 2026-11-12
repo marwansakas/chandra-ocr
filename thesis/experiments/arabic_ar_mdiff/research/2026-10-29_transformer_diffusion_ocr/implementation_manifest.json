@@ -1,0 +1,306 @@
+{
+  "files": [
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "configs/rec/mdiff4str/readme.md",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/configs/rec/mdiff4str/readme.md",
+      "status": "downloaded",
+      "sha256": "c50ad7f42a5d3818a39f92a4034f386b00c0153a7602625c942167b86b7e9856"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "openrec/modeling/decoders/mdiff_decoder.py",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/openrec/modeling/decoders/mdiff_decoder.py",
+      "status": "downloaded",
+      "sha256": "5a579f97b534a60dcce26c4e37fdb2dca491809b0820986d19db18e609e79448"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "openrec/losses/mdiff_loss.py",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/openrec/losses/mdiff_loss.py",
+      "status": "downloaded",
+      "sha256": "e806660f86df6ad39ae0b49cec742dae732a932156f69f5703c1be8d04ce4680"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "configs/rec/mdiff4str/svtrv2_mdiffdecoder_base.yml",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/configs/rec/mdiff4str/svtrv2_mdiffdecoder_base.yml",
+      "status": "downloaded",
+      "sha256": "cb8918cc32edf5861ac78a92680c1cab8bb582f9b69d03f0ce3f41c963379e31"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "configs/rec/mdiff4str/svtrv2_mdiffdecoder_small.yml",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/configs/rec/mdiff4str/svtrv2_mdiffdecoder_small.yml",
+      "status": "downloaded",
+      "sha256": "d0520d2408c3ee6d071db5c14b31a3352f07d2477b4fe4222473cc49838738f9"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "openrec/preprocess/mdiff_label_encode.py",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/openrec/preprocess/mdiff_label_encode.py",
+      "status": "downloaded",
+      "sha256": "ec91508a7bb9d713771456a21bd72c60afda286b75b10792ece8d6a9f32ecb86"
+    },
+    {
+      "repo": "Topdu/OpenOCR",
+      "path": "openrec/metrics/rec_metric.py",
+      "url": "https://raw.githubusercontent.com/Topdu/OpenOCR/1ccfc6ee6161f7133b192e16af3a9265273997ba/openrec/metrics/rec_metric.py",
+      "status": "downloaded",
+      "sha256": "aff4968bf80ffda45c3b0cacdb3752d18141331aa7449ca208b7efc6f46c4bcc"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "configs/mathwriting.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/configs/mathwriting.py",
+      "status": "downloaded",
+      "sha256": "3d2939e7b9584acc877ab9923754e4895a9373870aeaa321b8907ec9195b18a7"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/model/encoder.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/model/encoder.py",
+      "status": "downloaded",
+      "sha256": "c48e783d87d3c899b6ca1f307ba21210f1768146e8443ede0131fe845985bdce"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/model/decoder.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/model/decoder.py",
+      "status": "downloaded",
+      "sha256": "0a5f60ec18b6a3e1d34c7a628b4de47dd3a04404eb3f913038c66eed41e69c5e"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/model/refiner.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/model/refiner.py",
+      "status": "downloaded",
+      "sha256": "4dd447afa036a2dab463912f762249f99b8bc35e9ccd85b0ef2b1e7da961b083"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/loss/loss.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/loss/loss.py",
+      "status": "downloaded",
+      "sha256": "889ed46cc2eb2641613be677c34771e27368156199d63dbf545f56b5fcea033f"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/model/handler.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/model/handler.py",
+      "status": "downloaded",
+      "sha256": "5d0cf430cbfc3eb887020aa3d99234c313b2751d0378e294c7291ce11885d3a3"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "train.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/train.py",
+      "status": "downloaded",
+      "sha256": "f39a659abbd7320bcf65613c5f44ce42f824bfb5eda651a9ed3dfd7edbb66c70"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "gryph/score/metric.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/gryph/score/metric.py",
+      "status": "downloaded",
+      "sha256": "8810ec83cf528f98e6ee273b0d32bd0b302a2e07ee7129fe1b7000e288f02b1e"
+    },
+    {
+      "repo": "JG1VPP/GryphOne",
+      "path": "infer.py",
+      "url": "https://raw.githubusercontent.com/JG1VPP/GryphOne/5f5f5f5f29fe9dc8d4f68f2ff851fd549929af58/infer.py",
+      "status": "downloaded",
+      "sha256": "03b530d3f037a6c525f2bb72e27afae53719aceb55a01be81662e97bfa8d2e01"
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "path": "OCR/LevOCR/README.md",
+      "url": "https://raw.githubusercontent.com/AlibabaResearch/AdvancedLiterateMachinery/fb6187ebe5374d5682ac0bc05f31e3639ab6fb15/OCR/LevOCR/README.md",
+      "status": "downloaded",
+      "sha256": "0b8c0967d2daec9625be89db4bf1e9e01d080504f67eebc021e216356b88e761"
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "path": "OCR/LevOCR/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/AlibabaResearch/AdvancedLiterateMachinery/fb6187ebe5374d5682ac0bc05f31e3639ab6fb15/OCR/LevOCR/LICENSE.md",
+      "status": "downloaded",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "path": "OCR/LevOCR/train_final_dist.py",
+      "url": "https://raw.githubusercontent.com/AlibabaResearch/AdvancedLiterateMachinery/fb6187ebe5374d5682ac0bc05f31e3639ab6fb15/OCR/LevOCR/train_final_dist.py",
+      "status": "downloaded",
+      "sha256": "34163bad6597a561932b8e380378092d08b5abf54a72ab94c044778e4af546f9"
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "path": "OCR/LevOCR/models.py",
+      "url": "https://raw.githubusercontent.com/AlibabaResearch/AdvancedLiterateMachinery/fb6187ebe5374d5682ac0bc05f31e3639ab6fb15/OCR/LevOCR/models.py",
+      "status": "downloaded",
+      "sha256": "816d85e2040aed3b0c4a8740ee0ce71a2a22da741e22a9f944694566114d3a93"
+    },
+    {
+      "repo": "dailenson/DiffBrush",
+      "path": "configs/IAM.yml",
+      "url": "https://raw.githubusercontent.com/dailenson/DiffBrush/da9addc1140bdfec463b2d41a974a0a392f80798/configs/IAM.yml",
+      "status": "downloaded",
+      "sha256": "3b3978b1f28a03ac7d81ebdd34a3c950af79947a2bef08d5432b0f01fe31b7c1"
+    },
+    {
+      "repo": "AlibabaResearch/AdvancedLiterateMachinery",
+      "path": "OCR/LevOCR/levt/levenshtein_transformer.py",
+      "url": "https://raw.githubusercontent.com/AlibabaResearch/AdvancedLiterateMachinery/fb6187ebe5374d5682ac0bc05f31e3639ab6fb15/OCR/LevOCR/levt/levenshtein_transformer.py",
+      "status": "downloaded",
+      "sha256": "8d949c410d80ad2577e3985d9289b5eaf19f077a9c16e1c4cabdeff6e931c282"
+    },
+    {
+      "repo": "dailenson/DiffBrush",
+      "path": "models/loss.py",
+      "url": "https://raw.githubusercontent.com/dailenson/DiffBrush/da9addc1140bdfec463b2d41a974a0a392f80798/models/loss.py",
+      "status": "downloaded",
+      "sha256": "8271940e63f369cc239caa3de44168670cbd19f159b4aecec40206d7e6744c93"
+    },
+    {
+      "repo": "dailenson/DiffBrush",
+      "path": "generate.py",
+      "url": "https://raw.githubusercontent.com/dailenson/DiffBrush/da9addc1140bdfec463b2d41a974a0a392f80798/generate.py",
+      "status": "downloaded",
+      "sha256": "09be533920558e2cee730b6abb26c0a353c119cd9790e260ea635040123e2fde"
+    },
+    {
+      "repo": "dailenson/DiffBrush",
+      "path": "models/diffusion.py",
+      "url": "https://raw.githubusercontent.com/dailenson/DiffBrush/da9addc1140bdfec463b2d41a974a0a392f80798/models/diffusion.py",
+      "status": "downloaded",
+      "sha256": "60478f8541b9a865b573909bfc67769092bd3b19f5d296fbd31512e3a9f6ab98"
+    },
+    {
+      "repo": "koninik/DiffusionPen",
+      "path": "style_encoder_train.py",
+      "url": "https://raw.githubusercontent.com/koninik/DiffusionPen/059e2f2bcb7372231038719e955597917c1a8783/style_encoder_train.py",
+      "status": "downloaded",
+      "sha256": "e8294e5015bb773a775c2f5dc56967109c6c6840bc20c38d00a3a754fb34b303"
+    },
+    {
+      "repo": "koninik/DiffusionPen",
+      "path": "train.py",
+      "url": "https://raw.githubusercontent.com/koninik/DiffusionPen/059e2f2bcb7372231038719e955597917c1a8783/train.py",
+      "status": "downloaded",
+      "sha256": "2616665a245f6aaca1f266d6f5a4b21ed06a37f1a89a7e3afc875367d50620a5"
+    },
+    {
+      "repo": "koninik/DiffusionPen",
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/koninik/DiffusionPen/059e2f2bcb7372231038719e955597917c1a8783/LICENSE",
+      "status": "downloaded",
+      "sha256": "5ff6afb9b99c3fe5502df29496ff84fa631f0bbf788e28bfd913dbd46e0a7a51"
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "path": "train.py",
+      "url": "https://raw.githubusercontent.com/dailenson/One-DM/dde2205a70a2c70d1786503d198a795358c80ee4/train.py",
+      "status": "downloaded",
+      "sha256": "53c16c67c0228d29783f01b171b38f54165839d75230ed6570e33eb6f6a590e4"
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "path": "configs/IAM64.yml",
+      "url": "https://raw.githubusercontent.com/dailenson/One-DM/dde2205a70a2c70d1786503d198a795358c80ee4/configs/IAM64.yml",
+      "status": "downloaded",
+      "sha256": "dba783ef027de6a29c1edb9a0605fb884955bd60c419cbd8b64d5fad9d8b3a7e"
+    },
+    {
+      "repo": "FangShancheng/ABINet",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/FangShancheng/ABINet/789743c56eacbf114c2d63dfaeada533098dd19a/README.md",
+      "status": "downloaded",
+      "sha256": "bbba8358686c3786d61e785578aa680e8290585517cfcd1f51f43784cb5b179f"
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "path": "models/recognition.py",
+      "url": "https://raw.githubusercontent.com/dailenson/One-DM/dde2205a70a2c70d1786503d198a795358c80ee4/models/recognition.py",
+      "status": "downloaded",
+      "sha256": "141fbc0dbdf5e3c47cf7100afe2b8e118d28d5bcb34f3ec2f62b825fbedf2146"
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "path": "trainer/trainer.py",
+      "url": "https://raw.githubusercontent.com/dailenson/One-DM/dde2205a70a2c70d1786503d198a795358c80ee4/trainer/trainer.py",
+      "status": "downloaded",
+      "sha256": "147814a5086e2b1febde495a0d6ba8cc921abd6d70022376de9c7d19ce24a104"
+    },
+    {
+      "repo": "dailenson/One-DM",
+      "path": "models/loss.py",
+      "url": "https://raw.githubusercontent.com/dailenson/One-DM/dde2205a70a2c70d1786503d198a795358c80ee4/models/loss.py",
+      "status": "downloaded",
+      "sha256": "00886f092d5e803244d45cfc1481110135f44fbf7c139ec5ef7fbd32b1202d96"
+    },
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "path": "scripts/train_diffusion.sh",
+      "status": "missing_in_pinned_tree"
+    },
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "path": "LICENSE",
+      "status": "missing_in_pinned_tree"
+    },
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/Xiaomeng-Yang/IPAD/3d20731a6dfec998757e39ddb2a2c92baaf74f41/README.md",
+      "status": "downloaded",
+      "sha256": "7c5f0917ae98c488116dfd095a1a0578aab2e0f8695368b3a9f66081e61c39f6"
+    },
+    {
+      "repo": "FangShancheng/ABINet",
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/FangShancheng/ABINet/789743c56eacbf114c2d63dfaeada533098dd19a/LICENSE",
+      "status": "downloaded",
+      "sha256": "1a9fef14b4e657458b67479648ec427d0b431ddbfa9c8fba17398a43f625ff9c"
+    },
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "path": "train.py",
+      "url": "https://raw.githubusercontent.com/Xiaomeng-Yang/IPAD/3d20731a6dfec998757e39ddb2a2c92baaf74f41/train.py",
+      "status": "downloaded",
+      "sha256": "93cb1a52a0c9c6314d6388d4a8e997501b1155c675230f9dc6d8656c7a6549af"
+    },
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "path": "configs/model/ipad.yaml",
+      "url": "https://raw.githubusercontent.com/Xiaomeng-Yang/IPAD/3d20731a6dfec998757e39ddb2a2c92baaf74f41/configs/model/ipad.yaml",
+      "status": "downloaded",
+      "sha256": "331a4a875a4bd397f097b44f386b8bf65e98ec9a09f686cc3eb2c382b6ec147a"
+    }
+  ],
+  "papers": [
+    {
+      "name": "ipad.pdf",
+      "url": "https://arxiv.org/pdf/2312.11923",
+      "pages": 26,
+      "sha256": "70015272dfed2492666bbf5de78a55fbf2f156e5196026dcedee0b60e8a0d92a"
+    },
+    {
+      "name": "one_dm.pdf",
+      "url": "https://arxiv.org/pdf/2409.04004",
+      "pages": 40,
+      "sha256": "0be077eec5527a3194d352f733321fc220a485421fd663cd5438522fcbb1a350"
+    }
+  ],
+  "repositories": [
+    {
+      "repo": "Xiaomeng-Yang/IPAD",
+      "stars": 4,
+      "license": null,
+      "commit": "3d20731a6dfec998757e39ddb2a2c92baaf74f41",
+      "branch": "main",
+      "pushed_at": "2025-09-28T05:43:52Z",
+      "tree_truncated": false,
+      "file_count": 82
+    }
+  ]
+}

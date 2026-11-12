@@ -1,0 +1,18 @@
+{
+  "AR": {
+    "epoch": 93,
+    "checkpoint": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\runs\\ar1b_s54101\\m093.pt",
+    "checkpoint_sha256": "2355240de7b059736845c778bec2a8f62c84124ca6321908e735856e1d0ade97",
+    "initial_encoder_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb",
+    "final_encoder_tensor_sha256": "4ac4264133c860c4f1c070416fb134c2b02e3c4dfe9b47509e7fdc15674e4d8c",
+    "hash_scope": "encoder state dict; encoder. prefix stripped, same hashing convention as initialization"
+  },
+  "MDiff": {
+    "epoch": 177,
+    "checkpoint": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\runs\\ma1b_s54101\\m177.pt",
+    "checkpoint_sha256": "af4b05ac4bf6dc2b6eabba706b382c7e4e154138dd65b1902263a4fa44a77e45",
+    "initial_encoder_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb",
+    "final_encoder_tensor_sha256": "fa48882969185b0f9597e952f48e08166b7e2eca87fc27ffa5a692f301d63704",
+    "hash_scope": "encoder state dict; encoder. prefix stripped, same hashing convention as initialization"
+  }
+}

@@ -1,5 +1,11 @@
 # Arabic children handwriting OCR
 
+The completed **Arabic Transformer, MDiff and hybrid experiments** are documented
+in [the experiment README](thesis/experiments/arabic_ar_mdiff/README.md), including
+all ten comparison rows, unsuccessful approaches, checkpoint identities and
+PowerShell commands. Span merging achieved 48.77% CER on the 752 historical
+development-used lines; this is an exploratory result, not an untouched benchmark.
+
 This project creates line images from elementary-school Arabic handwriting and
 runs independent OCR systems over the same images:
 

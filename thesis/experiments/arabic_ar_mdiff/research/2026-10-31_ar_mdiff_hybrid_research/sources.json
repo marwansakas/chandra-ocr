@@ -1,0 +1,12 @@
+{
+  "review_date": "2026-10-31",
+  "scope": "Primary-source research; no new recognition, training or model evaluation",
+  "sources": [
+    {"title": "Rescoring Sequence-to-Sequence Models for Text Line Recognition with CTC-Prefixes", "year": 2022, "url": "https://arxiv.org/abs/2110.05909", "relevance": "Handwritten text line decoding with complementary image-conditioned decoder scores; CTC is not MDiff."},
+    {"title": "Masked Language Model Scoring", "year": 2020, "url": "https://aclanthology.org/2020.acl-main.240/", "relevance": "Masked pseudo-likelihood hypothesis rescoring; original tasks are ASR and translation, not OCR."},
+    {"title": "Speculative Refinement: A Hybrid Autoregressive Diffusion Decoding Strategy and Its Behavior Across Benchmarks", "year": 2026, "url": "https://aclanthology.org/2026.gem-main.33/", "relevance": "AR drafts and selective masked diffusion refinement; reports damage to correct tokens; not OCR."},
+    {"title": "Levenshtein OCR", "year": 2022, "url": "https://www.ecva.net/papers/eccv_2022/papers_ECCV/html/3820_ECCV_2022_paper.php", "relevance": "Image-conditioned iterative insertion/deletion and variable-length refinement in scene text recognition."},
+    {"title": "Scene Text Recognition with Permuted Autoregressive Sequence Models", "year": 2022, "url": "https://arxiv.org/abs/2207.06966", "relevance": "Training a unified recognizer for autoregressive decoding and bidirectional refinement; not a drop-in mask change to our AR checkpoint."},
+    {"title": "A controlled study of CTC, attention, and hybrid models for Arabic handwritten text-line recognition", "year": 2026, "url": "https://link.springer.com/article/10.1007/s44443-026-00970-6", "relevance": "Controlled Arabic HTR evidence about decoder combinations and shared residual errors; different datasets and architecture."}
+  ]
+}

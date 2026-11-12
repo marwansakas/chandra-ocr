@@ -1,0 +1,141 @@
+{
+  "version": "arabic_ocr_best_v1",
+  "snapshot_date": "2026-11-10",
+  "models": {
+    "transformer_khatt100_ours_e040": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_khatt100_ours_e040.pt",
+      "sha256": "fed32927b03a240bdc855ec86ec0bfc541cad77ea5cbefd6d55f1ac74f5b9291",
+      "bytes": 60610143,
+      "arm": "ar",
+      "epoch": 40,
+      "tokenizer": "khatt",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 2196,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1
+    },
+    "span_merge_ar_e093": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/span_merge_ar_e093.pt",
+      "sha256": "2355240de7b059736845c778bec2a8f62c84124ca6321908e735856e1d0ade97",
+      "bytes": 60353396,
+      "arm": "ar",
+      "epoch": 93,
+      "tokenizer": "original",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 640,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1
+    },
+    "span_merge_mdiff_e177": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/span_merge_mdiff_e177.pt",
+      "sha256": "af4b05ac4bf6dc2b6eabba706b382c7e4e154138dd65b1902263a4fa44a77e45",
+      "bytes": 60353396,
+      "arm": "mdiff",
+      "epoch": 177,
+      "tokenizer": "original",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 640,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1
+    }
+  },
+  "tokenizers": {
+    "khatt": {
+      "path": "thesis/experiments/arabic_ocr_best/tokenizers/khatt.json",
+      "sha256": "d9d760bb7bbd08cb71e6731a77ca39693ccc9765b2b49443f680b03844618699"
+    },
+    "original": {
+      "path": "thesis/experiments/arabic_ocr_best/tokenizers/original.json",
+      "sha256": "fa1186569ddf67e4508b008beea988b54d3b9d30ba3bb6e9087418976e2c639e"
+    }
+  },
+  "span_merge": {
+    "standalone_neural_checkpoint": false,
+    "components": [
+      "span_merge_ar_e093",
+      "span_merge_mdiff_e177"
+    ],
+    "config": {
+      "alpha": 0.75,
+      "margin": 0.0
+    },
+    "recipe": {
+      "version": "ar_mdiff_fusion_suite_v2",
+      "seed": 54101,
+      "capacity": 144,
+      "methods": [
+        "dual_rescore",
+        "span_merge",
+        "shared_encoder"
+      ],
+      "candidate_limit": 10,
+      "maximum_spans": 6,
+      "maximum_span_length": 8,
+      "score": "mean log probability over characters and first EOS; no PAD or repeated EOS",
+      "md_score": "one masked position per conditional, including EOS; t=1/active_length; MASK tail",
+      "pll_batch_size": 8,
+      "alpha_grid": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "margin_grid": [
+        0.0,
+        0.05,
+        0.15
+      ],
+      "selection": "minimum calibration character edits, word edits, negative exact count, switches; then larger margin and lower alpha",
+      "calibration": "120 development-used validation lines; grouped 30-line audit excluded from tuning",
+      "test_lines": 752,
+      "test_policy": "historical development-used exploratory comparison; no promotion; no gate bypass mutation",
+      "shared": {
+        "maximum_epochs": 60,
+        "patience": 10,
+        "learning_rate": 0.0001,
+        "minimum_lr_fraction": 0.1,
+        "warmup_epochs": 2,
+        "accumulation": 16,
+        "weight_decay": 0.01,
+        "gradient_clip": 1.0,
+        "encoder": "selected AR encoder and visual projection frozen in eval mode",
+        "decoder": "selected MDiff decoder initialization plus zero-initialized residual adapter",
+        "objective": "unchanged MDiff masked/correction/tail loss; canonical TRAIN only",
+        "selection": "minimum raw validation MDiff character edits, word edits, negative exact count, epoch"
+      }
+    },
+    "source": "thesis/ar_mdiff_fusion_v2",
+    "calibration_report_sha256": "eb425bded1503a2cbeca1aa2127c8c4fd2e301f64d15505244370c38362c4e41",
+    "historical_metrics": {
+      "lines": 752,
+      "cer": 0.4877343807900393,
+      "wer": 0.832796276405299,
+      "exact_lines": 151
+    }
+  },
+  "best_transformer": {
+    "model": "transformer_khatt100_ours_e040",
+    "historical_metrics": {
+      "lines": 752,
+      "cer": 0.2991921737197065,
+      "wer": 0.6573576799140709,
+      "exact_lines": 185
+    }
+  },
+  "future_hybrid": "Use the new KHATT Transformer plus the future matched KHATT MDiff. Refit selector parameters on children validation only; old alpha/margin are reference values, not automatically transferable.",
+  "data_policy": "No images, labels, sample IDs, per-line predictions or optimizer states are included in this checkpoint bundle."
+}

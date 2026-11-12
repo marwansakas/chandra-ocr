@@ -1,3 +1,38 @@
 # Preserve upstream font/license bytes used by sources.json checksums.
 thesis/assets/synthetic_fonts/** -text
 *.sh text eol=lf
+
+# These experiment sources/runners are bound by raw SHA256 in completed runs.
+# Preserve their exact bytes, including existing CRLF/mixed line endings.
+thesis/mdiff_arabic_v1/** -text
+thesis/ar_mdiff_hybrid_v1/** -text
+thesis/ar_mdiff_fusion_v2/** -text
+thesis/scripts/run_mdiff_arabic_v1.py -text
+thesis/scripts/run_ar_mdiff_hybrid_v1.py -text
+thesis/scripts/run_ar_mdiff_fusion_v2.py -text
+tests/test_mdiff_arabic_v1.py -text
+tests/test_ar_mdiff_hybrid_v1.py -text
+tests/test_ar_mdiff_fusion_v2.py -text
+thesis/diffusion/data.py text eol=crlf
+thesis/diffusion/images.py text eol=crlf
+thesis/diffusion/metrics.py -text
+thesis/diffusion/tokenizer.py text eol=crlf
+thesis/diffusion/paddle_conditioning.py -text
+thesis/scripts/common.py text eol=crlf
+thesis/experiments/arabic_ar_mdiff/runners/** -text
+thesis/experiments/arabic_ar_mdiff/research/** -text
+
+# Completed KHATT AR runs also bind raw source and launcher bytes.
+thesis/khatt_ablation_v1/** -text
+thesis/khatt_resume_compat_v1.py -text
+thesis/khatt_subset_eval_v1.py -text
+thesis/scripts/run_khatt_ablation_v1.py -text
+thesis/scripts/resume_khatt_ablation_v1.py -text
+tests/test_khatt_ablation_v1.py -text
+tests/test_khatt_resume_compat_v1.py -text
+tests/test_khatt_subset_eval_v1.py -text
+thesis/experiments/khatt_ablation_v1/runners/** -text
+
+# Selected model weights are stored as LFS objects, never ordinary Git blobs.
+thesis/experiments/arabic_ocr_best/checkpoints/*.pt filter=lfs diff=lfs merge=lfs -text
+thesis/experiments/arabic_ocr_best/tokenizers/** -text whitespace=cr-at-eol

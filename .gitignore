@@ -18,6 +18,7 @@ __pycache__/
 # Locally trained model weights exceed Git hosting size limits.
 *.safetensors
 *.pt
+!/thesis/experiments/arabic_ocr_best/checkpoints/*.pt
 
 # Official Invizo release models and run artifacts are local baseline data.
 /thesis/invizo/models/*.onnx

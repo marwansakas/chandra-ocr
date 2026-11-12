@@ -1,0 +1,199 @@
+{
+  "snapshot_date": "2026-11-10",
+  "suite": "khatt_ar_v1fix1_s54101",
+  "original_binding_sha256": "fbc83df6e841fe6966c119715bb8b2d940c8982c449a873b220eb854dc86f326",
+  "selected": {
+    "khatt100_only": {
+      "selected_epoch": 34,
+      "completed_epoch": 44,
+      "checkpoint": "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/runs/khatt100_only/e034_20261106T180914372925Z/model.pt",
+      "checkpoint_sha256": "02a2b65669c491614a96f7df8e815c06e8c951415d7a6cddc8b417519215a5e5",
+      "validation_predictions_sha256": "8e11b9f51479e5cc91090fca7bb57854a3efac1417d8cc50932d4b71fd50300e",
+      "model_initialization_sha256": "40e18c0934a7f289748eb666dc478132e06b09331dac249ed61added5d0bc557",
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb"
+    },
+    "khatt100_ours": {
+      "selected_epoch": 40,
+      "completed_epoch": 50,
+      "checkpoint": "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/runs/khatt100_ours/e040_20261108T000559801716Z/model.pt",
+      "checkpoint_sha256": "fed32927b03a240bdc855ec86ec0bfc541cad77ea5cbefd6d55f1ac74f5b9291",
+      "validation_predictions_sha256": "d9731440e573c7eaaed8f5c09301305c302cc2a96fd26434b2cd27d673e9790c",
+      "model_initialization_sha256": "40e18c0934a7f289748eb666dc478132e06b09331dac249ed61added5d0bc557",
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb"
+    },
+    "khatt30_ours": {
+      "selected_epoch": 87,
+      "completed_epoch": 97,
+      "checkpoint": "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/runs/khatt30_ours/e087_20261109T211540034056Z/model.pt",
+      "checkpoint_sha256": "035e505859b2c02ab5251e3bc90449fad7d86e02197ec9f33647b5f91d3a8757",
+      "validation_predictions_sha256": "fcaf06b3e869f8d8dae01af7d93c3a6e0faf27524be322a7b9ca71d7782675f1",
+      "model_initialization_sha256": "40e18c0934a7f289748eb666dc478132e06b09331dac249ed61added5d0bc557",
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb"
+    },
+    "khatt50_ours": {
+      "selected_epoch": 34,
+      "completed_epoch": 44,
+      "checkpoint": "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/runs/khatt50_ours/e034_20261108T134933872532Z/model.pt",
+      "checkpoint_sha256": "75f06fdfb0cc607320b1b17e21bac19d6f8c37c94c8f358aae6bcfe31b9520f6",
+      "validation_predictions_sha256": "10334d3f9d4cca900e6d464b0e425ad84d82219cb8a69ebe3486a4a08cd44369",
+      "model_initialization_sha256": "40e18c0934a7f289748eb666dc478132e06b09331dac249ed61added5d0bc557",
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb"
+    }
+  },
+  "local_artifacts": {
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/prepared.json": {
+      "sha256": "f57d147fd4dd2ddfaa2faf2c95a64007afb3401eef00a3799e53ac76bfa3cb82",
+      "bytes": 4073
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/tokenizer.json": {
+      "sha256": "d9d760bb7bbd08cb71e6731a77ca39693ccc9765b2b49443f680b03844618699",
+      "bytes": 2551
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/khatt100_ours.jsonl": {
+      "sha256": "fc82116ef012515891d664c87a5c353ddfafb6ec65b1f22fe692efb29ddab316",
+      "bytes": 7045544
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/validation.jsonl": {
+      "sha256": "44a8d349ca39e9038c5cb0a7bd99cd56f7254a687e5ffe6c1b8a2808f2b9f0a2",
+      "bytes": 150222
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/test_identity.jsonl": {
+      "sha256": "ddff362edb627ea3953eb0cbd6852e1e3f4bbfe26a3801c13ba7a8f6a406a225",
+      "bytes": 290926
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/children_train.jsonl": {
+      "sha256": "b168cf47b8ba4a7fa0656d6070dc270f0c332fbf9f0a13951be9685c81fcdb8e",
+      "bytes": 2715446
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/khatt_train.jsonl": {
+      "sha256": "8f5be43e534e4c71fefd72f5eaaeda56edc62da35de9ddf18ff872ab726845ed",
+      "bytes": 4330098
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/check.json": {
+      "sha256": "b8262c8f83f87ee5bd2f5af171545f0c7c8fc2b90a7f2859d947b0d5be78654c",
+      "bytes": 10668
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/trial_decision.json": {
+      "sha256": "2f8f37363fa4adffa651f8fedbbdb620f4844f68a45b57b20e5773cd5e376024",
+      "bytes": 471
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/historical_752/report.json": {
+      "sha256": "41ace39e3b1fcaa2475dbb7136a28fd225361e593c1afa624c00d5060ee6b8fb",
+      "bytes": 98268
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/historical_752/predictions.jsonl": {
+      "sha256": "079000ed413a7c3a67d94cc1460ac58486a32890b7513dba8cf00c01b2ea293b",
+      "bytes": 4289550
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/historical_752/seal.json": {
+      "sha256": "a2a2116262064a9f5ee157016a6dad516d19e8a711599a61ada29b3c634dd903",
+      "bytes": 257
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/test_plan_without10/request.json": {
+      "sha256": "3f5aea3dddf42567bed127b9fa3f736a1ec23150a77952cad3dba9df2538886d",
+      "bytes": 5068
+    },
+    "Diffusion/drive_all/khatt_ablations/khatt_ar_v1fix1_s54101/test_plan_without10/result_binding.json": {
+      "sha256": "49c188f53ffd99007a5dfa04e14a8c3c8f36e36d241e96cd848b4e0aef7ee405",
+      "bytes": 403
+    }
+  },
+  "inputs": {
+    "Diffusion/datasets/KHATT/data/Train.csv": "d8d58f6b413407d483c91748063f7eee186ab70e734a2189ec352feb7101503d",
+    "Diffusion/drive_all/splits_70_05_25_v3/split_lock.json": "892541b8e05223cf1cc21c6a2ff5d08df8c234b4bb08c63b3205b0487e393c95",
+    "Diffusion/drive_all/splits_70_05_25_v3/test.jsonl": "3c1676c476abe899756a60985ca71df3050cc1bfbaf850366a947073f621bf1b",
+    "Diffusion/drive_all/splits_70_05_25_v3/train.jsonl": "f5de668c4fa271964efdeff669a6209f096628417d0c92b83b8561fc4653b4d1",
+    "Diffusion/drive_all/splits_70_05_25_v3/validation.jsonl": "8dbb10b160185f2b438adf23895f8d138c82ada4b04d8d69185aef6e540a5ebe"
+  },
+  "source_sha256": {
+    "repository:tests/test_khatt_ablation_v1.py": "ed5450e8d4467796ab43761bc05563b391e250d83b2a1ef710e35d6cffcbf00c",
+    "repository:thesis/diffusion/data.py": "e4f75e6eb552323155a94d12ac45441e5cc968a27052821f38d5f0fde6c3ef87",
+    "repository:thesis/diffusion/images.py": "26ed509d825ac5990acddcea67c1050f31552ff58b3d042e2e7ffd98e36932b2",
+    "repository:thesis/diffusion/metrics.py": "07af0d210c934c8bb28d798a3098cd12ca80db51001a33414cdd4ff35690bce9",
+    "repository:thesis/diffusion/paddle_conditioning.py": "494897dcbb190eead2ac32f3bb7b5dd28b5deacc42ca5674140ae6dc141312cc",
+    "repository:thesis/diffusion/tokenizer.py": "bb95e373db7ecd1e31b7aba44d435be84634be3b2d765795424e4c85541c8db1",
+    "repository:thesis/khatt_ablation_v1/__init__.py": "2997e7b00339e57b18cbc943c05617b52e4c691f0bf4a050e7382d58543673c1",
+    "repository:thesis/khatt_ablation_v1/data.py": "7b82f20dec39e918f6684125c09a1b6283c04c61dbb714a006e2beb0a4b4c603",
+    "repository:thesis/khatt_ablation_v1/workflow.py": "7d8c396c4d55963986df287eaea782a68934eaba892c464a76738d85d98f8566",
+    "repository:thesis/mdiff_arabic_v1/__init__.py": "47d53d6a464847dce14477d56d2c306fc6d7d51bacc70cffe18e609861cbe849",
+    "repository:thesis/mdiff_arabic_v1/artifacts.py": "4d303e24699189fd6e8b9f43d8ef25e97e23b47bad348d0f6d3ee602125eaf40",
+    "repository:thesis/mdiff_arabic_v1/experiment.py": "dfd8fb6b1639f3a7876e74019eb5b271bff0f33691451f77555e3384a9dd2c12",
+    "repository:thesis/mdiff_arabic_v1/model.py": "6d00a4dc83d50e2106a84f942ae38a01113cbf41b2715c6eb88b9fccd510bd4b",
+    "repository:thesis/mdiff_arabic_v1/vendor/__init__.py": "bc9cbe8e4a8a12b974e4989cd4b9b80e05b0409d21e8cdcdfa43e4cef7934115",
+    "repository:thesis/mdiff_arabic_v1/vendor/common_upstream.py": "82903551fbbac55d15c4dbedf2a4325a3f89ef0d80d7cc774894d6e87ead3ba1",
+    "repository:thesis/mdiff_arabic_v1/vendor/svtrv2.py": "7f2e5280560c0f322771f8411806f5e5b648390d09d0de9e40b08b32d745f56b",
+    "repository:thesis/scripts/common.py": "9cd89ede346de93302a46f4c2b51f369c2bffadb462c2ad2ed062d101a3ad3f9",
+    "repository:thesis/scripts/run_khatt_ablation_v1.py": "6906e4d24b48af384d50bbff8afef387d4fa7aa230439d0a0c3813a2cf121902",
+    "project:Diffusion/run_khatt_ablation_v1.ps1": "f362f6319cf07ac6ebe875eef9465dda8cffa9191ecdb2192d501068e13cf71f"
+  },
+  "recipe": {
+    "accumulation": 16,
+    "arm": "ar",
+    "augmentation": "trocr_views_v1",
+    "batch_size": 1,
+    "capacity": 144,
+    "decoder_lr": 0.0003,
+    "encoder_frozen_epochs": 5,
+    "encoder_lr": 1e-05,
+    "gradient_clip": 1.0,
+    "maximum_epochs": 100,
+    "minimum_lr_fraction": 0.1,
+    "patience": 10,
+    "precision": "bf16_on_cuda_fp32_on_cpu",
+    "seed": 54101,
+    "selection": "minimum validation character edits, then word edits, then most exact lines, then earliest epoch",
+    "warmup_epochs": 5,
+    "weight_decay": 0.01
+  },
+  "image_config": {
+    "height": 32,
+    "max_width": 2196,
+    "patch_size": 4
+  },
+  "capacity": 144,
+  "counts": {
+    "khatt100_only": {
+      "children": 0,
+      "khatt": 9497,
+      "total": 9497,
+      "validation": 150
+    },
+    "khatt100_ours": {
+      "children": 2807,
+      "khatt": 9497,
+      "total": 12304,
+      "validation": 150
+    },
+    "khatt10_ours": {
+      "children": 2807,
+      "khatt": 949,
+      "total": 3756,
+      "validation": 150
+    },
+    "khatt30_ours": {
+      "children": 2807,
+      "khatt": 2849,
+      "total": 5656,
+      "validation": 150
+    },
+    "khatt50_ours": {
+      "children": 2807,
+      "khatt": 4748,
+      "total": 7555,
+      "validation": 150
+    }
+  },
+  "pretrained_sha256": {
+    "best.pth": "ebc96f11e5739eae98491f7c8c140157ed12b35dafa220511ef9d399cc20a937",
+    "config.yml": "0abdd478db64fa06b0574f56f8c8620800bab511af0af94861b9ea73bcb219bf"
+  },
+  "environment": {
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "torch": "2.10.0+cu126",
+    "cuda": "12.6",
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "bf16_supported": true
+  },
+  "note": "Paths are relative to the project parent unless prefixed repository:. This file identifies local/private artifacts; it does not include datasets, weights or per-line labels/predictions."
+}

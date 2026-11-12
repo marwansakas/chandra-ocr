@@ -1,0 +1,144 @@
+{
+  "date": "2026-10-29",
+  "readiness_protocol": "geometry_matched_v1",
+  "old_reports": {
+    "mdiff": {
+      "path": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ma1_s54101\\overfit\\20261029T141645215676Z\\report.json",
+      "sha256": "e326c8674f391eee383f353b18085b62147a24fab92a6530a8fcb2f9273c6bb3",
+      "passed": true,
+      "conditions": {
+        "better_than_blank": true,
+        "better_than_shuffled": true,
+        "complete_eos": true,
+        "correct_state_preservation": true,
+        "finite_training": true,
+        "minimum_updates": true,
+        "missing_recovery": true,
+        "normal_cer": true,
+        "normal_exact": true,
+        "replaced_recovery": true,
+        "time_budget": true
+      },
+      "normal_cer": 0.0,
+      "blank_cer": 0.14285714285714285,
+      "normal_exact_lines": 4,
+      "updates": 1200,
+      "test_used": false
+    },
+    "ar": {
+      "path": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ar1_s54101\\overfit\\20261029T141853547292Z\\report.json",
+      "sha256": "9f6f159b9cfd23de409255e9b8134dbea46a33d8750f6617141154cf37eb857b",
+      "passed": false,
+      "conditions": {
+        "better_than_blank": false,
+        "better_than_shuffled": true,
+        "complete_eos": true,
+        "finite_training": true,
+        "minimum_updates": true,
+        "normal_cer": true,
+        "normal_exact": true,
+        "time_budget": true
+      },
+      "normal_cer": 0.0,
+      "blank_cer": 0.0,
+      "normal_exact_lines": 4,
+      "updates": 1200,
+      "test_used": false
+    }
+  },
+  "new_checks": {
+    "ma1b_s54101": {
+      "check": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ma1b_s54101\\check.json",
+      "check_sha256": "920f5883aa3dfe1b54c52da98054d020e650a6ac7b6cf5b0e6231bb459d1f8ee",
+      "binding_sha256": "db9d5eee6b4d83e9ecc7f48d443b5d558215c0fd4602c5b3e627f45e941321be",
+      "smoke_report": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ma1b_s54101\\smoke\\20261029T142828155212Z\\report.json",
+      "smoke_sha256": "78fcd2d52d662b53ff7dfee941d5d52140a386b627daeca93476edad9fe55812",
+      "diagnostic_geometry": {
+        "blank_encoder_inputs_identical": true,
+        "blank_input_sha256": "28b22aaa1078b8549afd64ca212dac56a85acef92b85ffa2297e2c9afd55ae3b",
+        "distinct_labels": 4,
+        "encoder_input_shape": [
+          1,
+          3,
+          32,
+          68
+        ],
+        "protocol": "geometry_matched_v1",
+        "selection_manifest": {
+          "candidate_distinct_labels": 56,
+          "distinct_groups": 4,
+          "distinct_labels": 4,
+          "encoder_input_width": 68,
+          "geometry_matched": true,
+          "guarantee": "all blank encoder inputs identical in shape/pixels; original images keep aspect ratio and existing <=3px alignment border",
+          "height": 32,
+          "sample_ids": [
+            "000253_0020_0020_Kfar__Yasif__Fourth__Grade__Notebook_8_Male_Fourth_Grade_Page_037_line_002",
+            "000652_0047_0047_Kfar__Yasif__Fourth__Grade__Notebook_5_Female_Fourth_Grade_Page_036_line_050",
+            "002694_0224_0224_Kfar__Yasif__Fourth__Grade__Notebook_2_Male_Fourth_Grade_Page_019_line_009",
+            "001704_0139_0139_Hora__Unknown__Notebook_1_Male_Page_015_line_009"
+          ],
+          "selection": "largest TRAIN bucket by distinct eligible labels; tie lowest aligned width; SHA256(seed+sample_id), distinct labels, prefer distinct groups",
+          "thresholds_changed": false,
+          "version": "geometry_matched_v1"
+        }
+      },
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb",
+      "model_initialization_sha256": "ac8d8a6413866edbe227e2d29f5c8e0680fac56368636d078a4a0e9cc903af45",
+      "overfit_run": false,
+      "training_directory_exists": false
+    },
+    "ar1b_s54101": {
+      "check": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ar1b_s54101\\check.json",
+      "check_sha256": "335eb2d0a130bfaa251d4b9582cfcd3959e29ea1c2def8bc54261cb8a1cb6d18",
+      "binding_sha256": "e90e70f06a13285fac7e653919ebb0f682ff0b870f0ac7ae6921ba9a0170acbd",
+      "smoke_report": "C:\\Users\\ammar\\OneDrive\\Desktop\\final project\\Diffusion\\drive_all\\checks\\ar1b_s54101\\smoke\\20261029T142853829291Z\\report.json",
+      "smoke_sha256": "be81a84c977ca0a8fb0bd12526d7d064a8b581945e912eb87042de20098ac5e5",
+      "diagnostic_geometry": {
+        "blank_encoder_inputs_identical": true,
+        "blank_input_sha256": "28b22aaa1078b8549afd64ca212dac56a85acef92b85ffa2297e2c9afd55ae3b",
+        "distinct_labels": 4,
+        "encoder_input_shape": [
+          1,
+          3,
+          32,
+          68
+        ],
+        "protocol": "geometry_matched_v1",
+        "selection_manifest": {
+          "candidate_distinct_labels": 56,
+          "distinct_groups": 4,
+          "distinct_labels": 4,
+          "encoder_input_width": 68,
+          "geometry_matched": true,
+          "guarantee": "all blank encoder inputs identical in shape/pixels; original images keep aspect ratio and existing <=3px alignment border",
+          "height": 32,
+          "sample_ids": [
+            "000253_0020_0020_Kfar__Yasif__Fourth__Grade__Notebook_8_Male_Fourth_Grade_Page_037_line_002",
+            "000652_0047_0047_Kfar__Yasif__Fourth__Grade__Notebook_5_Female_Fourth_Grade_Page_036_line_050",
+            "002694_0224_0224_Kfar__Yasif__Fourth__Grade__Notebook_2_Male_Fourth_Grade_Page_019_line_009",
+            "001704_0139_0139_Hora__Unknown__Notebook_1_Male_Page_015_line_009"
+          ],
+          "selection": "largest TRAIN bucket by distinct eligible labels; tie lowest aligned width; SHA256(seed+sample_id), distinct labels, prefer distinct groups",
+          "thresholds_changed": false,
+          "version": "geometry_matched_v1"
+        }
+      },
+      "encoder_initialization_sha256": "c6fa52b3592b18971c80aa10c2f5db5a9c9cb3c73b302e595e03eb801ee6bfeb",
+      "model_initialization_sha256": "ac8d8a6413866edbe227e2d29f5c8e0680fac56368636d078a4a0e9cc903af45",
+      "overfit_run": false,
+      "training_directory_exists": false
+    }
+  },
+  "model_source_unchanged": true,
+  "criteria_unchanged": true,
+  "training_recipe_unchanged": true,
+  "regression_tests": {
+    "passed": 51,
+    "skipped": 1
+  },
+  "native_powershell": "5.1.26100.9711",
+  "long_training_launched": false,
+  "test_inference_run": false,
+  "next_action": "User runs both 1200-update/900-second Overfit diagnostics with new runner/run names; Train only after both pass."
+}
