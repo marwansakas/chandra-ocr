@@ -10,6 +10,7 @@
 /.venv-surya/
 /.venv-ocr-*/
 /.venv-diffusion/
+/.venv-khatt-transfer/
 
 # Python bytecode and caches
 __pycache__/
@@ -45,3 +46,7 @@ __pycache__/
 /thesis/datasets/surya_lines_ml/
 /thesis/datasets/khatt/
 /thesis/datasets/synthetic*/
+
+# Private portable transfer snapshots, checkpoints and reports.
+/thesis/transfer_artifacts/
+/thesis/datasets/khatt_hf_*/

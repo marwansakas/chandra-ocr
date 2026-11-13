@@ -1,5 +1,9 @@
 # Arabic children handwriting OCR
 
+For **KHATT-only MDiff pretraining followed by children-only fine-tuning** on
+Linux/cluster GPUs, see [the two-stage commands](thesis/KHATT_TRANSFER.md).
+This new portable workflow preserves the completed historical experiment code.
+
 The completed **Arabic Transformer, MDiff and hybrid experiments** are documented
 in [the experiment README](thesis/experiments/arabic_ar_mdiff/README.md), including
 all ten comparison rows, unsuccessful approaches, checkpoint identities and

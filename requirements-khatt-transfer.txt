@@ -1,0 +1,4 @@
+# First install/use your cluster's CUDA-compatible PyTorch build (>=2.6,<3).
+-r requirements-diffusion.txt
+datasets>=3,<5
+huggingface-hub>=0.34,<2
