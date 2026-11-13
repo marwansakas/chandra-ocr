@@ -1,0 +1,4 @@
+-r requirements-diffusion.txt
+# Uses standard TrOCR/ViT APIs; no custom remote code or FlashAttention.
+transformers>=4.57.6,<6
+safetensors>=0.4
