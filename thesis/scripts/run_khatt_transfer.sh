@@ -5,6 +5,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 ROOT="$PWD"
 WORK="${KHATT_TRANSFER_ROOT:-$ROOT/thesis/transfer_artifacts}"
 PY="${TRAIN_PYTHON:-python}"
+export PYTHONUNBUFFERED=1
 CAPACITY="${MDIFF_CAPACITY:-256}"
 MAX_WIDTH="${MDIFF_MAX_WIDTH:-4096}"
 resume=()
@@ -34,6 +35,10 @@ case "${1:-help}" in
             --capacity "$CAPACITY" --max-width "$MAX_WIDTH"
         ;;
     pretrain)
+        if [[ ! -s "$WORK/khatt_data/prepared.json" ]]; then
+            echo 'KHATT preparation is incomplete. Finish prepare-khatt successfully before pretrain.' >&2
+            exit 1
+        fi
         "$PY" -m thesis.khatt_transfer train --prepared "$WORK/khatt_data" \
             --output "$WORK/khatt_run" --encoder-checkpoint "$WORK/encoder/best.pth" \
             --capacity "$CAPACITY" --max-width "$MAX_WIDTH" \
@@ -53,6 +58,10 @@ case "${1:-help}" in
             --init-from "$WORK/khatt_run/best.pt"
         ;;
     finetune)
+        if [[ ! -s "$WORK/children_data/prepared.json" ]]; then
+            echo 'Children preparation is incomplete. Finish prepare-children successfully before finetune.' >&2
+            exit 1
+        fi
         "$PY" -m thesis.khatt_transfer train --prepared "$WORK/children_data" \
             --init-from "$WORK/khatt_run/best.pt" --output "$WORK/children_run" \
             --epochs 30 --patience 7 --warmup-epochs 1 --decoder-lr 3e-5 --encoder-lr 1e-6 \

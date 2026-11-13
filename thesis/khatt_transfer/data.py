@@ -3,7 +3,9 @@ from __future__ import annotations
 
 from collections import defaultdict
 import hashlib
+import itertools
 import json
+import os
 from pathlib import Path
 import random
 import re
@@ -30,13 +32,26 @@ def pixel_hash(image):
     return hashlib.sha256(str(image.size).encode() + image.tobytes()).hexdigest()
 
 
-def add_image(root, sample_id, image, text, **extra):
+def add_image(root, sample_id, image, text, *, reuse=False, **extra):
     if not isinstance(text, str) or not text.strip():
         raise ValueError(f"Empty or invalid transcription: {sample_id}")
     path = root / "images" / (hashlib.sha256(sample_id.encode()).hexdigest() + ".png")
     path.parent.mkdir(exist_ok=True)
     image = image.convert("RGB")
-    image.save(path)
+    cached = False
+    if reuse and path.exists():
+        try:
+            with Image.open(path) as previous:
+                cached = pixel_hash(previous) == pixel_hash(image)
+        except OSError:
+            pass  # An uncommitted image write from the old preparer may be incomplete.
+        else:
+            if not cached:
+                raise ValueError("Cached KHATT image differs from the selected source: " + sample_id)
+    if not cached:
+        temporary = path.with_suffix(".png.tmp")
+        image.save(temporary, format="PNG")
+        temporary.replace(path)
     return dict(sample_id=sample_id, image_path=path.relative_to(root).as_posix(),
                 image_sha256=file_hash(path), pixels_sha256=pixel_hash(image),
                 width=image.width, height=image.height, source_text=text,
@@ -69,39 +84,103 @@ def freeze(root, parts, *, stage, source, tokenizer=None, inventory=""):
     metadata = dict(version=1, stage=stage, text_policy=POLICY, source=source,
                     hashes=hashes, counts={k: len(v) for k, v in parts.items()},
                     train_max_characters=max(len(r["text"]) for r in parts["train"]))
-    write_json(root / "prepared.json", metadata)
+    # This is the completion marker: it must never be visible half-written.
+    temporary = root / "prepared.json.tmp"
+    write_json(temporary, metadata)
+    temporary.replace(root / "prepared.json")
     return metadata
 
 
 def prepare_khatt(args):
+    from .locking import run_lock
+    with run_lock(args.output.resolve()):
+        _prepare_khatt(args)
+
+
+def progress_rows(root, partition):
+    """Recover only complete journal records; never skip missing/tampered images."""
+    path = root / (partition + ".progress.jsonl")
+    if not path.exists():
+        return []
+    rows, committed = [], 0
+    with path.open("rb") as handle:
+        for line in handle:
+            if not line.endswith(b"\n"):
+                break
+            row = json.loads(line)
+            if row["sample_id"] != f"khatt:{partition}:{len(rows):07d}":
+                raise ValueError("KHATT progress order/identity differs")
+            image = (root / row["image_path"]).resolve()
+            if not image.is_relative_to(root) or file_hash(image) != row["image_sha256"]:
+                raise ValueError("Committed KHATT progress image is missing or changed")
+            rows.append(row)
+            committed = handle.tell()
+    if path.stat().st_size != committed:
+        # A killed append can leave one incomplete final record, not a committed sample.
+        with path.open("r+b") as handle:
+            handle.truncate(committed)
+    return rows
+
+
+def _prepare_khatt(args):
     root = args.output.resolve()
-    root.mkdir(parents=True, exist_ok=False)
+    if (root / "prepared.json").exists():
+        load_prepared(root)
+        print("Completed KHATT snapshot verified; no preparation needed.", flush=True)
+        return
+    binding_path = root / "preparation.json"
+    previous = read_json(binding_path) if binding_path.exists() else None
+    if root.exists() and previous is None and any(p.name != "images" for p in root.iterdir()):
+        raise ValueError("Unrecognized incomplete preparation directory; preserve it and choose another --output")
+    root.mkdir(parents=True, exist_ok=True)
     from datasets import load_dataset, load_from_disk
+    inventory = args.inventory_file.read_text(encoding="utf-8") if args.inventory_file else ""
+    options = dict(text_policy=POLICY, inventory_sha256=hashlib.sha256(inventory.encode()).hexdigest())
     if args.hf_root:
         source = dict(kind="saved_huggingface_splits", path=str(args.hf_root.resolve()),
                       label_order="mirror reversed; restore once", dataset=DATASET)
-        datasets = {p: load_from_disk(str(args.hf_root / ("khatt_hf_" + p))) for p in ("train", "validation")}
+        def get_dataset(partition):
+            return load_from_disk(str(args.hf_root / ("khatt_hf_" + partition)))
     else:
         from huggingface_hub import HfApi
-        revision = HfApi().dataset_info(DATASET, revision=args.revision).sha
+        requested = args.revision
+        if requested is None and previous and previous["source"]["kind"] == "huggingface":
+            requested = previous["source"]["revision"]
+        revision = HfApi().dataset_info(DATASET, revision=requested).sha
         source = dict(kind="huggingface", dataset=DATASET, revision=revision,
                       label_order="mirror reversed; restore once")
-        datasets = {p: load_dataset(DATASET, split=p, revision=revision, streaming=True)
-                    for p in ("train", "validation")}
+        def get_dataset(partition):
+            return load_dataset(DATASET, split=partition, revision=revision, streaming=True)
+    binding = dict(version=1, source=source, options=options)
+    if previous and previous != binding:
+        raise ValueError("Preparation source/revision/inventory changed; retain the original settings")
+    if not previous:
+        temporary = binding_path.with_suffix(".tmp")
+        write_json(temporary, binding)
+        temporary.replace(binding_path)
     parts = {}
-    for partition, dataset in datasets.items():
-        rows = []
-        for index, sample in enumerate(dataset):
+    for partition in ("train", "validation"):
+        rows = progress_rows(root, partition)
+        print(f"Loading KHATT {partition}; {len(rows)} committed images available to resume.", flush=True)
+        dataset = get_dataset(partition)
+        done = len(rows)
+        dataset = dataset.skip(done) if hasattr(dataset, "skip") else itertools.islice(dataset, done, None)
+        journal = root / (partition + ".progress.jsonl")
+        for index, sample in enumerate(dataset, start=done):
             # This conversion is ONLY for this explicitly identified HF mirror.
             raw = sample["text"]
             if not isinstance(raw, str):
                 raise ValueError("KHATT transcription must be a string")
-            rows.append(add_image(root, f"khatt:{partition}:{index:07d}", sample["image"], raw[::-1],
-                                  original_mirror_text=raw))
-            if (index + 1) % 1000 == 0:
+            row = add_image(root, f"khatt:{partition}:{index:07d}", sample["image"], raw[::-1],
+                            reuse=True, original_mirror_text=raw)
+            with journal.open("ab") as handle:
+                handle.write((json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n").encode())
+                handle.flush()
+                os.fsync(handle.fileno())
+            rows.append(row)
+            if (index + 1) % 100 == 0 or index == done:
                 print(f"Prepared {partition}: {index + 1}", flush=True)
         parts[partition] = rows
-    inventory = args.inventory_file.read_text(encoding="utf-8") if args.inventory_file else ""
     result = freeze(root, parts, stage="khatt", source=source, inventory=inventory)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
@@ -215,6 +294,8 @@ def prepare_children(args):
 
 def load_prepared(root, partitions=("train", "validation")):
     root = Path(root).resolve()
+    if not (root / "prepared.json").is_file():
+        raise ValueError(f"Prepared dataset is incomplete: {root}. Finish prepare-khatt (or prepare-children) successfully before training.")
     metadata = read_json(root / "prepared.json")
     if metadata["version"] != 1 or metadata["text_policy"] != POLICY or metadata["stage"] not in {"khatt", "children"}:
         raise ValueError("Unsupported prepared-data policy")

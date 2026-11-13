@@ -1,6 +1,7 @@
 # Preserve upstream font/license bytes used by sources.json checksums.
 thesis/assets/synthetic_fonts/** -text
 *.sh text eol=lf
+*.sbatch text eol=lf
 
 # These experiment sources/runners are bound by raw SHA256 in completed runs.
 # Preserve their exact bytes, including existing CRLF/mixed line endings.

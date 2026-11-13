@@ -199,6 +199,10 @@ def test_cluster_shell_routes_stages_and_resume_without_running_training(tmp_pat
     fake.chmod(0o755)
     env={**os.environ,"TRAIN_PYTHON":fake.as_posix(),"CAPTURE":(tmp_path/"args.txt").as_posix(),
          "KHATT_TRANSFER_ROOT":(tmp_path/"artifacts with spaces").as_posix()}
+    for stage in ("khatt_data", "children_data"):
+        folder=Path(env["KHATT_TRANSFER_ROOT"])/stage
+        folder.mkdir(parents=True)
+        (folder/"prepared.json").write_text("{}")
     for phase in ("pretrain","finetune"):
         result=subprocess.run([bash,str(script),phase,"--resume"],env=env,capture_output=True,text=True)
         assert result.returncode==0,result.stderr
@@ -210,6 +214,119 @@ def test_cluster_shell_routes_stages_and_resume_without_running_training(tmp_pat
             assert argv[argv.index("--decoder-lr")+1]=="3e-5"
     invalid=subprocess.run([bash,str(script),"prepare-khatt","--resume"],env=env,capture_output=True)
     assert invalid.returncode!=0
+
+
+def test_incomplete_preparation_has_clear_error_and_shell_guard(tmp_path):
+    with pytest.raises(ValueError,match="Prepared dataset is incomplete"):
+        d.load_prepared(tmp_path)
+    bash=Path(r"C:\Program Files\Git\bin\bash.exe")
+    executable=str(bash) if bash.exists() else shutil.which("bash")
+    if not executable:pytest.skip("Bash unavailable")
+    script=Path(__file__).resolve().parents[1]/"thesis/scripts/run_khatt_transfer.sh"
+    result=subprocess.run([executable,str(script),"pretrain"],capture_output=True,text=True,
+        env={**os.environ,"KHATT_TRANSFER_ROOT":tmp_path.as_posix(),"TRAIN_PYTHON":"missing-python"})
+    assert result.returncode!=0 and "preparation is incomplete" in result.stderr
+    assert "command not found" not in result.stderr
+
+
+def test_khatt_preparation_resumes_committed_images_and_pinned_revision(monkeypatch,tmp_path):
+    attempts=0; skips=[]; revisions=[]
+    samples=[dict(image=Image.new("RGB",(24,32),color),text="با") for color in ("red","green","blue")]
+    class Stream:
+        def __init__(self,rows,fail):self.rows=rows;self.fail=fail
+        def skip(self,count):
+            skips.append(count)
+            def items():
+                for index in range(count,len(self.rows)):
+                    if self.fail and index==1:raise RuntimeError("preparation terminated")
+                    yield self.rows[index]
+            return items()
+    def load(name,**kw):
+        nonlocal attempts
+        if kw["split"]=="train":
+            attempts+=1
+            return Stream(samples,attempts==1)
+        return Stream([dict(image=Image.new("RGB",(24,32),"yellow"),text="با")],False)
+    def info(name,revision=None):
+        revisions.append(revision)
+        return SimpleNamespace(sha=revision or "original-sha")
+    monkeypatch.setitem(sys.modules,"datasets",SimpleNamespace(load_dataset=load,load_from_disk=None))
+    monkeypatch.setitem(sys.modules,"huggingface_hub",SimpleNamespace(HfApi=lambda:SimpleNamespace(dataset_info=info)))
+    root=tmp_path/"prepared"
+    with pytest.raises(RuntimeError,match="terminated"):
+        main(["prepare-khatt","--output",str(root)])
+    rows=d.progress_rows(root,"train")
+    assert len(rows)==1 and not (root/"prepared.json").exists()
+    cached=root/rows[0]["image_path"]; before=cached.stat().st_mtime_ns
+    with (root/"train.progress.jsonl").open("ab") as handle:handle.write(b'{"incomplete":')
+    main(["prepare-khatt","--output",str(root)])
+    metadata,_,parts=d.load_prepared(root)
+    assert revisions==[None,"original-sha"]
+    assert skips==[0,1,0] and len(parts["train"])==3
+    assert cached.stat().st_mtime_ns==before
+    assert metadata["source"]["revision"]=="original-sha"
+    original=file_hash(root/"prepared.json")
+    main(["prepare-khatt","--output",str(root)])
+    assert file_hash(root/"prepared.json")==original
+
+
+def test_legacy_partial_khatt_cache_is_adopted_without_overwriting_images(monkeypatch,tmp_path):
+    root=tmp_path/"prepared";root.mkdir()
+    image=Image.new("RGB",(24,32),"red")
+    row=d.add_image(root,"khatt:train:0000000",image,"اب")
+    path=root/row["image_path"]; before=path.stat().st_mtime_ns
+    def load(name,**kw):
+        return [dict(image=image if kw["split"]=="train" else Image.new("RGB",(24,32),"blue"),text="با")]
+    monkeypatch.setitem(sys.modules,"datasets",SimpleNamespace(load_dataset=load,load_from_disk=None))
+    monkeypatch.setitem(sys.modules,"huggingface_hub",SimpleNamespace(HfApi=lambda:SimpleNamespace(dataset_info=lambda *a,**kw:SimpleNamespace(sha="pinned"))))
+    main(["prepare-khatt","--output",str(root)])
+    assert path.stat().st_mtime_ns==before
+    assert d.load_prepared(root)[0]["counts"]==dict(train=1,validation=1)
+
+
+def test_committed_progress_tampering_and_changed_inventory_rejected(monkeypatch,tmp_path):
+    root=tmp_path/"prepared";root.mkdir()
+    row=d.add_image(root,"khatt:train:0000000",Image.new("RGB",(24,32),"red"),"اب")
+    (root/"train.progress.jsonl").write_text(json.dumps(row)+"\n")
+    (root/row["image_path"]).write_bytes(b"changed")
+    with pytest.raises(ValueError,match="progress image"):
+        d.progress_rows(root,"train")
+    d.write_json(root/"preparation.json",dict(version=1,source=dict(kind="huggingface",dataset=d.DATASET,
+        revision="pinned",label_order="mirror reversed; restore once"),options=dict(text_policy=d.POLICY,inventory_sha256="different")))
+    monkeypatch.setitem(sys.modules,"datasets",SimpleNamespace(load_dataset=None,load_from_disk=None))
+    monkeypatch.setitem(sys.modules,"huggingface_hub",SimpleNamespace(HfApi=lambda:SimpleNamespace(dataset_info=lambda *a,**kw:SimpleNamespace(sha="pinned"))))
+    with pytest.raises(ValueError,match="inventory changed"):
+        main(["prepare-khatt","--output",str(root)])
+
+
+def test_slurm_scripts_route_cpu_preparation_and_gpu_resume(tmp_path):
+    git_bash=Path(r"C:\Program Files\Git\bin\bash.exe")
+    bash=str(git_bash) if git_bash.exists() else shutil.which("bash")
+    if not bash:pytest.skip("Bash unavailable")
+    scripts=Path(__file__).resolve().parents[1]/"thesis/scripts"
+    project=tmp_path/"project with spaces"
+    activate=project/".venv-khatt-transfer/bin/activate"
+    activate.parent.mkdir(parents=True);activate.write_text("# synthetic environment\n")
+    wrapper=project/"thesis/scripts/run_khatt_transfer.sh"
+    wrapper.parent.mkdir(parents=True)
+    wrapper.write_text('printf \'%s\\n\' "$@" > "$CAPTURE"\n',newline="\n")
+    capture=tmp_path/"args.txt"
+    env={**os.environ,"SLURM_SUBMIT_DIR":project.as_posix(),"CAPTURE":capture.as_posix()}
+    cases=[("slurm_prepare_khatt.sbatch",[],["prepare-khatt"]),
+           ("slurm_khatt_gpu.sbatch",["pretrain","--resume"],["pretrain","--resume"])]
+    for filename,arguments,expected in cases:
+        script=scripts/filename
+        subprocess.run([bash,"-n",str(script)],check=True,capture_output=True)
+        result=subprocess.run([bash,str(script),*arguments],env=env,capture_output=True,text=True)
+        assert result.returncode==0,result.stderr
+        assert capture.read_text().splitlines()==expected
+
+
+def test_preparation_data_and_lock_import_without_loading_torch():
+    result=subprocess.run([sys.executable,"-c",
+        "import sys; import thesis.khatt_transfer.data; import thesis.khatt_transfer.locking; assert 'torch' not in sys.modules"],
+        cwd=Path(__file__).resolve().parents[1],capture_output=True,text=True)
+    assert result.returncode==0,result.stderr
 
 
 def test_real_mdiff_two_stages_and_explicit_test(tmp_path):

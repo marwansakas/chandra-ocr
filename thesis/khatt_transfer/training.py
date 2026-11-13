@@ -1,7 +1,7 @@
 """Two-stage training around the existing SVTRv2/MDiff recognizer."""
 from __future__ import annotations
 
-from contextlib import contextmanager, nullcontext
+from contextlib import nullcontext
 import hashlib
 import importlib.metadata
 import json
@@ -21,6 +21,7 @@ from thesis.diffusion.metrics import aggregate
 from thesis.diffusion.tokenizer import CharacterTokenizer
 from thesis.mdiff_arabic_v1.model import Recognizer, load_encoder, tensor_hash
 from .data import load_prepared, read_json, write_json
+from .locking import run_lock
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -159,31 +160,6 @@ def differences(left, right, prefix=""):
         return [field for key in sorted(set(left) | set(right))
                 for field in differences(left.get(key), right.get(key), prefix + str(key) + ".")]
     return [] if left == right else [prefix.rstrip(".")]
-
-
-@contextmanager
-def run_lock(folder):
-    # Lock is held by the OS; a killed process does not leave a stale exclusive claim.
-    folder.parent.mkdir(parents=True, exist_ok=True)
-    with (folder.parent / (folder.name + ".lock")).open("a+b") as handle:
-        if os.name == "nt":
-            import msvcrt
-            handle.seek(0)
-            handle.write(b"0")
-            handle.flush()
-            handle.seek(0)
-            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
-        else:
-            import fcntl
-            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        try:
-            yield
-        finally:
-            if os.name == "nt":
-                handle.seek(0)
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                fcntl.flock(handle, fcntl.LOCK_UN)
 
 
 def build_config(args, tokenizer, parts, parent):

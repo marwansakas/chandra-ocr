@@ -13,6 +13,60 @@ Both stages use structured masked reconstruction and visible-token correction,
 with the existing 0.5/0.5 losses plus 0.1 tail-EOS loss. Inference uses three
 denoise/correction rounds (six decoder passes), without target tokens/length.
 
+## Slurm submission and recovery after a terminated preparation
+
+`Terminated` during preparation means the process stopped before the completion
+marker was written. A subsequent missing `prepared.json` is a consequence, not
+a model-training error. The termination message alone cannot distinguish a login
+node policy, wall-time/resource limit, manual signal or another cause. Do not
+run the GPU phases directly on a login node.
+
+From `/home/sakas/chandra-ocr`, after updating Git and setting up the environment:
+
+```bash
+if PREP_JOB=$(sbatch --parsable thesis/scripts/slurm_prepare_khatt.sbatch); then
+  PREP_JOB=${PREP_JOB%%;*}
+  sbatch --dependency="afterok:$PREP_JOB" \
+    thesis/scripts/slurm_khatt_gpu.sbatch pretrain
+fi
+
+squeue -u "$USER"
+```
+
+The supplied preparation script requests 4 CPUs, 16 GB RAM and six hours; the
+GPU script requests one GPU, 4 CPUs, 24 GB host RAM and 24 hours. These are
+starting resource requests, not measured requirements for your cluster. Add
+your university's actual `--partition`/`--account` options to each `sbatch`
+command if required, and choose an internet-enabled preparation queue/node.
+The GPU job is released only when preparation exits successfully.
+
+Logs are `khatt-prepare-JOBID.log` and `khatt-mdiff-JOBID.log` in the repository
+root. Check a preparation job with:
+
+```bash
+tail -n 50 "khatt-prepare-$PREP_JOB.log"
+sacct -j "$PREP_JOB" --format=JobID,State,ExitCode,MaxRSS,Elapsed
+```
+
+If preparation is interrupted, submit the same preparation script again. It
+reuses verified encoder assets, pins the original dataset revision and resumes
+its committed image journal. A legacy incomplete directory containing only the
+old `images/` cache (or an empty directory) is adopted without deleting it;
+cached images are checked against the source before reuse. No manual recursive
+delete or new artifact root is necessary for that recovery. Training has not
+started when `prepared.json` is missing, so its first submission uses `pretrain`
+without `--resume`. Only an interrupted training run with `last.pt` uses:
+
+```bash
+sbatch thesis/scripts/slurm_khatt_gpu.sbatch pretrain --resume
+```
+
+For later children training after its preparation has completed:
+
+```bash
+sbatch thesis/scripts/slurm_khatt_gpu.sbatch finetune
+```
+
 ## Short cluster commands
 
 After updating Git and setting up the environment described below, use one
@@ -123,10 +177,13 @@ python -m thesis.khatt_transfer prepare-khatt \
 
 The saved-split mode records local provenance and freezes every image/text hash;
 it cannot reconstruct a remote revision absent from those older downloads.
-Neither mode downloads KHATT test data. Preparation never overwrites an output
-directory. An interrupted preparation is incomplete and cannot be trained;
-restart with a new output directory. Completed snapshots can move between
-machines because image paths are relative, not bound to Windows paths.
+Neither mode requests KHATT test samples. Preparation writes atomic images and
+a per-split journal, flushing each committed sample. Repeat the same command
+after interruption: completed journal entries are verified and skipped, and an
+incomplete final journal append is recovered. Changing the source revision or
+inventory is rejected. An incomplete snapshot cannot be trained. A completed
+snapshot is verified rather than overwritten. Completed snapshots can move
+between machines because image paths are relative, not bound to Windows paths.
 
 Vocabulary comes from KHATT TRAIN plus the declared Arabic/Latin/digit/punctuation
 inventory and CR/LF/TAB/inequality. Validation/test never enlarge it. If an

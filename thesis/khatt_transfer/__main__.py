@@ -136,4 +136,7 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (ValueError, FileNotFoundError, FileExistsError) as error:
+        raise SystemExit(f"ERROR: {error}") from None
