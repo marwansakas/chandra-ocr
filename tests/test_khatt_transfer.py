@@ -108,6 +108,9 @@ def test_khatt_conflicting_duplicate_images_are_excluded_and_recorded(monkeypatc
     assert report[0]["reason"] == "conflicting_duplicate_image_labels"
     assert {row["sample_id"] for row in report[0]["rows"]} == {
         "khatt:validation:0000000", "khatt:validation:0000001"}
+    (root / "duplicate_image_exclusions.json").write_text("[]\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="exclusions report hash"):
+        d.load_prepared(root)
 
 
 def test_group_split_joins_duplicate_images_and_writer_ids():

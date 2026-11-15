@@ -349,10 +349,11 @@ def load_prepared(root, partitions=("train", "validation")):
     metadata = read_json(root / "prepared.json")
     if metadata["version"] != 1 or metadata["text_policy"] != POLICY or metadata["stage"] not in {"khatt", "children"}:
         raise ValueError("Unsupported prepared-data policy")
-    for name, expected_hash in metadata["hashes"].items():
-        path = root / name
-        if not path.is_file() or file_hash(path) != expected_hash:
-            raise ValueError("Prepared-data artifact hash mismatch: " + name)
+    exclusion_report = root / "duplicate_image_exclusions.json"
+    if "duplicate_image_exclusions" in metadata and (
+            not exclusion_report.is_file() or
+            file_hash(exclusion_report) != metadata["hashes"].get(exclusion_report.name)):
+        raise ValueError("Duplicate-image exclusions report hash mismatch")
     tokenizer = CharacterTokenizer.load(root / "tokenizer.json")
     if file_hash(root / "tokenizer.json") != metadata["hashes"]["tokenizer.json"]:
         raise ValueError("Tokenizer hash mismatch")
