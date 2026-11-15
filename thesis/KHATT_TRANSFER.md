@@ -185,6 +185,13 @@ inventory is rejected. An incomplete snapshot cannot be trained. A completed
 snapshot is verified rather than overwritten. Completed snapshots can move
 between machines because image paths are relative, not bound to Windows paths.
 
+Before freezing the snapshot, preparation removes a complete duplicate-image
+group when its pixels cross train/validation (to prevent leakage), or when the
+same pixels have conflicting derived labels (to avoid assigning an arbitrary
+target). It retains same-split, same-label duplicates. Every removal is recorded
+in `duplicate_image_exclusions.json`, whose hash and total are included in
+`prepared.json`; preparation never silently chooses one conflicting label.
+
 Vocabulary comes from KHATT TRAIN plus the declared Arabic/Latin/digit/punctuation
 inventory and CR/LF/TAB/inequality. Validation/test never enlarge it. If an
 additional character inventory is known in advance, use `--inventory-file FILE`

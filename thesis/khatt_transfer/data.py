@@ -58,7 +58,7 @@ def add_image(root, sample_id, image, text, *, reuse=False, **extra):
                 text=training_text(text, POLICY), **extra)
 
 
-def freeze(root, parts, *, stage, source, tokenizer=None, inventory=""):
+def freeze(root, parts, *, stage, source, tokenizer=None, inventory="", extra_files=(), metadata_extra=None):
     """Never silently drop duplicates or move samples across supplied splits."""
     seen_ids, pixels = set(), {}
     for partition, rows in parts.items():
@@ -81,14 +81,57 @@ def freeze(root, parts, *, stage, source, tokenizer=None, inventory=""):
             for row in rows:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
         hashes[path.name] = file_hash(path)
+    for path in extra_files:
+        path = Path(path)
+        if not path.is_file() or path.parent.resolve() != root.resolve():
+            raise ValueError("Extra prepared-data file must be a file directly under the snapshot root: " + str(path))
+        hashes[path.name] = file_hash(path)
     metadata = dict(version=1, stage=stage, text_policy=POLICY, source=source,
                     hashes=hashes, counts={k: len(v) for k, v in parts.items()},
                     train_max_characters=max(len(r["text"]) for r in parts["train"]))
+    if metadata_extra:
+        overlap = set(metadata) & set(metadata_extra)
+        if overlap:
+            raise ValueError("Prepared-data metadata conflicts with reserved keys: " + ", ".join(sorted(overlap)))
+        metadata.update(metadata_extra)
     # This is the completion marker: it must never be visible half-written.
     temporary = root / "prepared.json.tmp"
     write_json(temporary, metadata)
     temporary.replace(root / "prepared.json")
     return metadata
+
+
+def exclude_invalid_khatt_duplicates(parts):
+    """Exclude unsafe duplicate-image groups from the supplied KHATT splits.
+
+    A cross-partition duplicate leaks pixels into validation. A duplicate with
+    different targets has no unambiguous supervised label. Same-partition,
+    same-target duplicates retain the source dataset's original membership.
+    """
+    grouped = defaultdict(list)
+    for partition, rows in parts.items():
+        for row in rows:
+            grouped[row["pixels_sha256"]].append((partition, row))
+
+    excluded_ids, exclusions = set(), []
+    for pixels_sha256, group in grouped.items():
+        partitions = {partition for partition, _ in group}
+        targets = {row["text"] for _, row in group}
+        if len(partitions) <= 1 and len(targets) <= 1:
+            continue
+        reason = "cross_partition_duplicate_image" if len(partitions) > 1 else "conflicting_duplicate_image_labels"
+        rows = [dict(partition=partition, sample_id=row["sample_id"], source_text=row["source_text"],
+                     text=row["text"], image_sha256=row["image_sha256"])
+                for partition, row in sorted(group, key=lambda item: (item[0], item[1]["sample_id"]))]
+        excluded_ids.update(row["sample_id"] for _, row in group)
+        exclusions.append(dict(reason=reason, pixels_sha256=pixels_sha256, rows=rows))
+
+    filtered = {partition: [row for row in rows if row["sample_id"] not in excluded_ids]
+                for partition, rows in parts.items()}
+    empty = [partition for partition, rows in filtered.items() if not rows]
+    if empty:
+        raise ValueError("KHATT duplicate filtering emptied split(s): " + ", ".join(empty))
+    return filtered, exclusions
 
 
 def prepare_khatt(args):
@@ -181,7 +224,14 @@ def _prepare_khatt(args):
             if (index + 1) % 100 == 0 or index == done:
                 print(f"Prepared {partition}: {index + 1}", flush=True)
         parts[partition] = rows
-    result = freeze(root, parts, stage="khatt", source=source, inventory=inventory)
+    parts, exclusions = exclude_invalid_khatt_duplicates(parts)
+    exclusions_path = root / "duplicate_image_exclusions.json"
+    write_json(exclusions_path, exclusions)
+    result = freeze(root, parts, stage="khatt", source=source, inventory=inventory,
+                    extra_files=(exclusions_path,),
+                    metadata_extra=dict(duplicate_image_exclusions=dict(
+                        policy="exclude complete groups with cross-partition pixels or conflicting derived labels",
+                        groups=len(exclusions), rows=sum(len(group["rows"]) for group in exclusions))))
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
@@ -299,6 +349,10 @@ def load_prepared(root, partitions=("train", "validation")):
     metadata = read_json(root / "prepared.json")
     if metadata["version"] != 1 or metadata["text_policy"] != POLICY or metadata["stage"] not in {"khatt", "children"}:
         raise ValueError("Unsupported prepared-data policy")
+    for name, expected_hash in metadata["hashes"].items():
+        path = root / name
+        if not path.is_file() or file_hash(path) != expected_hash:
+            raise ValueError("Prepared-data artifact hash mismatch: " + name)
     tokenizer = CharacterTokenizer.load(root / "tokenizer.json")
     if file_hash(root / "tokenizer.json") != metadata["hashes"]["tokenizer.json"]:
         raise ValueError("Tokenizer hash mismatch")

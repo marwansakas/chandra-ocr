@@ -89,6 +89,27 @@ def test_duplicate_pixels_cannot_cross_supplied_splits(tmp_path):
         d.freeze(root,parts,stage="khatt",source={})
 
 
+def test_khatt_conflicting_duplicate_images_are_excluded_and_recorded(monkeypatch, tmp_path):
+    duplicate = Image.new("RGB", (24, 32), "red")
+    def load(name, **kw):
+        if kw["split"] == "train":
+            return [dict(image=Image.new("RGB", (24, 32), "blue"), text="با")]
+        return [dict(image=duplicate, text="با"), dict(image=duplicate, text="تث"),
+                dict(image=Image.new("RGB", (24, 32), "green"), text="با")]
+    monkeypatch.setitem(sys.modules, "datasets", SimpleNamespace(load_dataset=load, load_from_disk=None))
+    monkeypatch.setitem(sys.modules, "huggingface_hub", SimpleNamespace(
+        HfApi=lambda: SimpleNamespace(dataset_info=lambda *a, **kw: SimpleNamespace(sha="pinned"))))
+    root = tmp_path / "prepared"
+    main(["prepare-khatt", "--output", str(root)])
+    metadata, _, parts = d.load_prepared(root)
+    assert len(parts["train"]) == len(parts["validation"]) == 1
+    assert metadata["duplicate_image_exclusions"]["groups"] == 1
+    report = d.read_json(root / "duplicate_image_exclusions.json")
+    assert report[0]["reason"] == "conflicting_duplicate_image_labels"
+    assert {row["sample_id"] for row in report[0]["rows"]} == {
+        "khatt:validation:0000000", "khatt:validation:0000001"}
+
+
 def test_group_split_joins_duplicate_images_and_writer_ids():
     rows=[dict(sample_id=str(i),pixels_sha256=str(i),text="اب") for i in range(12)]
     rows[1]["pixels_sha256"]="0"
