@@ -32,6 +32,8 @@ tests/test_khatt_ablation_v1.py -text
 tests/test_khatt_resume_compat_v1.py -text
 tests/test_khatt_subset_eval_v1.py -text
 thesis/experiments/khatt_ablation_v1/runners/** -text
+thesis/scripts/run_khatt_mdiff_v1.py -text
+thesis/experiments/khatt_mdiff_v1/runners/** -text
 
 # Selected model weights are stored as LFS objects, never ordinary Git blobs.
 thesis/experiments/arabic_ocr_best/checkpoints/*.pt filter=lfs diff=lfs merge=lfs -text

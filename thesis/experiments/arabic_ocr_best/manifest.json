@@ -1,6 +1,6 @@
 {
   "version": "arabic_ocr_best_v1",
-  "snapshot_date": "2026-11-10",
+  "snapshot_date": "2026-11-17",
   "models": {
     "transformer_khatt100_ours_e040": {
       "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_khatt100_ours_e040.pt",
@@ -52,6 +52,24 @@
       "dim": 256,
       "layers": 3,
       "dropout": 0.1
+    },
+    "mdiff_khatt100_ours_e073": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/mdiff_khatt100_ours_e073.pt",
+      "sha256": "41083edb98284841af52e6b5b41e0ddfd4748e010998053c89fc2c8a898f8495",
+      "bytes": 60610143,
+      "arm": "mdiff",
+      "epoch": 73,
+      "tokenizer": "khatt",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 2196,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1,
+      "sampler_steps": 3
     }
   },
   "tokenizers": {
@@ -136,6 +154,15 @@
       "exact_lines": 185
     }
   },
-  "future_hybrid": "Use the new KHATT Transformer plus the future matched KHATT MDiff. Refit selector parameters on children validation only; old alpha/margin are reference values, not automatically transferable.",
-  "data_policy": "No images, labels, sample IDs, per-line predictions or optimizer states are included in this checkpoint bundle."
+  "future_hybrid": "Use the mixed Transformer at epoch 40 and matched MDiff at epoch 73. Refit selector weighting and margin on children validation only.",
+  "data_policy": "No images, labels, sample IDs, per-line predictions or optimizer states are included in this checkpoint bundle.",
+  "matched_mdiff": {
+    "model": "mdiff_khatt100_ours_e073",
+    "historical_metrics": {
+      "lines": 752,
+      "cer": 0.4198473282442748,
+      "wer": 0.8521303258145363,
+      "exact_lines": 137
+    }
+  }
 }

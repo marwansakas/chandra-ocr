@@ -1,5 +1,7 @@
 # Marwan: matched MDiff on KHATT + children
 
+**Completed by Ammar on 2026-11-17.** This file preserves the original handoff. [Completed run and next steps](../khatt_mdiff_v1/README.md)
+
 Owner: **@marwansakas**. Implement the diffusion counterpart of our completed best AR experiment. This is the next research step, followed by a possible new span hybrid. The AR experiment is complete; its training should not be repeated.
 
 ## Current result and artifacts

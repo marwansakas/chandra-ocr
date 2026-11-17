@@ -1,5 +1,7 @@
 # KHATT + children: five AR Transformer experiments
 
+The matched diffusion run on the full mixture is complete. It reached **41.98% CER** on the historical comparison. [MDiff results, checkpoint and follow-up experiments](../khatt_mdiff_v1/README.md)
+
 Prepared on 2026-11-06. Real training and historical model evaluation are **user-run only**. The preparation step has generated and verified the manifests. No new child-only experiment is included.
 
 ## Completed historical results (2026-11-10)
