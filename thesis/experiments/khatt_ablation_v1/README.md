@@ -2,6 +2,8 @@
 
 The matched diffusion run on the full mixture is complete. It reached **41.98% CER** on the historical comparison. [MDiff results, checkpoint and follow-up experiments](../khatt_mdiff_v1/README.md)
 
+The two KHATT-to-children fine-tunes and two span hybrids are complete. The epoch-40 mixed Transformer remains the best standalone model by CER, and pairing it with the epoch-52 fine-tune reached **28.93% CER**. [Fine-tune and hybrid comparison](../khatt_finetune_hybrids_v1/README.md)
+
 Prepared on 2026-11-06. Real training and historical model evaluation are **user-run only**. The preparation step has generated and verified the manifests. No new child-only experiment is included.
 
 ## Completed historical results (2026-11-10)

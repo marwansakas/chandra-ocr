@@ -1,6 +1,6 @@
 {
   "version": "arabic_ocr_best_v1",
-  "snapshot_date": "2026-11-17",
+  "snapshot_date": "2026-11-18",
   "models": {
     "transformer_khatt100_ours_e040": {
       "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_khatt100_ours_e040.pt",
@@ -70,6 +70,61 @@
       "layers": 3,
       "dropout": 0.1,
       "sampler_steps": 3
+    },
+    "transformer_khatt_only_e034": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_khatt_only_e034.pt",
+      "sha256": "02a2b65669c491614a96f7df8e815c06e8c951415d7a6cddc8b417519215a5e5",
+      "bytes": 60610143,
+      "arm": "ar",
+      "epoch": 34,
+      "tokenizer": "khatt",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 2196,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1
+    },
+    "transformer_finetune_lr1e4_e029": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_finetune_lr1e4_e029.pt",
+      "sha256": "27ecc6ef9e04a45f464124d2f163b628d17c71f8976ec250dd26586bfd745339",
+      "bytes": 60610143,
+      "arm": "ar",
+      "epoch": 29,
+      "tokenizer": "khatt",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 2196,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1,
+      "parent_model": "transformer_khatt_only_e034",
+      "decoder_base_lr": 0.0001
+    },
+    "transformer_finetune_lr3e4_e052": {
+      "checkpoint": "thesis/experiments/arabic_ocr_best/checkpoints/transformer_finetune_lr3e4_e052.pt",
+      "sha256": "3b57fbc08a3af292c4d08c200d5d437361bba91eeafae9e62e57f18044591611",
+      "bytes": 60610143,
+      "arm": "ar",
+      "epoch": 52,
+      "tokenizer": "khatt",
+      "capacity": 144,
+      "image_config": {
+        "height": 32,
+        "max_width": 2196,
+        "patch_size": 4
+      },
+      "dim": 256,
+      "layers": 3,
+      "dropout": 0.1,
+      "parent_model": "transformer_khatt_only_e034",
+      "decoder_base_lr": 0.0003
     }
   },
   "tokenizers": {
@@ -154,7 +209,6 @@
       "exact_lines": 185
     }
   },
-  "future_hybrid": "Use the mixed Transformer at epoch 40 and matched MDiff at epoch 73. Refit selector weighting and margin on children validation only.",
   "data_policy": "No images, labels, sample IDs, per-line predictions or optimizer states are included in this checkpoint bundle.",
   "matched_mdiff": {
     "model": "mdiff_khatt100_ours_e073",
@@ -163,6 +217,37 @@
       "cer": 0.4198473282442748,
       "wer": 0.8521303258145363,
       "exact_lines": 137
+    }
+  },
+  "khatt_children_finetunes": {
+    "finetune_lr1e4": {
+      "model": "transformer_finetune_lr1e4_e029",
+      "selected_epoch": 29,
+      "completed_epoch": 39,
+      "stop_reason": "patience"
+    },
+    "finetune_lr3e4": {
+      "model": "transformer_finetune_lr3e4_e052",
+      "selected_epoch": 52,
+      "completed_epoch": 62,
+      "stop_reason": "patience"
+    }
+  },
+  "khatt_span_hybrids": {
+    "config": "thesis/experiments/khatt_finetune_hybrids_v1/HYBRIDS.json",
+    "variants": {
+      "hybrid_span_mdiff": {
+        "base_model": "transformer_khatt100_ours_e040",
+        "donor_model": "mdiff_khatt100_ours_e073",
+        "donor_weight": 0.5,
+        "margin": 0.1
+      },
+      "hybrid_span_finetune": {
+        "base_model": "transformer_khatt100_ours_e040",
+        "donor_model": "transformer_finetune_lr3e4_e052",
+        "donor_weight": 0.25,
+        "margin": 0.05
+      }
     }
   }
 }

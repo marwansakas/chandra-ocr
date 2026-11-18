@@ -1,0 +1,43 @@
+{
+  "variants": {
+    "hybrid_span_mdiff": {
+      "base_model": "transformer_khatt100_ours_e040",
+      "donor_model": "mdiff_khatt100_ours_e073",
+      "donor_weight": 0.5,
+      "margin": 0.1
+    },
+    "hybrid_span_finetune": {
+      "base_model": "transformer_khatt100_ours_e040",
+      "donor_model": "transformer_finetune_lr3e4_e052",
+      "donor_weight": 0.25,
+      "margin": 0.05
+    }
+  },
+  "validation_lines": 150,
+  "historical_lines": 752,
+  "proposal_limits": {
+    "candidate_limit": 10,
+    "maximum_spans": 6,
+    "maximum_span_length": 8
+  },
+  "scoring": "Weighted mean log probability for the base AR and donor. Replace only with an eligible span proposal exceeding the score margin.",
+  "validation_policy": "Require fewer character edits, fewer word edits, zero previously exact lines lost and full EOS coverage on the 150 children validation lines. Keep the base if no setting qualifies.",
+  "grid": {
+    "donor_weight": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "margin": [
+      0.0,
+      0.025,
+      0.05,
+      0.1,
+      0.15,
+      0.25
+    ]
+  },
+  "selection_sha256": "e07ed8745828ee93bc50a84a57901cf060f911ec381aba2525f8f1d0bbcefbfd"
+}
